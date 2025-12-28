@@ -24,21 +24,33 @@ check_controls:
     lda joy_a
     bit #%1000
     bne @check_down
+    lda yMid
+    cmp #1
+    beq @check_down
     dec yMid
 @check_down:
     lda joy_a
     bit #%100
     bne @check_left
+    lda yMid
+    cmp #L0_HEIGHT-2
+    beq @check_left
     inc yMid
 @check_left:
     lda joy_a
     bit #%10 ; Pressing left?
     bne @check_right
+    lda xMid
+    cmp #1
+    beq @check_right
     dec xMid
 @check_right:
     lda joy_a
     bit #%1 ; Pressing right?
     bne @done
+    lda xMid
+    cmp #L0_WIDTH-2
+    beq @done
     inc xMid
 @done:
     rts
