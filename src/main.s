@@ -20,11 +20,15 @@ waitflag: .byte 0
 
 .include "config.s"
 .include "irq.s"
+.include "tiles.s"
+.include "bres.s"
+.include "pix.s"
+.include "move.s"
+.include "floor.s"
 .include "line.s"
 .include "loading.s"
 .include "controls.s"
 
-floor: .res 4096
 loopCount: .byte 0
 
 start:
@@ -37,6 +41,7 @@ start:
     jsr clear_l1
 main_loop:
     jsr check_controls
+    jsr set_xy_pos
     jsr clear_pixeldata
     jsr draw_lr_lines
     jsr draw_ud_lines
@@ -46,47 +51,12 @@ main_loop:
     cmp #0
     beq @waiting
     stz waitflag
-    inc loopCount
-    lda loopCount
-    cmp #5
-    bne @waiting
-    stz loopCount
+    ; inc loopCount
+    ; lda loopCount
+    ; cmp #5
+    ; bne @waiting
+    ; stz loopCount
     bra main_loop
-    rts
-
-
-tilecolor: .byte 0
-
-create_solid_tile:
-    lda tilecolor
-    ldx #0
-@write_tile:
-    sta VERA_DATA0
-    inx
-    cpx #0
-    beq @tile_done
-    bra @write_tile
-@tile_done:
-    rts
-
-tileIdx: .byte 0
-
-create_tiles:
-    ; create some tiles
-    jsr point_to_tilebase_l1
-    lda #0
-    sta tilecolor
-    jsr create_solid_tile
-    lda #1
-    sta tilecolor
-    jsr create_solid_tile
-    lda #2
-    sta tilecolor
-    jsr create_solid_tile
-    lda #3
-    sta tilecolor
-    jsr create_solid_tile
-@done:
     rts
 
 point_to_mapbase_l0:
