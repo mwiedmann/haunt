@@ -46,6 +46,7 @@ main_loop:
     jsr draw_lr_lines
     jsr draw_ud_lines
     jsr copy_pixeldata_to_vram
+    jsr scroll_layers
 @waiting:
     lda waitflag
     cmp #0

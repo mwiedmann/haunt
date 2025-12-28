@@ -48,38 +48,9 @@ copy_pixeldata_to_vram:
     sec
     sbc yPosStart
     sta row_count
-    lda #<MAPBASE_L1_ADDR
+    lda #<VISIBLE_AREA_L1_MAPBASE_ADDR
     sta pixel_spot
-    lda #>MAPBASE_L1_ADDR
-    sta pixel_spot+1
-    ldy yPosStart
-@next_y:
-    cpy #0
-    beq @move_x
-    lda pixel_spot
-    clc
-    adc #128
-    sta pixel_spot
-    lda pixel_spot+1
-    adc #0
-    sta pixel_spot+1
-    dey
-    bra @next_y
-@move_x: 
-    ; calc x - add x twice (2 bytes per pixel)
-    lda pixel_spot
-    clc
-    adc xPosStart
-    sta pixel_spot
-    lda pixel_spot+1
-    adc #0
-    sta pixel_spot+1
-    clc
-    lda pixel_spot
-    adc xPosStart
-    sta pixel_spot
-    lda pixel_spot+1
-    adc #0
+    lda #>VISIBLE_AREA_L1_MAPBASE_ADDR
     sta pixel_spot+1
     ; Set the pixeldata source address
     lda #<pixeldata
