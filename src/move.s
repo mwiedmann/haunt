@@ -31,10 +31,6 @@ set_xy_pos:
     sec
     sbc #VIEW_RADIUS
     bmi @set_y_start_zero
-    cmp #32-(VIEW_RADIUS+VIEW_RADIUS+1)
-    bcc @set_y_start_ok
-    lda #32-(VIEW_RADIUS+VIEW_RADIUS+1)
-@set_y_start_ok:
     sta yPosStart
     bra @set_y_end
 @set_y_start_zero:
@@ -43,9 +39,9 @@ set_xy_pos:
     lda yMid
     clc
     adc #VIEW_RADIUS
-    cmp #32
+    cmp #64
     bcc @set_y_end_ok
-    lda #31
+    lda #63
 @set_y_end_ok:
     sta yPosEnd
     rts
