@@ -104,7 +104,7 @@ copy_pixeldata_to_vram:
 @done:
     rts
 
-rad_coords: .res 113
+rad_coords: .res 256
 
 circleId: .byte 0
 
