@@ -44,9 +44,7 @@ draw_pixeldata:
 row_count: .byte 0
 
 copy_pixeldata_to_vram:
-    lda yPosEnd
-    sec
-    sbc yPosStart
+    lda #(VIEW_RADIUS+VIEW_RADIUS+1)
     sta row_count
     lda #<VISIBLE_AREA_L1_MAPBASE_ADDR
     sta pixel_spot
@@ -128,6 +126,7 @@ draw_lr_lines:
     jsr init_bresenham
 @next_pixel:
     jsr step_bresenham
+    jsr draw_pixeldata
     lda bresenham_x1
     cmp bresenham_x2
     bne @next_step
@@ -135,7 +134,6 @@ draw_lr_lines:
     cmp bresenham_y2
     beq @next_line
 @next_step:
-    jsr draw_pixeldata
     jsr check_floor_val
     cmp #0
     bne @next_line
@@ -178,6 +176,7 @@ draw_ud_lines:
     jsr init_bresenham
 @next_pixel:
     jsr step_bresenham
+    jsr draw_pixeldata
     lda bresenham_x1
     cmp bresenham_x2
     bne @next_step
@@ -185,7 +184,6 @@ draw_ud_lines:
     cmp bresenham_y2
     beq @next_line
 @next_step:
-    jsr draw_pixeldata
     jsr check_floor_val
     cmp #0
     bne @next_line

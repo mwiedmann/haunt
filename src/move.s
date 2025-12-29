@@ -70,6 +70,15 @@ scroll_layers:
     lda vscroll+1
     adc #0
     sta vscroll+1
+    ; check scroll max
+;     cmp #>SCROLL_MAX
+;     bcc @next_vscroll
+;     beq @check_low_vscroll
+;     bra @end_vscroll
+; @check_low_vscroll:
+;     lda vscroll
+;     cmp #<SCROLL_MAX
+;     bcs @end_vscroll
     bra @next_vscroll
 @end_vscroll:
     lda xPosStart
