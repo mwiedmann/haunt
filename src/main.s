@@ -36,6 +36,7 @@ start:
     jsr irq_config
     jsr create_tiles
     jsr load_level0
+    jsr load_rad10
     jsr draw_floor
     jsr create_empty_pixeldata
     jsr clear_l1
@@ -51,8 +52,7 @@ main_loop:
     beq @waiting
 @draw_everything:
     jsr clear_pixeldata
-    jsr draw_lr_lines
-    jsr draw_ud_lines
+    jsr draw_circle
     jsr copy_pixeldata_to_vram
     jsr scroll_layers
 @waiting:

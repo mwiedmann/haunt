@@ -104,7 +104,11 @@ copy_pixeldata_to_vram:
 @done:
     rts
 
-draw_lr_lines:
+rad_coords: .res 113
+
+circleId: .byte 0
+
+draw_circle:
     lda xMid
     sta bresenham_x1
     lda yMid
@@ -114,59 +118,16 @@ draw_lr_lines:
     jsr draw_pixeldata
     lda #0
     sta pixelTileId
-    lda xPosStart
-    sta x2
-    lda yPosStart
-    sta y2
-@draw_line:
-    lda x2
-    sta bresenham_x2
-    lda xMid
-    sta bresenham_x1
-    lda y2
-    sta bresenham_y2
-    lda yMid
-    sta bresenham_y1
-    jsr init_bresenham
-@next_pixel:
-    jsr step_bresenham
-    jsr draw_pixeldata
-    lda bresenham_x1
-    cmp bresenham_x2
-    bne @next_step
-    lda bresenham_y1
-    cmp bresenham_y2
-    beq @next_line
-@next_step:
-    jsr check_floor_val
-    cmp #0
-    bne @next_line
-    bra @next_pixel
-@next_line:
-    lda x2
-    cmp xPosStart
-    beq @jump_right
-    lda xPosStart
-    sta x2
-    inc y2
-    lda yPosEnd
+    sta circleId
+    ldx circleId
+    lda rad_coords, x
     clc
-    adc #1
-    cmp y2
-    beq @next_phase
-    bra @draw_line
-@jump_right:
-    lda xPosEnd
+    adc xPosStart
     sta x2
-    bra @draw_line
-@next_phase:
-    rts
-
-draw_ud_lines:
-    lda xPosStart
-    sta x2
-    inc x2
-    lda yPosStart
+    inx
+    lda rad_coords, x
+    clc
+    adc yPosStart
     sta y2
 @draw_line:
     lda x2
@@ -193,21 +154,22 @@ draw_ud_lines:
     bne @next_line
     bra @next_pixel
 @next_line:
-    lda y2
-    cmp yPosStart
-    beq @jump_down
-    lda yPosStart
+    inc circleId
+    inc circleId
+    ldx circleId
+    lda rad_coords, x
+    cmp #255
+    beq @done
+    clc
+    adc xPosStart
+    sta x2
+    inx
+    lda rad_coords, x
+    clc
+    adc yPosStart
     sta y2
-    inc x2
-    lda xPosEnd
-    cmp x2
-    beq @next_phase
     bra @draw_line
-@jump_down:
-    lda yPosEnd
-    sta y2
-    bra @draw_line
-@next_phase:
+@done:
     rts
 
 .endif

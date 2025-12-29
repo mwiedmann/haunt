@@ -23,6 +23,9 @@ pal:
 map:
 	node tools/ldtk-convert.js
 	
+circle:
+	node tools/gimp-circle-convert.js gfx/radius10.data build/RAD10.BIN 10
+
 zip:
 	cd build && \
 	rm -f haunt.zip && \
