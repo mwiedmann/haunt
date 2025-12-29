@@ -42,6 +42,13 @@ start:
 main_loop:
     jsr check_controls
     jsr set_xy_pos
+    lda xMid
+    cmp xLastMid
+    bne @draw_everything
+    lda yMid
+    cmp yLastMid
+    beq @waiting
+@draw_everything:
     jsr clear_pixeldata
     jsr draw_lr_lines
     jsr draw_ud_lines

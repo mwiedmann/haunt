@@ -7,6 +7,8 @@ xMid: .byte STARTX
 yMid: .byte STARTY
 xPosEnd: .byte 0
 yPosEnd: .byte 0
+xLastMid: .byte 0
+yLastMid: .byte 0
 
 set_xy_pos:
     lda xMid
