@@ -18,7 +18,7 @@ draw_pixeldata:
     beq @draw_x
     lda addr
     clc
-    adc #((VIEW_RADIUS + VIEW_RADIUS +1) * 2)
+    adc #((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta addr
     lda addr + 1
     adc #0
@@ -44,7 +44,7 @@ draw_pixeldata:
 row_count: .byte 0
 
 copy_pixeldata_to_vram:
-    lda #(VIEW_RADIUS+VIEW_RADIUS+1)
+    lda #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)
     sta row_count
     lda #<VISIBLE_AREA_L1_MAPBASE_ADDR
     sta pixel_spot
@@ -71,9 +71,9 @@ copy_pixeldata_to_vram:
     sta R1L
     lda #>VERA_DATA0
     sta R1H
-    lda #<((VIEW_RADIUS + VIEW_RADIUS +1) * 2)
+    lda #<((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta R2L
-    lda #>((VIEW_RADIUS + VIEW_RADIUS +1) * 2)
+    lda #>((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta R2H
     jsr MEMCOPY
     dec row_count
@@ -91,7 +91,7 @@ copy_pixeldata_to_vram:
     ; change the pixeldata source address
     lda addr
     clc
-    adc #((VIEW_RADIUS + VIEW_RADIUS +1) * 2)
+    adc #((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta addr
     lda addr + 1
     adc #0

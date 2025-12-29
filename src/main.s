@@ -39,6 +39,7 @@ start:
     jsr draw_floor
     jsr create_empty_pixeldata
     jsr clear_l1
+    jsr adjust_view_radius
 main_loop:
     jsr check_controls
     jsr set_xy_pos

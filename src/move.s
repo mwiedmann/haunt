@@ -10,10 +10,38 @@ yPosEnd: .byte 0
 xLastMid: .byte 0
 yLastMid: .byte 0
 
+viewRadius: .byte MAX_VIEW_RADIUS
+viewStartX: .byte 0
+viewStartY: .byte 0
+viewEndX: .byte 0
+viewEndY: .byte 0
+
+adjust_view_radius:
+    lda #SCREEN_MID_X
+    sec
+    sbc viewRadius
+    sta viewStartX
+    lda #SCREEN_MID_Y
+    sec
+    sbc viewRadius
+    sta viewStartY
+    lda #SCREEN_MID_X
+    clc
+    adc viewRadius
+    sta viewEndX
+    lda #SCREEN_MID_Y
+    clc
+    adc viewRadius
+    sta viewEndY
+    lda viewRadius
+    clc
+    adc viewRadius
+    rts
+
 set_xy_pos:
     lda xMid
     sec
-    sbc #VIEW_RADIUS
+    sbc viewRadius
     bmi @set_x_start_zero
     sta xPosStart
     bra @set_x_end
@@ -22,7 +50,7 @@ set_xy_pos:
 @set_x_end:
     lda xMid
     clc
-    adc #VIEW_RADIUS
+    adc viewRadius
     cmp #64
     bcc @set_x_end_ok
     lda #63
@@ -31,7 +59,7 @@ set_xy_pos:
     ; Now Y
     lda yMid
     sec
-    sbc #VIEW_RADIUS
+    sbc viewRadius
     bmi @set_y_start_zero
     sta yPosStart
     bra @set_y_end
@@ -40,7 +68,7 @@ set_xy_pos:
 @set_y_end:
     lda yMid
     clc
-    adc #VIEW_RADIUS
+    adc viewRadius
     cmp #64
     bcc @set_y_end_ok
     lda #63
@@ -59,7 +87,7 @@ scroll_layers:
     stz vscroll+1
     lda yPosStart
     sec
-    sbc #L0_START_Y
+    sbc viewStartY
     tay
 @next_vscroll:
     cpy #0
@@ -72,20 +100,11 @@ scroll_layers:
     lda vscroll+1
     adc #0
     sta vscroll+1
-    ; check scroll max
-;     cmp #>SCROLL_MAX
-;     bcc @next_vscroll
-;     beq @check_low_vscroll
-;     bra @end_vscroll
-; @check_low_vscroll:
-;     lda vscroll
-;     cmp #<SCROLL_MAX
-;     bcs @end_vscroll
     bra @next_vscroll
 @end_vscroll:
     lda xPosStart
     sec
-    sbc #L0_START_X
+    sbc viewStartX
     tay
 @next_hscroll:
     cpy #0

@@ -31,11 +31,11 @@ create_empty_pixeldata:
     adc #0
     sta addr + 1
     inx
-    cpx #(VIEW_RADIUS + VIEW_RADIUS +1)
+    cpx #(MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1)
     bne @fill_loop
     ldx #0
     iny
-    cpy #(VIEW_RADIUS + VIEW_RADIUS +1)
+    cpy #(MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1)
     bne @fill_loop
     rts
 
