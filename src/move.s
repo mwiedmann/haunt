@@ -10,7 +10,8 @@ yPosEnd: .byte 0
 xLastMid: .byte 0
 yLastMid: .byte 0
 
-viewRadius: .byte MAX_VIEW_RADIUS
+viewRadius: .byte STARTING_VIEW_RADIUS
+viewRadiusDiff: .byte (MAX_VIEW_RADIUS-STARTING_VIEW_RADIUS)
 viewStartX: .byte 0
 viewStartY: .byte 0
 viewEndX: .byte 0
@@ -33,9 +34,10 @@ adjust_view_radius:
     clc
     adc viewRadius
     sta viewEndY
-    lda viewRadius
-    clc
-    adc viewRadius
+    lda #MAX_VIEW_RADIUS
+    sec
+    sbc viewRadius
+    sta viewRadiusDiff
     rts
 
 set_xy_pos:

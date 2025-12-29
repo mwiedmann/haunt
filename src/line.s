@@ -8,6 +8,8 @@ draw_pixeldata:
     lda bresenham_y1
     sec
     sbc yPosStart
+    clc
+    adc viewRadiusDiff
     tay
     lda #<pixeldata
     sta addr
@@ -29,6 +31,8 @@ draw_pixeldata:
     lda bresenham_x1
     sec
     sbc xPosStart
+    clc
+    adc viewRadiusDiff
     clc
     rol
     clc
