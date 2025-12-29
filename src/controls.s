@@ -47,11 +47,41 @@ check_controls:
 @check_right:
     lda joy_a
     bit #%1 ; Pressing right?
-    bne @done
+    bne @done_move
     lda xMid
     cmp #L0_WIDTH-2
-    beq @done
+    beq @done_move
     inc xMid
+@done_move:
+    lda joy_a
+    eor #$FF
+    and #%10000000 ; Pressing B
+    bne @release_b
+    lda joy_a
+    eor #$FF
+    and #%01000000 ; Pressing Y
+    bne @release_y
+    bra @done
+@release_y:
+    jsr joy1
+    cmp #255 ; Wait for release
+    bne @release_y
+    lda viewRadius
+    cmp #MAX_VIEW_RADIUS
+    beq @done
+    inc viewRadius
+    jsr adjust_view_radius
+    bra @done
+@release_b:
+    jsr joy1
+    cmp #255 ; Wait for release
+    bne @release_b
+    lda viewRadius
+    cmp #1
+    beq @done
+    dec viewRadius
+    jsr adjust_view_radius
+    bra @done
 @done:
     rts
 
