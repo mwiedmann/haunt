@@ -16,6 +16,8 @@ viewStartX: .byte 0
 viewStartY: .byte 0
 viewEndX: .byte 0
 viewEndY: .byte 0
+guyX: .byte 0
+guyY: .byte 0
 
 adjust_view_radius:
     lda #SCREEN_MID_X
@@ -83,9 +85,15 @@ vscroll: .word 0
 
 scroll_layers:
     ; Scroll L0 map
-    stz hscroll
+    lda guyX
+    sta hscroll
+    sta VERA_L1_HSCROLL_L
+    ;stz hscroll
     stz hscroll+1
-    stz vscroll
+    lda guyY
+    sta vscroll
+    sta VERA_L1_VSCROLL_L
+    ;stz vscroll
     stz vscroll+1
     lda yPosStart
     sec

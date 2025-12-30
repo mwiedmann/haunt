@@ -43,14 +43,14 @@ start:
     jsr adjust_view_radius
 main_loop:
     jsr check_controls
-    jsr set_xy_pos
-    lda xMid
-    cmp xLastMid
-    bne @draw_everything
-    lda yMid
-    cmp yLastMid
+    lda moved
     beq @waiting
+    jsr set_xy_pos
 @draw_everything:
+    lda xMid
+    sta xLastMid
+    lda yMid
+    sta yLastMid
     jsr clear_pixeldata
     jsr draw_circle
     jsr copy_pixeldata_to_vram
