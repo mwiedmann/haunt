@@ -45,12 +45,18 @@ main_loop:
     jsr check_controls
     lda moved
     beq @waiting
-    jsr set_xy_pos
+    lda xMid
+    cmp xLastMid
+    bne @draw_everything
+    lda yMid
+    cmp yLastMid
+    beq @waiting
 @draw_everything:
     lda xMid
     sta xLastMid
     lda yMid
     sta yLastMid
+    jsr set_xy_pos
     jsr clear_pixeldata
     jsr draw_circle
     jsr copy_pixeldata_to_vram
