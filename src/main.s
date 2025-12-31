@@ -28,6 +28,7 @@ waitflag: .byte 0
 .include "line.s"
 .include "loading.s"
 .include "controls.s"
+.include "create.s"
 
 loopCount: .byte 0
 
@@ -41,7 +42,8 @@ start:
     jsr create_empty_pixeldata
     jsr clear_l1
     jsr adjust_view_radius
-main_loop:
+    bra @draw_everything ; initial draw
+@main_loop:
     jsr check_controls
     lda moved
     beq @waiting
@@ -71,7 +73,7 @@ main_loop:
     ; cmp #5
     ; bne @waiting
     ; stz loopCount
-    bra main_loop
+    bra @main_loop
     rts
 
 point_to_mapbase_l0:

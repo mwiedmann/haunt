@@ -9,6 +9,8 @@ R1L = $4
 R1H = $5
 R2L = $6
 R2H = $7
+R3L = $8
+R3H = $9
 
 ; Kernal functions
 RDTIM = $FFDE
@@ -16,8 +18,10 @@ JOYGET = $FF56
 SETNAM = $FFBD
 SETLFS = $FFBA
 LOAD = $FFD5
+SAVE = $FEBA
 MEMFILL = $FEE4
 MEMCOPY = $FEE7
+CHROUT = $FFD2
 
 IRQ_FUNC_ADDR = $0314
 
