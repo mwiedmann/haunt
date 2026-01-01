@@ -2,7 +2,7 @@
 LOADING_S = 1
 
 level0_filename: .asciiz "level0.bin"
-rad10_filename: .asciiz "rad10.bin"
+rad10_filename: .asciiz "save.bin"
 
 load_level0:
     lda #10
@@ -21,7 +21,7 @@ load_level0:
     rts
 
 load_rad10:
-    lda #9
+    lda #8
     ldx #<rad10_filename
     ldy #>rad10_filename
     jsr SETNAM

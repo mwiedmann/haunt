@@ -1,5 +1,6 @@
 .zeropage
     addr: .res 2
+    addr2: .res 2
     x1: .byte 0
     y1: .byte 0
     x2: .byte 0
@@ -28,7 +29,7 @@ waitflag: .byte 0
 .include "line.s"
 .include "loading.s"
 .include "controls.s"
-.include "create.s"
+;.include "create.s" ; only for creating linedata
 
 loopCount: .byte 0
 
@@ -60,7 +61,7 @@ start:
     sta yLastMid
     jsr set_xy_pos
     jsr clear_pixeldata
-    jsr draw_circle
+    jsr draw_rad_coords
     jsr copy_pixeldata_to_vram
     jsr scroll_layers
 @waiting:

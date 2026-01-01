@@ -104,71 +104,76 @@ copy_pixeldata_to_vram:
 @done:
     rts
 
-rad_coords: .res 256
+rad_coords: .res 2048
 
-circleId: .byte 0
-
-draw_circle:
+draw_rad_coords:
+    lda #<rad_coords
+    sta addr2
+    lda #>rad_coords
+    sta addr2 + 1
     lda xMid
     sta bresenham_x1
     lda yMid
     sta bresenham_y1
+    ; draw center
     lda #3
     sta pixelTileId
     jsr draw_pixeldata
     lda #0
     sta pixelTileId
-    sta circleId
-    ldx circleId
-    lda rad_coords, x
+@line_loop:
+    lda (addr2)
+    cmp #254
+    beq @end_of_line
     clc
     adc xPosStart
-    sta x2
-    inx
-    lda rad_coords, x
+    sta bresenham_x1
+    ldy #1
+    lda (addr2), y
     clc
     adc yPosStart
-    sta y2
-@draw_line:
-    lda x2
-    sta bresenham_x2
-    lda xMid
-    sta bresenham_x1
-    lda y2
-    sta bresenham_y2
-    lda yMid
     sta bresenham_y1
-    jsr init_bresenham
-@next_pixel:
-    jsr step_bresenham
     jsr draw_pixeldata
-    lda bresenham_x1
-    cmp bresenham_x2
-    bne @next_step
-    lda bresenham_y1
-    cmp bresenham_y2
-    beq @next_line
-@next_step:
+
     jsr check_floor_val
     cmp #0
-    bne @next_line
-    bra @next_pixel
-@next_line:
-    inc circleId
-    inc circleId
-    ldx circleId
-    lda rad_coords, x
+    bne @line_blocked
+
+    lda addr2
+    clc
+    adc #2
+    sta addr2
+    lda addr2 + 1
+    adc #0
+    sta addr2 + 1
+    bra @line_loop
+@end_of_line:
+    ; Move to next line
+    lda addr2
+    clc
+    adc #1
+    sta addr2
+    lda addr2 + 1
+    adc #0
+    sta addr2 + 1
+    lda (addr2)
     cmp #255
     beq @done
+    bra @line_loop
+@line_blocked:
+    ; Skip to next line
+    ; Find 254
+    lda addr2
     clc
-    adc xPosStart
-    sta x2
-    inx
-    lda rad_coords, x
-    clc
-    adc yPosStart
-    sta y2
-    bra @draw_line
+    adc #2
+    sta addr2
+    lda addr2 + 1
+    adc #0
+    sta addr2 + 1
+    lda (addr2)
+    cmp #254
+    beq @end_of_line
+    bra @line_blocked
 @done:
     rts
 
