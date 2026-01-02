@@ -69,11 +69,11 @@ start:
     cmp #0
     beq @waiting
     stz waitflag
-    ; inc loopCount
-    ; lda loopCount
-    ; cmp #5
-    ; bne @waiting
-    ; stz loopCount
+    inc loopCount
+    lda loopCount
+    cmp #5
+    bne @waiting
+    stz loopCount
     bra @main_loop
     rts
 
