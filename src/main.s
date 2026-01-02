@@ -56,6 +56,19 @@ start:
     beq @waiting
 @draw_everything:
     lda xMid
+    sta bresenham_x1
+    lda yMid
+    sta bresenham_y1
+    jsr check_floor_val
+    cmp #0
+    beq @not_blocked
+    ; Blocked...move back
+    lda xLastMid
+    sta xMid
+    lda yLastMid
+    sta yMid
+@not_blocked:
+    lda xMid
     sta xLastMid
     lda yMid
     sta yLastMid
