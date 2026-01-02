@@ -17,8 +17,6 @@ const root = {
   paths: []
 }
 
-tree.set(treeKey(10,10), root)
-
 let i=0;
 let id=1
 
@@ -27,18 +25,18 @@ let lastNode=root
 while (coordInput[i] != 255) {
   const x=coordInput[i]
   const y=coordInput[i+1]
-  const newKey=treeKey(x,y)
 
-  if (!tree.has(newKey)) {
+  const existingNode = lastNode.paths.find(p => p.x===x && p.y===y)
+
+  if (!existingNode) {
     const newNode = {
       id: id++, x, y, paths:[]
     }
 
     lastNode.paths.push(newNode)
-    tree.set(newKey, newNode)
     lastNode=newNode
   } else {
-    lastNode=tree.get(newKey)
+    lastNode=existingNode
   }  
 
   i+=2
