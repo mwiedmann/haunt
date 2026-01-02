@@ -2,7 +2,7 @@
 LOADING_S = 1
 
 level0_filename: .asciiz "level0.bin"
-rad10_filename: .asciiz "save.bin"
+rad10_filename: .asciiz "tree.bin"
 
 load_level0:
     lda #10

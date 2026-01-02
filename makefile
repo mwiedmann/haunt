@@ -26,6 +26,9 @@ map:
 circle:
 	node tools/gimp-circle-convert.js gfx/radius10.data build/RAD10.BIN 10
 
+tree:
+	node tools/line-tree.js build/SAVE.BIN build/TREE.BIN
+	
 zip:
 	cd build && \
 	rm -f haunt.zip && \

@@ -105,6 +105,7 @@ copy_pixeldata_to_vram:
     rts
 
 rad_coords: .res 2048
+tempOffset: .word 0
 
 draw_rad_coords:
     lda #<rad_coords
@@ -123,8 +124,8 @@ draw_rad_coords:
     sta pixelTileId
 @line_loop:
     lda (addr2)
-    cmp #254
-    beq @end_of_line
+    cmp #255
+    beq @done
     clc
     adc xPosStart
     sta bresenham_x1
@@ -141,39 +142,38 @@ draw_rad_coords:
 
     lda addr2
     clc
-    adc #2
+    adc #4
     sta addr2
     lda addr2 + 1
     adc #0
     sta addr2 + 1
-    bra @line_loop
-@end_of_line:
-    ; Move to next line
-    lda addr2
-    clc
-    adc #1
-    sta addr2
-    lda addr2 + 1
-    adc #0
-    sta addr2 + 1
-    lda (addr2)
-    cmp #255
-    beq @done
     bra @line_loop
 @line_blocked:
-    ; Skip to next line
-    ; Find 254
+    ; Skip to next coord
+    ; Get the offset to the next coord
+    ldy #2
+    lda (addr2), Y
+    sta tempOffset
+    ldy #3
+    lda (addr2), Y
+    sta tempOffset+1
+
+    ; if offset is 0, stop drawing, nothing left
+    lda tempOffset
+    bne @offset_ok
+    lda tempOffset
+    bne @offset_ok
+    bra @done
+
+@offset_ok:
     lda addr2
     clc
-    adc #2
+    adc tempOffset ; add offset to next coord
     sta addr2
     lda addr2 + 1
-    adc #0
+    adc tempOffset+1
     sta addr2 + 1
-    lda (addr2)
-    cmp #254
-    beq @end_of_line
-    bra @line_blocked
+    bra @line_loop
 @done:
     rts
 
