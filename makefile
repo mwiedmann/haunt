@@ -29,6 +29,9 @@ circle:
 tree:
 	node tools/line-tree.js build/SAVE.BIN build/TREE.BIN
 	
+calc:
+	node tools/calcall.js
+	
 zip:
 	cd build && \
 	rm -f haunt.zip && \
