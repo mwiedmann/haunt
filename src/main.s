@@ -34,15 +34,19 @@ waitflag: .byte 0
 loopCount: .byte 0
 
 start:
+    ; lda #23
+    ; sta xMid
+    ; lda #17
+    ; sta yMid
+    ; jsr calc_draw_bank
     jsr config
     jsr irq_config
     jsr create_tiles
     jsr load_level0
-    jsr load_rad10
+    jsr load_precalc
     jsr draw_floor
     jsr create_empty_pixeldata
     jsr clear_l1
-    jsr adjust_view_radius
     bra @draw_everything ; initial draw
 @main_loop:
     jsr check_controls
@@ -55,10 +59,6 @@ start:
     cmp yLastMid
     beq @waiting
 @draw_everything:
-    lda xMid
-    sta bresenham_x1
-    lda yMid
-    sta bresenham_y1
     jsr check_floor_val
     cmp #0
     beq @not_blocked
@@ -74,7 +74,8 @@ start:
     sta yLastMid
     jsr set_xy_pos
     jsr clear_pixeldata
-    jsr draw_rad_coords
+    jsr calc_draw_bank
+    jsr draw_bank_to_pixeldata
     jsr copy_pixeldata_to_vram
     jsr scroll_layers
 @waiting:
@@ -82,11 +83,11 @@ start:
     cmp #0
     beq @waiting
     stz waitflag
-    inc loopCount
-    lda loopCount
-    cmp #5
-    bne @waiting
-    stz loopCount
+    ; inc loopCount
+    ; lda loopCount
+    ; cmp #5
+    ; bne @waiting
+    ; stz loopCount
     bra @main_loop
     rts
 

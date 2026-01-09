@@ -3,6 +3,7 @@ PIX_S = 1
 
 pixeldata: .res PIXEL_DATA_SIZE
 emptyPixelData: .res PIXEL_DATA_SIZE
+guyPixelDataAddr: .word 0
 
 create_empty_pixeldata:
     ldy #0
@@ -12,7 +13,7 @@ create_empty_pixeldata:
     lda #>emptyPixelData
     sta addr + 1
 @fill_loop:
-    lda #2
+    lda #3
     sta (addr)
     lda addr
     clc
@@ -37,6 +38,14 @@ create_empty_pixeldata:
     iny
     cpy #(MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1)
     bne @fill_loop
+    ; Calc guy addr in pixeldata
+    lda #<pixeldata
+    clc
+    adc #<GUY_PIXEL_DATA_OFFSET
+    sta guyPixelDataAddr
+    lda #>pixeldata
+    adc #>GUY_PIXEL_DATA_OFFSET
+    sta guyPixelDataAddr+1
     rts
 
 clear_pixeldata:

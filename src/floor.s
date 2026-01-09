@@ -10,7 +10,7 @@ check_floor_val:
     sta addr + 1
     ldy #0
 @next_y:
-    cpy bresenham_y1
+    cpy yMid
     beq @move_x
     iny
     clc
@@ -24,7 +24,7 @@ check_floor_val:
 @move_x:
     clc
     lda addr
-    adc bresenham_x1
+    adc xMid
     sta addr
     lda addr + 1
     adc #0

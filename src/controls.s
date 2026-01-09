@@ -32,6 +32,7 @@ check_controls:
     sbc #GUY_SPEED
     sta guyY
     inc moved
+    bra @check_left
 @check_down:
     lda joy_a
     bit #%100
@@ -50,6 +51,7 @@ check_controls:
     sbc #GUY_SPEED
     sta guyX
     inc moved
+    bra @done_move
 @check_right:
     lda joy_a
     bit #%1 ; Pressing right?
@@ -90,35 +92,6 @@ check_controls:
     sta guyY
     dec yMid
 @check_other:
-    lda joy_a
-    eor #$FF
-    and #%10000000 ; Pressing B
-    bne @release_b
-    lda joy_a
-    eor #$FF
-    and #%01000000 ; Pressing Y
-    bne @release_y
-    bra @done
-@release_y:
-    jsr joy1
-    cmp #255 ; Wait for release
-    bne @release_y
-    lda viewRadius
-    cmp #MAX_VIEW_RADIUS
-    beq @done
-    inc viewRadius
-    jsr adjust_view_radius
-    bra @done
-@release_b:
-    jsr joy1
-    cmp #255 ; Wait for release
-    bne @release_b
-    lda viewRadius
-    cmp #1
-    beq @done
-    dec viewRadius
-    jsr adjust_view_radius
-    bra @done
 @done:
     rts
 

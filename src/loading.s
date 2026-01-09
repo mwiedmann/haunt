@@ -2,7 +2,7 @@
 LOADING_S = 1
 
 level0_filename: .asciiz "level0.bin"
-rad10_filename: .asciiz "tree.bin"
+precalc_filename: .asciiz "precalc.bin"
 
 load_level0:
     lda #10
@@ -20,10 +20,11 @@ load_level0:
     jsr LOAD
     rts
 
-load_rad10:
-    lda #8
-    ldx #<rad10_filename
-    ldy #>rad10_filename
+load_precalc:
+    stz BANK
+    lda #11
+    ldx #<precalc_filename
+    ldy #>precalc_filename
     jsr SETNAM
     ; 0,8,2
     lda #0
@@ -31,8 +32,8 @@ load_rad10:
     ldy #2
     jsr SETLFS
     lda #0
-    ldx #<rad_coords
-    ldy #>rad_coords
+    ldx #<HIRAM
+    ldy #>HIRAM
     jsr LOAD
     rts
 

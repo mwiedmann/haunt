@@ -19,29 +19,6 @@ viewEndY: .byte 0
 guyX: .byte 0
 guyY: .byte 0
 
-adjust_view_radius:
-    lda #SCREEN_MID_X
-    sec
-    sbc viewRadius
-    sta viewStartX
-    lda #SCREEN_MID_Y
-    sec
-    sbc viewRadius
-    sta viewStartY
-    lda #SCREEN_MID_X
-    clc
-    adc viewRadius
-    sta viewEndX
-    lda #SCREEN_MID_Y
-    clc
-    adc viewRadius
-    sta viewEndY
-    lda #MAX_VIEW_RADIUS
-    sec
-    sbc viewRadius
-    sta viewRadiusDiff
-    rts
-
 set_xy_pos:
     lda xMid
     sec
@@ -84,7 +61,6 @@ hscroll: .word 0
 vscroll: .word 0
 
 scroll_layers:
-    ; Scroll L0 map
     lda guyX
     sta hscroll
     sta VERA_L1_HSCROLL_L
@@ -97,7 +73,7 @@ scroll_layers:
     stz vscroll+1
     lda yPosStart
     sec
-    sbc viewStartY
+    sbc #5
     tay
 @next_vscroll:
     cpy #0
@@ -114,7 +90,7 @@ scroll_layers:
 @end_vscroll:
     lda xPosStart
     sec
-    sbc viewStartX
+    sbc #10
     tay
 @next_hscroll:
     cpy #0

@@ -104,77 +104,153 @@ copy_pixeldata_to_vram:
 @done:
     rts
 
-rad_coords: .res 2048
 tempOffset: .word 0
+draw_bank: .byte 0
+draw_offset: .word 0
+tempX: .byte 0
 
-draw_rad_coords:
-    lda #<rad_coords
-    sta addr2
-    lda #>rad_coords
-    sta addr2 + 1
-    lda xMid
-    sta bresenham_x1
-    lda yMid
-    sta bresenham_y1
-    ; draw center
-    lda #3
-    sta pixelTileId
-    jsr draw_pixeldata
-    lda #0
-    sta pixelTileId
-@line_loop:
-    lda (addr2)
-    cmp #255
-    beq @done
+calc_draw_bank:
+    stz tempOffset
+    stz draw_bank
+    stz draw_offset
+    stz draw_offset+1
+    ldx yMid
+@next_y:
+    dex
+    cpx #0
+    beq @x_offset
     clc
-    adc xPosStart
-    sta bresenham_x1
-    ldy #1
-    lda (addr2), y
-    clc
-    adc yPosStart
-    sta bresenham_y1
-    jsr draw_pixeldata
-
-    jsr check_floor_val
-    cmp #0
-    bne @line_blocked
-
-    lda addr2
-    clc
-    adc #4
-    sta addr2
-    lda addr2 + 1
-    adc #0
-    sta addr2 + 1
-    bra @line_loop
-@line_blocked:
-    ; Skip to next coord
-    ; Get the offset to the next coord
-    ldy #2
-    lda (addr2), Y
+    lda tempOffset
+    adc #62
     sta tempOffset
-    ldy #3
-    lda (addr2), Y
+    lda tempOffset+1
+    adc #0
     sta tempOffset+1
-
-    ; if offset is 0, stop drawing, nothing left
-    lda tempOffset
-    bne @offset_ok
-    lda tempOffset
-    bne @offset_ok
-    bra @done
-
-@offset_ok:
-    lda addr2
+    bra @next_y
+@x_offset:
+    lda xMid
+    dec
     clc
-    adc tempOffset ; add offset to next coord
-    sta addr2
-    lda addr2 + 1
-    adc tempOffset+1
-    sta addr2 + 1
-    bra @line_loop
+    adc tempOffset
+    sta tempOffset
+    lda tempOffset+1
+    adc #0
+    sta tempOffset+1
+    ; now find the bank and bank offset
+    ; see if we are <128
+@next_bank:
+    lda tempOffset+1
+    beq @hi_zero
+    ; hi is not zero so we are still >=128
+    bra @sub_128
+@hi_zero:
+    lda tempOffset
+    cmp #128
+    bcs @sub_128
+    ; found bank
+    ; now get memory offset
+@next_mem_offset:
+    lda tempOffset
+    beq @done
+    dec tempOffset
+    clc
+    lda draw_offset
+    adc #64
+    sta draw_offset
+    lda draw_offset+1
+    adc #0
+    sta draw_offset+1
+    bra @next_mem_offset
+@sub_128:
+    ; subtract 128
+    sec
+    lda tempOffset
+    sbc #128
+    sta tempOffset
+    lda tempOffset+1
+    sbc #0
+    sta tempOffset+1
+    inc draw_bank
+    bra @next_bank
 @done:
+    ; draw_bank has bank
+    ; draw_offset has the mem offset in this bank
+    rts
+
+draw_count: .byte 0
+
+; Bank data has a 1 bit per tile representation
+; Turn this into 2 bytes
+draw_bank_to_pixeldata:
+    stz draw_count
+    ; Set bank
+    lda draw_bank
+    sta BANK
+    ; Point addr to Banked RAM
+    lda #<HIRAM
+    sta addr
+    lda #>HIRAM
+    sta addr + 1
+    ; Add the offset for the x/y precalced data
+    clc
+    lda addr
+    adc draw_offset
+    sta addr
+    lda addr+1
+    adc draw_offset+1
+    sta addr+1
+    ; Point to the pixeldata
+    lda #<pixeldata
+    sta addr2
+    lda #>pixeldata
+    sta addr2 + 1
+@next_byte:
+    ; Get a byte then pull out the 8 bits
+    ldy #8
+    lda (addr)
+@next_bit:
+    asl
+    tax ; hold the rest of the bits
+    lda #0
+    adc #0
+    beq @zero_tile
+    lda #2 ; Tile 2 for hiding tiles
+@zero_tile:
+    sta (addr2)
+    clc
+    lda addr2
+    adc #2
+    sta addr2
+    lda addr2+1
+    adc #0
+    sta addr2+1
+    txa ; restore the rest of the bits
+    dey
+    cpy #0
+    bne @next_bit ; 8 bits done
+    ; go to the next byte
+    inc draw_count
+    lda draw_count
+    cmp #56
+    beq @done
+    ; More bytes
+    ; Go to next source byte
+    clc
+    lda addr
+    adc #1
+    sta addr
+    lda addr+1
+    adc #0
+    sta addr+1
+    bra @next_byte
+@done:
+    ; draw guy location
+    lda guyPixelDataAddr
+    sta addr
+    lda guyPixelDataAddr+1
+    sta addr+1
+    lda #3
+    sta (addr)
     rts
 
 .endif

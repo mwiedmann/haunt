@@ -14,6 +14,7 @@ R3H = $9
 
 ; Kernal functions
 RDTIM = $FFDE
+JOYSCAN = $FF53
 JOYGET = $FF56
 SETNAM = $FFBD
 SETLFS = $FFBA
