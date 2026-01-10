@@ -181,6 +181,7 @@ for (let startY = 1; startY <= 62; startY++) {
         };
 
         if (x < 0 || y < 0 || x > 63 || y > 63) {
+          currentByte |= 1;
           adjBitNum();
         } else if (x === startX && y === startY) {
           adjBitNum();
