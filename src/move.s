@@ -5,8 +5,6 @@ xPosStart: .byte 0
 yPosStart: .byte 0
 xMid: .byte STARTX
 yMid: .byte STARTY
-xPosEnd: .byte 0
-yPosEnd: .byte 0
 xLastMid: .byte 0
 yLastMid: .byte 0
 
@@ -23,38 +21,12 @@ set_xy_pos:
     lda xMid
     sec
     sbc viewRadius
-    bmi @set_x_start_zero
     sta xPosStart
-    bra @set_x_end
-@set_x_start_zero:
-    stz xPosStart
-@set_x_end:
-    lda xMid
-    clc
-    adc viewRadius
-    cmp #64
-    bcc @set_x_end_ok
-    lda #63
-@set_x_end_ok:
-    sta xPosEnd
     ; Now Y
     lda yMid
     sec
     sbc viewRadius
-    bmi @set_y_start_zero
     sta yPosStart
-    bra @set_y_end
-@set_y_start_zero:
-    stz yPosStart
-@set_y_end:
-    lda yMid
-    clc
-    adc viewRadius
-    cmp #64
-    bcc @set_y_end_ok
-    lda #63
-@set_y_end_ok:
-    sta yPosEnd
     rts
 
 hscroll: .word 0
@@ -62,49 +34,66 @@ vscroll: .word 0
 
 scroll_layers:
     lda guyX
-    sta hscroll
     sta VERA_L1_HSCROLL_L
-    ;stz hscroll
-    stz hscroll+1
     lda guyY
-    sta vscroll
     sta VERA_L1_VSCROLL_L
-    ;stz vscroll
-    stz vscroll+1
+    ; convert 8 to 16 bit yPosStart with code to handle negatives
     lda yPosStart
+    sta vscroll
+    bmi @neg_y
+    stz vscroll+1
+    bra @y_pos_set
+@neg_y:
+    lda #255
+    sta vscroll+1
+@y_pos_set:
+    ; convert 8 to 16 bit with code to handle negatives
+    lda xPosStart
+    sta hscroll
+    bmi @neg_x
+    stz hscroll+1
+    bra @x_pos_set
+@neg_x:
+    lda #255
+    sta hscroll+1
+@x_pos_set:
+    ; subtract 5 from yPos/vscroll to center it
+    lda vscroll
     sec
     sbc #5
-    tay
+    sta vscroll
+    lda vscroll+1
+    sbc #0
+    sta vscroll+1
+    ; Multiply vscroll by 16 (tile size)
+    ldy #4
 @next_vscroll:
     cpy #0
     beq @end_vscroll
     dey
-    lda vscroll
-    clc
-    adc #16
-    sta vscroll
-    lda vscroll+1
-    adc #0
-    sta vscroll+1
+    asl vscroll
+    rol vscroll+1
     bra @next_vscroll
 @end_vscroll:
-    lda xPosStart
+    ; subtract 10 from xPos/hscroll to center it
+    lda hscroll
     sec
     sbc #10
-    tay
-@next_hscroll:
-    cpy #0
-    beq @set_scroll
-    dey
-    lda hscroll
-    clc
-    adc #16
     sta hscroll
     lda hscroll+1
-    adc #0
+    sbc #0
     sta hscroll+1
+    ; Multiply hscroll by 16 (tile size)
+    ldy #4
+@next_hscroll:
+    cpy #0
+    beq @end_hscroll
+    dey
+    asl hscroll
+    rol hscroll+1
     bra @next_hscroll
-@set_scroll:
+@end_hscroll:
+    ; TODO: add guy position
     lda hscroll
     sta VERA_L0_HSCROLL_L
     lda hscroll+1

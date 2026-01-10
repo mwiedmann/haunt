@@ -29,16 +29,10 @@ waitflag: .byte 0
 .include "line.s"
 .include "loading.s"
 .include "controls.s"
-;.include "create.s" ; only for creating linedata
 
 loopCount: .byte 0
 
 start:
-    ; lda #23
-    ; sta xMid
-    ; lda #17
-    ; sta yMid
-    ; jsr calc_draw_bank
     jsr config
     jsr irq_config
     jsr create_tiles
@@ -76,18 +70,18 @@ start:
     jsr clear_pixeldata
     jsr calc_draw_bank
     jsr draw_bank_to_pixeldata
-    jsr copy_pixeldata_to_vram
-    jsr scroll_layers
 @waiting:
     lda waitflag
     cmp #0
     beq @waiting
     stz waitflag
-    ; inc loopCount
-    ; lda loopCount
-    ; cmp #5
-    ; bne @waiting
-    ; stz loopCount
+    inc loopCount
+    lda loopCount
+    cmp #3
+    bne @waiting
+    stz loopCount
+    jsr copy_pixeldata_to_vram
+    jsr scroll_layers
     bra @main_loop
     rts
 

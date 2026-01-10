@@ -3,48 +3,6 @@ LINE_S = 1
 
 pixelTileId: .byte 0
 pixel_spot: .word 0
-
-draw_pixeldata:
-    lda bresenham_y1
-    sec
-    sbc yPosStart
-    clc
-    adc viewRadiusDiff
-    tay
-    lda #<pixeldata
-    sta addr
-    lda #>pixeldata
-    sta addr + 1
-@draw_y:
-    cpy #0
-    beq @draw_x
-    lda addr
-    clc
-    adc #((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
-    sta addr
-    lda addr + 1
-    adc #0
-    sta addr + 1
-    dey
-    bra @draw_y
-@draw_x:
-    lda bresenham_x1
-    sec
-    sbc xPosStart
-    clc
-    adc viewRadiusDiff
-    clc
-    rol
-    clc
-    adc addr
-    sta addr
-    lda addr + 1
-    adc #0
-    sta addr + 1
-    lda pixelTileId
-    sta (addr)
-    rts
-
 row_count: .byte 0
 
 copy_pixeldata_to_vram:
@@ -111,9 +69,10 @@ tempX: .byte 0
 
 calc_draw_bank:
     stz tempOffset
-    stz draw_bank
     stz draw_offset
     stz draw_offset+1
+    lda #1
+    sta draw_bank
     ldx yMid
 @next_y:
     dex

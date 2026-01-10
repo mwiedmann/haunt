@@ -21,7 +21,8 @@ load_level0:
     rts
 
 load_precalc:
-    stz BANK
+    lda #1
+    sta BANK
     lda #11
     ldx #<precalc_filename
     ldy #>precalc_filename
