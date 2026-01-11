@@ -4,11 +4,16 @@ const rawText = fs.readFileSync("haunt.ldtk");
 const d = JSON.parse(rawText);
 
 const createLevelCode = (level) => {
-  let data = []
-  level.layerInstances[0].intGridCsv.forEach(tileIndex => data.push(tileIndex - 1))
-  return data
+  let floor = []
+  let mapbase = []
+  level.layerInstances[0].gridTiles.forEach(tile => {
+    floor.push(tile.t <24 ? 1 : 0)
+    mapbase.push(tile.t, 0)
+  })
+  return { floor, mapbase }
 };
 
-const mapBaseData = createLevelCode(d.levels[0]);
+const data = createLevelCode(d.levels[0]);
 
-fs.writeFileSync(`build/LEVEL0.BIN`, new Uint8Array([...mapBaseData]), "binary");
+fs.writeFileSync(`build/L0FLOOR.BIN`, new Uint8Array([...data.floor]), "binary");
+fs.writeFileSync(`build/L0MAP.BIN`, new Uint8Array([...data.mapbase]), "binary");

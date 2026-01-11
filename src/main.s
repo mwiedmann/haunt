@@ -21,7 +21,6 @@ waitflag: .byte 0
 
 .include "config.s"
 .include "irq.s"
-.include "tiles.s"
 .include "bres.s"
 .include "pix.s"
 .include "move.s"
@@ -29,16 +28,17 @@ waitflag: .byte 0
 .include "line.s"
 .include "loading.s"
 .include "controls.s"
+.include "pal.s"
 
 loopCount: .byte 0
 
 start:
     jsr config
     jsr irq_config
-    jsr create_tiles
+    jsr load_pal
+    jsr load_tiles
     jsr load_level0
     jsr load_precalc
-    jsr draw_floor
     jsr create_empty_pixeldata
     jsr clear_l1
     bra @draw_everything ; initial draw
@@ -112,40 +112,6 @@ point_to_tilebase_l1:
     sta VERA_ADDR_HI_SET
     rts
 
-floorId: .byte 0
-floorCount: .byte 0
-
-draw_floor:
-    lda #<floor
-    sta addr
-    lda #>floor
-    sta addr + 1
-    jsr point_to_mapbase_l0
-    ldx #0
-    ldy #0
-@draw_floor:
-    lda (addr)
-    sta VERA_DATA0
-    lda #0
-    sta VERA_DATA0
-    ; Increment floor address
-    lda addr
-    clc
-    adc #1
-    sta addr
-    lda addr + 1
-    adc #0
-    sta addr + 1
-    ; Increment x,y index
-    inx
-    cpx #64
-    bne @draw_floor
-    ldx #0
-    iny
-    cpy #64
-    bne @draw_floor
-    rts
-
 clear_l1:
     jsr point_to_mapbase_l1
     lda #<VERA_DATA0
@@ -156,6 +122,6 @@ clear_l1:
     sta R1L
     lda #>L1_MAPBASE_SIZE
     sta R1H
-    lda #2
+    lda #16
     jsr MEMFILL
     rts

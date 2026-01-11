@@ -173,7 +173,7 @@ draw_bank_to_pixeldata:
     lda #0
     adc #0
     beq @zero_tile
-    lda #2 ; Tile 2 for hiding tiles
+    lda #16 ; Tile 2 for hiding tiles
 @zero_tile:
     sta (addr2)
     clc
@@ -208,7 +208,7 @@ draw_bank_to_pixeldata:
     sta addr
     lda guyPixelDataAddr+1
     sta addr+1
-    lda #3
+    lda #17
     sta (addr)
     rts
 

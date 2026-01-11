@@ -18,16 +18,13 @@ debug:
 	$(EMU) -prg HAUNT.PRG -debug
 
 pal:
-	node tools/gimp-pal-convert.js gfx/allgrids.data.pal build/GRIDPAL.BIN
+	node tools/gimp-pal-convert.js gfx/tiles.data.pal build/PAL.BIN
+
+img:
+	node tools/gimp-img-convert.js gfx/tiles.data build/TILES.BIN 16 16 8 0 8 6
 
 map:
 	node tools/ldtk-convert.js
-	
-circle:
-	node tools/gimp-circle-convert.js gfx/radius10.data build/RAD10.BIN 10
-
-tree:
-	node tools/line-tree.js build/SAVE.BIN build/TREE.BIN
 	
 calc:
 	node tools/calcall.js

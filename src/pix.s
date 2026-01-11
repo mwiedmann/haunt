@@ -13,7 +13,7 @@ create_empty_pixeldata:
     lda #>emptyPixelData
     sta addr + 1
 @fill_loop:
-    lda #3
+    lda #16
     sta (addr)
     lda addr
     clc

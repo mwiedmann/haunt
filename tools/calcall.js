@@ -4,11 +4,11 @@ const rawText = fs.readFileSync("haunt.ldtk");
 const d = JSON.parse(rawText);
 
 const createLevelCode = (level) => {
-  let data = [];
-  level.layerInstances[0].intGridCsv.forEach((tileIndex) =>
-    data.push(tileIndex - 1)
-  );
-  return data;
+  let floor = []
+  level.layerInstances[0].gridTiles.forEach(tile => {
+    floor.push(tile.t <24 ? 1 : 0)
+  })
+  return floor
 };
 
 const mapBaseData = createLevelCode(d.levels[0]);

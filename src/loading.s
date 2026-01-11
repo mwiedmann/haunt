@@ -1,13 +1,15 @@
 .ifndef LOADING_S
 LOADING_S = 1
 
-level0_filename: .asciiz "level0.bin"
+l0_floor_filename: .asciiz "l0floor.bin"
+l0_mapbase_filename: .asciiz "l0map.bin"
 precalc_filename: .asciiz "precalc.bin"
+tiles_filename: .asciiz "tiles.bin"
 
 load_level0:
-    lda #10
-    ldx #<level0_filename
-    ldy #>level0_filename
+    lda #11
+    ldx #<l0_floor_filename
+    ldy #>l0_floor_filename
     jsr SETNAM
     ; 0,8,2
     lda #0
@@ -17,6 +19,19 @@ load_level0:
     lda #0
     ldx #<floor
     ldy #>floor
+    jsr LOAD
+    lda #9
+    ldx #<l0_mapbase_filename
+    ldy #>l0_mapbase_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #2
+    ldx #<MAPBASE_L0_ADDR
+    ldy #>MAPBASE_L0_ADDR
     jsr LOAD
     rts
 
@@ -35,6 +50,22 @@ load_precalc:
     lda #0
     ldx #<HIRAM
     ldy #>HIRAM
+    jsr LOAD
+    rts
+
+load_tiles:
+    lda #9
+    ldx #<tiles_filename
+    ldy #>tiles_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #2 ; VRAM 1st bank
+    ldx #<TILEBASE_L0_ADDR
+    ldy #>TILEBASE_L0_ADDR
     jsr LOAD
     rts
 
