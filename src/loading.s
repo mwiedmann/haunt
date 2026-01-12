@@ -7,11 +7,11 @@ precalc_filename: .asciiz "precalc.bin"
 tiles_filename: .asciiz "tiles.bin"
 
 load_level0:
+    ; Floor data
     lda #11
     ldx #<l0_floor_filename
     ldy #>l0_floor_filename
     jsr SETNAM
-    ; 0,8,2
     lda #0
     ldx #8
     ldy #2
@@ -20,19 +20,43 @@ load_level0:
     ldx #<floor
     ldy #>floor
     jsr LOAD
+    ; Level data into banked ram
+    lda #LEVEL_BANK
+    sta BANK
     lda #9
     ldx #<l0_mapbase_filename
     ldy #>l0_mapbase_filename
     jsr SETNAM
-    ; 0,8,2
     lda #0
     ldx #8
     ldy #2
     jsr SETLFS
-    lda #2
-    ldx #<MAPBASE_L0_ADDR
-    ldy #>MAPBASE_L0_ADDR
+    lda #0
+    ldx #<HIRAM
+    ldy #>HIRAM
     jsr LOAD
+    ; Copy the level from banked ram to the L0 MAPBASE
+    lda #LEVEL_BANK
+    sta BANK
+    lda #<HIRAM
+    sta R0L
+    lda #>HIRAM
+    sta R0H
+    lda #<MAPBASE_L0_ADDR
+    sta VERA_ADDR_LO
+    lda #>MAPBASE_L0_ADDR
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    lda #<VERA_DATA0
+    sta R1L
+    lda #>VERA_DATA0
+    sta R1H
+    lda #<L0_MAPBASE_SIZE
+    sta R2L
+    lda #>L0_MAPBASE_SIZE
+    sta R2H
+    jsr MEMCOPY
     rts
 
 load_precalc:

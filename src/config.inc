@@ -44,4 +44,6 @@ STARTY = 14
 
 GUY_SPEED = 16
 
+LEVEL_BANK=40
+
 .endif
