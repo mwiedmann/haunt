@@ -39,7 +39,7 @@ start:
     jsr load_tiles
     jsr load_level0
     jsr load_precalc
-    jsr create_empty_pixeldata
+    jsr set_guy_pixeldata
     jsr clear_l1
     bra @draw_everything ; initial draw
 @main_loop:
@@ -67,7 +67,6 @@ start:
     lda yMid
     sta yLastMid
     jsr set_xy_pos
-    jsr clear_pixeldata
     jsr calc_draw_bank
     jsr draw_bank_to_pixeldata
 @waiting:

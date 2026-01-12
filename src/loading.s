@@ -35,6 +35,11 @@ load_level0:
     ldx #<HIRAM
     ldy #>HIRAM
     jsr LOAD
+    ; load L0 MAPBASE
+    jsr copy_level_to_vram
+    rts
+
+copy_level_to_vram:
     ; Copy the level from banked ram to the L0 MAPBASE
     lda #LEVEL_BANK
     sta BANK
