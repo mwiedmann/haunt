@@ -35,8 +35,6 @@ load_level0:
     ldx #<HIRAM
     ldy #>HIRAM
     jsr LOAD
-    ; load L0 MAPBASE
-    jsr copy_level_to_vram
     rts
 
 copy_level_to_vram:

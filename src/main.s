@@ -79,6 +79,7 @@ start:
     cmp #3
     bne @waiting
     stz loopCount
+    jsr copy_level_to_vram
     jsr copy_pixeldata_to_vram
     jsr scroll_layers
     bra @main_loop
