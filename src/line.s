@@ -1,27 +1,32 @@
 .ifndef LINE_S
 LINE_S = 1
 
-pixelTileId: .byte 0
-pixel_spot: .word 0
+yOffset: .word 0
+xOffset: .word 0
 row_count: .byte 0
 
-copy_pixeldata_to_vram:
+copy_map_to_vram:
+    lda #LEVEL_BANK
+    sta BANK
+    lda mapbase_addr
+    sta addr2
+    lda mapbase_addr+1
+    sta addr2+1
     lda #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)
     sta row_count
-    lda #<VISIBLE_AREA_L1_MAPBASE_ADDR
-    sta pixel_spot
-    lda #>VISIBLE_AREA_L1_MAPBASE_ADDR
-    sta pixel_spot+1
     ; Set the pixeldata source address
-    lda #<pixeldata
+    lda #<HIRAM
+    clc
+    adc addr2
     sta addr
-    lda #>pixeldata
+    lda #>HIRAM
+    adc addr2+1
     sta addr + 1
     ; Set VRAM address
 @next_row:
-    lda pixel_spot
+    lda addr2
     sta VERA_ADDR_LO
-    lda pixel_spot+1
+    lda addr2+1
     sta VERA_ADDR_MID
     lda #VERA_ADDR_HI_INC_BITS
     sta VERA_ADDR_HI_SET
@@ -43,21 +48,61 @@ copy_pixeldata_to_vram:
     cmp #0
     beq @done
     ; Increment pixeldata address to next row
-    lda pixel_spot
+    lda addr2
     clc
     adc #128
-    sta pixel_spot
-    lda pixel_spot+1
+    sta addr2
+    lda addr2+1
     adc #0
-    sta pixel_spot+1
+    sta addr2+1
     ; change the pixeldata source address
     lda addr
     clc
-    adc #((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
+    adc #128
     sta addr
-    lda addr + 1
+    lda addr+1
     adc #0
-    sta addr + 1
+    sta addr+1
+    bra @next_row
+@done:
+    rts
+
+setup_l1_view:
+    lda #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)
+    sta row_count
+    lda #<VISIBLE_AREA_L1_MAPBASE_ADDR
+    sta addr
+    lda #>VISIBLE_AREA_L1_MAPBASE_ADDR
+    sta addr+1
+@next_row:
+    lda addr
+    sta VERA_ADDR_LO
+    lda addr+1
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    lda #<VERA_DATA0
+    sta R0L
+    lda #>VERA_DATA0
+    sta R0H
+    lda #<((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
+    sta R1L
+    lda #>((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
+    sta R1H
+    lda #0
+    jsr MEMFILL
+    dec row_count
+    lda row_count
+    cmp #0
+    beq @done
+    ; Increment pixeldata address to next row
+    lda addr
+    clc
+    adc #128
+    sta addr
+    lda addr+1
+    adc #0
+    sta addr+1
     bra @next_row
 @done:
     rts
@@ -65,7 +110,6 @@ copy_pixeldata_to_vram:
 tempOffset: .word 0
 draw_bank: .byte 0
 draw_offset: .word 0
-tempX: .byte 0
 
 calc_draw_bank:
     stz tempOffset
@@ -137,10 +181,98 @@ calc_draw_bank:
     rts
 
 draw_count: .byte 0
+write_count: .byte 0
 
 ; Bank data has a 1 bit per tile representation
 ; Turn this into 2 bytes
-draw_bank_to_pixeldata:
+draw_bank_to_vram:
+    lda yPosStart
+    sta yOffset
+    stz yOffset+1
+    bmi @neg_y_start
+    ; Positive y_start
+    ; Multiply by 128 to get start pos
+    lda #<MAPBASE_L0_ADDR
+    sta mapbase_addr
+    lda #>MAPBASE_L0_ADDR
+    sta mapbase_addr+1
+    ldy #7
+@pos_y_start:
+    cpy #0
+    beq @end_pos_y_start
+    dey
+    asl yOffset
+    rol yOffset+1
+    bra @pos_y_start
+@end_pos_y_start:
+    lda mapbase_addr
+    clc
+    adc yOffset
+    sta mapbase_addr
+    lda mapbase_addr+1
+    adc yOffset+1
+    sta mapbase_addr+1
+    bra @check_x_offset
+@neg_y_start:
+    ; y is negative so wrap around to row 63
+    ; -9 is max
+    lda #<(MAPBASE_L0_ADDR+L0_MAPBASE_SIZE)
+    sta mapbase_addr
+    lda #>(MAPBASE_L0_ADDR+L0_MAPBASE_SIZE)
+    sta mapbase_addr+1
+    lda yPosStart
+    clc
+    eor #255
+    adc #1
+    sta yOffset
+    stz yOffset+1
+    ldy #7
+@neg_y_calc:
+    cpy #0
+    beq @end_neg_y_start
+    dey
+    asl yOffset
+    rol yOffset+1
+    bra @neg_y_calc
+@end_neg_y_start:
+    lda mapbase_addr
+    sec
+    sbc yOffset
+    sta mapbase_addr
+    lda mapbase_addr+1
+    sbc yOffset+1
+    sta mapbase_addr+1
+@check_x_offset:
+    ; mapbase_addr should be pointing to correct y location
+    ; adjust for x
+    lda xPosStart
+    bmi @neg_x_start
+    asl
+    sta xOffset
+    lda mapbase_addr
+    clc
+    adc xOffset
+    sta mapbase_addr
+    lda mapbase_addr+1
+    adc xOffset+1
+    sta mapbase_addr+1
+    bra @end_x_pos
+@neg_x_start:
+    ; -9 max
+    clc
+    eor #255
+    adc #1
+    asl
+    sta xOffset
+    lda mapbase_addr
+    sec
+    sbc xOffset
+    sta mapbase_addr
+    lda mapbase_addr+1
+    sbc #0
+    sta mapbase_addr+1
+@end_x_pos:
+    jsr copy_map_to_vram
     stz draw_count
     ; Set bank
     lda draw_bank
@@ -158,11 +290,14 @@ draw_bank_to_pixeldata:
     lda addr+1
     adc draw_offset+1
     sta addr+1
-    ; Point to the pixeldata
-    lda #<pixeldata
-    sta addr2
-    lda #>pixeldata
-    sta addr2 + 1
+    ; Point to the mapbase
+    lda mapbase_addr
+    sta VERA_ADDR_LO
+    lda mapbase_addr+1
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC2_BITS
+    sta VERA_ADDR_HI_SET
+    stz write_count
 @next_byte:
     ; Get a byte then pull out the 8 bits
     ldy #8
@@ -173,9 +308,30 @@ draw_bank_to_pixeldata:
     lda #0
     adc #0
     beq @zero_tile
-    lda #16 ; Tile 2 for hiding tiles
+    lda #16 ; Tile 16 for hiding tiles
+    sta VERA_DATA0
+    bra @move_addr
 @zero_tile:
-    sta (addr2)
+    lda VERA_DATA0 ; Skip overwriting this tile...just read it to advance
+@move_addr:
+    inc write_count
+    lda write_count
+    cmp #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)
+    bne @continue_writes
+    ; end of mapbase row, go to next row
+    stz write_count
+    lda mapbase_addr
+    clc
+    adc #128
+    sta mapbase_addr
+    lda mapbase_addr+1
+    adc #0
+    sta mapbase_addr+1
+    lda mapbase_addr
+    sta VERA_ADDR_LO
+    lda mapbase_addr+1
+    sta VERA_ADDR_MID
+@continue_writes:
     clc
     lda addr2
     adc #2
@@ -204,12 +360,12 @@ draw_bank_to_pixeldata:
     bra @next_byte
 @done:
     ; draw guy location
-    lda guyPixelDataAddr
-    sta addr
-    lda guyPixelDataAddr+1
-    sta addr+1
-    lda #17
-    sta (addr)
+    ; lda guyPixelDataAddr
+    ; sta addr
+    ; lda guyPixelDataAddr+1
+    ; sta addr+1
+    ; lda #17
+    ; sta (addr)
     rts
 
 .endif

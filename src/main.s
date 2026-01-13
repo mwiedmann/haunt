@@ -1,6 +1,7 @@
 .zeropage
     addr: .res 2
     addr2: .res 2
+    mapbase_addr: .res 2
     x1: .byte 0
     y1: .byte 0
     x2: .byte 0
@@ -22,7 +23,6 @@ waitflag: .byte 0
 .include "config.s"
 .include "irq.s"
 .include "bres.s"
-.include "pix.s"
 .include "move.s"
 .include "floor.s"
 .include "line.s"
@@ -39,19 +39,20 @@ start:
     jsr load_tiles
     jsr load_level0
     jsr load_precalc
-    jsr set_guy_pixeldata
     jsr clear_l1
+    jsr copy_level_to_vram
+    jsr setup_l1_view
     bra @draw_everything ; initial draw
 @main_loop:
     jsr check_controls
     lda moved
-    beq @waiting
+    beq @main_loop
     lda xMid
     cmp xLastMid
     bne @draw_everything
     lda yMid
     cmp yLastMid
-    beq @waiting
+    beq @main_loop
 @draw_everything:
     jsr check_floor_val
     cmp #0
@@ -68,7 +69,6 @@ start:
     sta yLastMid
     jsr set_xy_pos
     jsr calc_draw_bank
-    jsr draw_bank_to_pixeldata
 @waiting:
     lda waitflag
     cmp #0
@@ -79,8 +79,7 @@ start:
     cmp #3
     bne @waiting
     stz loopCount
-    jsr copy_level_to_vram
-    jsr copy_pixeldata_to_vram
+    jsr draw_bank_to_vram
     jsr scroll_layers
     bra @main_loop
     rts

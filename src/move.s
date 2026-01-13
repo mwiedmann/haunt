@@ -33,10 +33,6 @@ hscroll: .word 0
 vscroll: .word 0
 
 scroll_layers:
-    lda guyX
-    sta VERA_L1_HSCROLL_L
-    lda guyY
-    sta VERA_L1_VSCROLL_L
     ; convert 8 to 16 bit yPosStart with code to handle negatives
     lda yPosStart
     sta vscroll
