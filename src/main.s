@@ -2,10 +2,14 @@
     addr: .res 2
     addr2: .res 2
     mapbase_addr: .res 2
-    x1: .byte 0
-    y1: .byte 0
-    x2: .byte 0
-    y2: .byte 0
+    yOffset: .word 0
+    xOffset: .word 0
+    row_count: .byte 0
+    tempOffset: .word 0
+    draw_bank: .byte 0
+    draw_offset: .word 0
+    draw_count: .byte 0
+    write_count: .byte 0
 
 .segment "STARTUP"
     jmp start
@@ -25,7 +29,8 @@ waitflag: .byte 0
 .include "bres.s"
 .include "move.s"
 .include "floor.s"
-.include "line.s"
+.include "draw.s"
+.include "view.s"
 .include "loading.s"
 .include "controls.s"
 .include "pal.s"
@@ -111,16 +116,3 @@ point_to_tilebase_l1:
     sta VERA_ADDR_HI_SET
     rts
 
-clear_l1:
-    jsr point_to_mapbase_l1
-    lda #<VERA_DATA0
-    sta R0L
-    lda #>VERA_DATA0
-    sta R0H
-    lda #<L1_MAPBASE_SIZE
-    sta R1L
-    lda #>L1_MAPBASE_SIZE
-    sta R1H
-    lda #16
-    jsr MEMFILL
-    rts
