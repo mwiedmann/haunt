@@ -10,6 +10,7 @@
     draw_offset: .word 0
     draw_count: .byte 0
     write_count: .byte 0
+    tile_count: .byte 0
 
 .segment "STARTUP"
     jmp start

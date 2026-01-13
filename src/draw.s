@@ -1,6 +1,8 @@
 .ifndef LINE_S
 LINE_S = 1
 
+; Copy the area of the map we are about to view
+; This gives us a fresh copy of the tiles that we can then hide as needed
 copy_map_to_vram:
     lda #LEVEL_BANK
     sta BANK
@@ -247,11 +249,13 @@ draw_bank_to_vram:
     lda #VERA_ADDR_HI_INC2_BITS
     sta VERA_ADDR_HI_SET
     stz write_count
+    stz tile_count
 @next_byte:
     ; Get a byte then pull out the 8 bits
     ldy #8
     lda (addr)
 @next_bit:
+    inc tile_count
     asl
     tax ; hold the rest of the bits
     lda #0
@@ -261,6 +265,13 @@ draw_bank_to_vram:
     sta VERA_DATA0
     bra @move_addr
 @zero_tile:
+    lda tile_count
+    cmp #221
+    bne @no_guy
+    lda #17
+    sta VERA_DATA0
+    bra @move_addr
+@no_guy:
     lda VERA_DATA0 ; Skip overwriting this tile...just read it to advance
 @move_addr:
     inc write_count
