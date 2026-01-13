@@ -89,7 +89,20 @@ scroll_layers:
     rol hscroll+1
     bra @next_hscroll
 @end_hscroll:
-    ; TODO: add guy position
+    lda hscroll
+    clc
+    adc guyX
+    sta hscroll
+    lda hscroll+1
+    adc #0
+    sta hscroll+1
+    lda vscroll
+    clc
+    adc guyY
+    sta vscroll
+    lda vscroll+1
+    adc #0
+    sta vscroll+1
     lda hscroll
     sta VERA_L0_HSCROLL_L
     lda hscroll+1

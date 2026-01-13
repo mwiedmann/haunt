@@ -58,7 +58,7 @@ start:
     bne @draw_everything
     lda yMid
     cmp yLastMid
-    beq @main_loop
+    beq @scroll_only
 @draw_everything:
     jsr check_floor_val
     cmp #0
@@ -80,12 +80,24 @@ start:
     cmp #0
     beq @waiting
     stz waitflag
-    inc loopCount
-    lda loopCount
-    cmp #3
-    bne @waiting
-    stz loopCount
+    ; inc loopCount
+    ; lda loopCount
+    ; cmp #2
+    ; bne @waiting
+    ; stz loopCount
     jsr scroll_layers
     jsr draw_bank_to_vram
+    bra @main_loop
+@scroll_only:
+    lda waitflag
+    cmp #0
+    beq @scroll_only
+    stz waitflag
+    ; inc loopCount
+    ; lda loopCount
+    ; cmp #2
+    ; bne @scroll_only
+    ; stz loopCount
+    jsr scroll_layers
     bra @main_loop
     rts
