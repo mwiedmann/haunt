@@ -85,35 +85,7 @@ start:
     cmp #3
     bne @waiting
     stz loopCount
-    jsr draw_bank_to_vram
     jsr scroll_layers
+    jsr draw_bank_to_vram
     bra @main_loop
     rts
-
-point_to_mapbase_l0:
-    lda #<MAPBASE_L0_ADDR
-    sta VERA_ADDR_LO
-    lda #>MAPBASE_L0_ADDR
-    sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC_BITS
-    sta VERA_ADDR_HI_SET
-    rts
-
-point_to_mapbase_l1:
-    lda #<MAPBASE_L1_ADDR
-    sta VERA_ADDR_LO
-    lda #>MAPBASE_L1_ADDR
-    sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC_BITS
-    sta VERA_ADDR_HI_SET
-    rts
-
-point_to_tilebase_l1:
-    lda #<TILEBASE_L1_ADDR
-    sta VERA_ADDR_LO
-    lda #>TILEBASE_L1_ADDR
-    sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC_BITS
-    sta VERA_ADDR_HI_SET
-    rts
-

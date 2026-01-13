@@ -1,6 +1,15 @@
 .ifndef VIEW_S
 VIEW_S = 1
 
+point_to_mapbase_l1:
+    lda #<MAPBASE_L1_ADDR
+    sta VERA_ADDR_LO
+    lda #>MAPBASE_L1_ADDR
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    rts
+    
 clear_l1:
     jsr point_to_mapbase_l1
     lda #<VERA_DATA0
@@ -54,5 +63,5 @@ setup_l1_view:
     bra @next_row
 @done:
     rts
-    
+
 .endif

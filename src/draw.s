@@ -53,6 +53,7 @@ copy_map_to_vram:
     lda addr2+1
     adc #0
     sta addr2+1
+    jsr check_vram_copy_wrap
     ; change the pixeldata source address
     lda addr
     clc
@@ -287,6 +288,7 @@ draw_bank_to_vram:
     lda mapbase_addr+1
     adc #0
     sta mapbase_addr+1
+    jsr check_mb_wrap ; See if mb needs to wrap back to beginning
     lda mapbase_addr
     sta VERA_ADDR_LO
     lda mapbase_addr+1
@@ -326,6 +328,59 @@ draw_bank_to_vram:
     ; sta addr+1
     ; lda #17
     ; sta (addr)
+    rts
+
+check_mb_wrap:
+    ; See if mapbase needs to wrap back around
+    lda mapbase_addr+1
+    cmp #>(MAPBASE_L0_ADDR+L0_MAPBASE_SIZE)
+    beq @check_mb_low
+    bcs @mb_wrap
+    bra @mb_ok
+@check_mb_low:
+    lda mapbase_addr
+    cmp #<(MAPBASE_L0_ADDR+L0_MAPBASE_SIZE)
+    bcs @mb_wrap
+    bra @mb_ok
+@mb_wrap:
+    lda mapbase_addr
+    sec
+    sbc #<L0_MAPBASE_SIZE
+    sta mapbase_addr
+    lda mapbase_addr+1
+    sbc #>L0_MAPBASE_SIZE
+    sta mapbase_addr+1
+@mb_ok:
+    rts
+
+check_vram_copy_wrap:
+    ; See if mapbase needs to wrap back around
+    lda addr2+1
+    cmp #>(MAPBASE_L0_ADDR+L0_MAPBASE_SIZE)
+    beq @check_mb_low
+    bcs @mb_wrap
+    bra @mb_ok
+@check_mb_low:
+    lda addr2
+    cmp #<(MAPBASE_L0_ADDR+L0_MAPBASE_SIZE)
+    bcs @mb_wrap
+    bra @mb_ok
+@mb_wrap:
+    lda addr2
+    sec
+    sbc #<L0_MAPBASE_SIZE
+    sta addr2
+    lda addr2+1
+    sbc #>L0_MAPBASE_SIZE
+    sta addr2+1
+    lda addr
+    sec
+    sbc #<L0_MAPBASE_SIZE
+    sta addr
+    lda addr+1
+    sbc #>L0_MAPBASE_SIZE
+    sta addr+1
+@mb_ok:
     rts
 
 .endif
