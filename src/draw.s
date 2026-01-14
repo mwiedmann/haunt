@@ -1,11 +1,40 @@
 .ifndef LINE_S
 LINE_S = 1
 
+temp_bank: .byte 0
+
+check_bank_address:
+    ; subtract 8192 and increase bank each time we can
+    ; We have the high byte loaded, see if it is >=8192
+@check_bank_address:
+    lda addr+1
+    cmp #>(HIRAM+8192)
+    bcs @next_bank
+    bra @done
+@next_bank:
+    ; subtract 8192 from the address and inc the bank
+    lda addr
+    sec
+    sbc #<8192
+    sta addr
+    lda addr+1
+    sbc #>8192
+    sta addr+1
+    inc temp_bank
+    bra @check_bank_address
+@done:
+    lda temp_bank
+    sta BANK
+    rts
+
 ; Copy the area of the map we are about to view
 ; This gives us a fresh copy of the tiles that we can then hide as needed
 copy_map_to_vram:
     lda #LEVEL_BANK
-    sta BANK
+    sta temp_bank
+    ; Map is 32k, across 4 banks
+    ; Need to get the starting bank, then advance bank as address moves to next bank
+    ; This part only works because mapbase starts at address 0
     lda mapbase_addr
     sta addr2
     lda mapbase_addr+1
@@ -20,6 +49,7 @@ copy_map_to_vram:
     lda #>HIRAM
     adc addr2+1
     sta addr + 1
+    jsr check_bank_address
     ; Set VRAM address
 @next_row:
     lda addr2
@@ -45,26 +75,28 @@ copy_map_to_vram:
     lda row_count
     cmp #0
     beq @done
-    ; Increment pixeldata address to next row
+    ; Increment mapbase address to next row
     lda addr2
     clc
-    adc #128
+    adc #<L0_MB_ROW_SIZE
     sta addr2
     lda addr2+1
-    adc #0
+    adc #>L0_MB_ROW_SIZE
     sta addr2+1
     ; change the pixeldata source address
     lda addr
     clc
-    adc #128
+    adc #<L0_MB_ROW_SIZE
     sta addr
     lda addr+1
-    adc #0
+    adc #>L0_MB_ROW_SIZE
     sta addr+1
+    jsr check_bank_address
     bra @next_row
 @done:
     rts
 
+; This is the precalced view data
 calc_draw_bank:
     stz tempOffset
     stz draw_offset
@@ -137,17 +169,15 @@ calc_draw_bank:
 ; Bank data has a 1 bit per tile representation
 ; Turn this into 2 bytes
 draw_bank_to_vram:
-    lda yPosStart
+    lda yPosStartAdj
     sta yOffset
     stz yOffset+1
-    bmi @neg_y_start
-    ; Positive y_start
-    ; Multiply by 128 to get start pos
+    ; Multiply by 256 to get start pos
     lda #<MAPBASE_L0_ADDR
     sta mapbase_addr
     lda #>MAPBASE_L0_ADDR
     sta mapbase_addr+1
-    ldy #7
+    ldy #8
 @pos_y_start:
     cpy #0
     beq @end_pos_y_start
@@ -163,41 +193,11 @@ draw_bank_to_vram:
     lda mapbase_addr+1
     adc yOffset+1
     sta mapbase_addr+1
-    bra @check_x_offset
-@neg_y_start:
-    ; y is negative so wrap around to row 63
-    ; -9 is max
-    lda #<(MAPBASE_L0_ADDR+L0_MAPBASE_SIZE)
-    sta mapbase_addr
-    lda #>(MAPBASE_L0_ADDR+L0_MAPBASE_SIZE)
-    sta mapbase_addr+1
-    lda yPosStart
-    clc
-    eor #255
-    adc #1
-    sta yOffset
-    stz yOffset+1
-    ldy #7
-@neg_y_calc:
-    cpy #0
-    beq @end_neg_y_start
-    dey
-    asl yOffset
-    rol yOffset+1
-    bra @neg_y_calc
-@end_neg_y_start:
-    lda mapbase_addr
-    sec
-    sbc yOffset
-    sta mapbase_addr
-    lda mapbase_addr+1
-    sbc yOffset+1
-    sta mapbase_addr+1
 @check_x_offset:
     ; mapbase_addr should be pointing to correct y location
     ; adjust for x
-    lda xPosStart
-    bmi @neg_x_start
+    stz xOffset+1
+    lda xPosStartAdj
     asl
     sta xOffset
     lda mapbase_addr
@@ -208,20 +208,6 @@ draw_bank_to_vram:
     adc xOffset+1
     sta mapbase_addr+1
     bra @end_x_pos
-@neg_x_start:
-    ; -9 max
-    clc
-    eor #255
-    adc #1
-    asl
-    sta xOffset
-    lda mapbase_addr
-    sec
-    sbc xOffset
-    sta mapbase_addr
-    lda mapbase_addr+1
-    sbc #0
-    sta mapbase_addr+1
 @end_x_pos:
     jsr copy_map_to_vram
     stz draw_count
@@ -282,10 +268,10 @@ draw_bank_to_vram:
     stz write_count
     lda mapbase_addr
     clc
-    adc #128
+    adc #<L0_MB_ROW_SIZE
     sta mapbase_addr
     lda mapbase_addr+1
-    adc #0
+    adc #>L0_MB_ROW_SIZE
     sta mapbase_addr+1
     lda mapbase_addr
     sta VERA_ADDR_LO
@@ -319,13 +305,6 @@ draw_bank_to_vram:
     sta addr+1
     bra @next_byte
 @done:
-    ; draw guy location
-    ; lda guyPixelDataAddr
-    ; sta addr
-    ; lda guyPixelDataAddr+1
-    ; sta addr+1
-    ; lda #17
-    ; sta (addr)
     rts
 
 .endif

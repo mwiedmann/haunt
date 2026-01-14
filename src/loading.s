@@ -39,6 +39,13 @@ load_level0:
 
 copy_level_to_vram:
     ; Copy the level from banked ram to the L0 MAPBASE
+    jsr copy_bank_1
+    jsr copy_bank_2
+    jsr copy_bank_3
+    jsr copy_bank_4
+    rts
+
+copy_bank_1:
     lda #LEVEL_BANK
     sta BANK
     lda #<HIRAM
@@ -55,9 +62,81 @@ copy_level_to_vram:
     sta R1L
     lda #>VERA_DATA0
     sta R1H
-    lda #<L0_MAPBASE_SIZE
+    lda #<8192
     sta R2L
-    lda #>L0_MAPBASE_SIZE
+    lda #>8192
+    sta R2H
+    jsr MEMCOPY
+    rts
+
+copy_bank_2:
+    lda #(LEVEL_BANK+1)
+    sta BANK
+    lda #<HIRAM
+    sta R0L
+    lda #>HIRAM
+    sta R0H
+    lda #<(MAPBASE_L0_ADDR+8192)
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L0_ADDR+8192)
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    lda #<VERA_DATA0
+    sta R1L
+    lda #>VERA_DATA0
+    sta R1H
+    lda #<8192
+    sta R2L
+    lda #>8192
+    sta R2H
+    jsr MEMCOPY
+    rts
+
+copy_bank_3:
+    lda #(LEVEL_BANK+2)
+    sta BANK
+    lda #<HIRAM
+    sta R0L
+    lda #>HIRAM
+    sta R0H
+    lda #<(MAPBASE_L0_ADDR+16384)
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L0_ADDR+16384)
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    lda #<VERA_DATA0
+    sta R1L
+    lda #>VERA_DATA0
+    sta R1H
+    lda #<8192
+    sta R2L
+    lda #>8192
+    sta R2H
+    jsr MEMCOPY
+    rts
+
+copy_bank_4:
+    lda #(LEVEL_BANK+3)
+    sta BANK
+    lda #<HIRAM
+    sta R0L
+    lda #>HIRAM
+    sta R0H
+    lda #<(MAPBASE_L0_ADDR+24576)
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L0_ADDR+24576)
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    lda #<VERA_DATA0
+    sta R1L
+    lda #>VERA_DATA0
+    sta R1H
+    lda #<8192
+    sta R2L
+    lda #>8192
     sta R2H
     jsr MEMCOPY
     rts

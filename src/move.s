@@ -1,13 +1,6 @@
 .ifndef MOVE_S
 MOVE_S = 1
 
-xPosStart: .byte 0
-yPosStart: .byte 0
-xMid: .byte STARTX
-yMid: .byte STARTY
-xLastMid: .byte 0
-yLastMid: .byte 0
-
 viewRadius: .byte STARTING_VIEW_RADIUS
 viewRadiusDiff: .byte (MAX_VIEW_RADIUS-STARTING_VIEW_RADIUS)
 viewStartX: .byte 0
@@ -19,14 +12,28 @@ guyY: .byte 0
 
 set_xy_pos:
     lda xMid
+    clc
+    adc #POS_ADJUST
+    sta xMidAdj
+    lda xMid
     sec
     sbc viewRadius
     sta xPosStart
+    clc
+    adc #POS_ADJUST
+    sta xPosStartAdj
     ; Now Y
+    lda yMid
+    clc
+    adc #POS_ADJUST
+    sta yMidAdj
     lda yMid
     sec
     sbc viewRadius
     sta yPosStart
+    clc
+    adc #POS_ADJUST
+    sta yPosStartAdj
     rts
 
 hscroll: .word 0
@@ -34,25 +41,12 @@ vscroll: .word 0
 
 scroll_layers:
     ; convert 8 to 16 bit yPosStart with code to handle negatives
-    lda yPosStart
+    lda yPosStartAdj
     sta vscroll
-    bmi @neg_y
     stz vscroll+1
-    bra @y_pos_set
-@neg_y:
-    lda #255
-    sta vscroll+1
-@y_pos_set:
-    ; convert 8 to 16 bit with code to handle negatives
-    lda xPosStart
+    lda xPosStartAdj
     sta hscroll
-    bmi @neg_x
     stz hscroll+1
-    bra @x_pos_set
-@neg_x:
-    lda #255
-    sta hscroll+1
-@x_pos_set:
     ; subtract 5 from yPos/vscroll to center it
     lda vscroll
     sec
@@ -89,7 +83,6 @@ scroll_layers:
     rol hscroll+1
     bra @next_hscroll
 @end_hscroll:
-    ; TODO: add guy position
     lda hscroll
     sta VERA_L0_HSCROLL_L
     lda hscroll+1

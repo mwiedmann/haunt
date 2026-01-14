@@ -2,16 +2,26 @@
     addr: .res 2
     addr2: .res 2
     mapbase_addr: .res 2
-    yOffset: .word 0
-    xOffset: .word 0
-    row_count: .byte 0
-    tempOffset: .word 0
-    draw_bank: .byte 0
-    draw_offset: .word 0
-    draw_count: .byte 0
-    write_count: .byte 0
-    tile_count: .byte 0
-
+    yOffset: .res 2
+    xOffset: .res 2
+    row_count: .res 1
+    tempOffset: .res 2
+    draw_bank: .res 1
+    draw_offset: .res 2
+    draw_count: .res 1
+    write_count: .res 1
+    tile_count: .res 1
+    xPosStart: .res 1
+    xPosStartAdj: .res 1
+    yPosStart: .res 1
+    yPosStartAdj: .res 1
+    xMid: .res 1
+    xMidAdj: .res 1
+    yMid: .res 1
+    yMidAdj: .res 1
+    xLastMid: .res 1
+    yLastMid: .res 1
+    
 .segment "STARTUP"
     jmp start
 
@@ -27,7 +37,6 @@ waitflag: .byte 0
 
 .include "config.s"
 .include "irq.s"
-.include "bres.s"
 .include "move.s"
 .include "floor.s"
 .include "draw.s"
@@ -48,6 +57,11 @@ start:
     jsr clear_l1
     jsr copy_level_to_vram
     jsr setup_l1_view
+    lda #STARTX
+    sta xMid
+    lda #STARTY
+    sta yMid
+    jsr set_xy_pos
     bra @draw_everything ; initial draw
 @main_loop:
     jsr check_controls
