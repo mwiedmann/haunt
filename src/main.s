@@ -66,13 +66,13 @@ start:
 @main_loop:
     jsr check_controls
     lda moved
-    beq @main_loop
+    beq @waiting
     lda xMid
     cmp xLastMid
     bne @draw_everything
     lda yMid
     cmp yLastMid
-    beq @main_loop
+    beq @scroll_only
 @draw_everything:
     jsr check_floor_val
     cmp #0
@@ -96,10 +96,22 @@ start:
     stz waitflag
     inc loopCount
     lda loopCount
-    cmp #3
+    cmp #2
     bne @waiting
     stz loopCount
     jsr draw_bank_to_vram
+    jsr scroll_layers
+    bra @main_loop
+@scroll_only:
+    lda waitflag
+    cmp #0
+    beq @scroll_only
+    stz waitflag
+    inc loopCount
+    lda loopCount
+    cmp #2
+    bne @scroll_only
+    stz loopCount
     jsr scroll_layers
     bra @main_loop
     rts
