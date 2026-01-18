@@ -29,42 +29,36 @@ check_bank_address:
 
 ; Copy the area of the map we are about to view
 ; This gives us a fresh copy of the tiles that we can then hide as needed
-copy_map_to_vram:
+copy_map_to_vram_hold:
     lda #LEVEL_BANK
     sta temp_bank
     ; Map is 32k, across 4 banks
     ; Need to get the starting bank, then advance bank as address moves to next bank
     ; This part only works because mapbase starts at address 0
-    lda mapbase_addr
+    lda #<vram_hold
     sta addr2
-    lda mapbase_addr+1
+    lda #>vram_hold
     sta addr2+1
     lda #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)
     sta row_count
     ; Set the pixeldata source address
     lda #<HIRAM
     clc
-    adc addr2
+    adc mapbase_addr
     sta addr
     lda #>HIRAM
-    adc addr2+1
+    adc mapbase_addr+1
     sta addr + 1
     jsr check_bank_address
     ; Set VRAM address
 @next_row:
-    lda addr2
-    sta VERA_ADDR_LO
-    lda addr2+1
-    sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC_BITS
-    sta VERA_ADDR_HI_SET
     lda addr
     sta R0L
     lda addr + 1
     sta R0H
-    lda #<VERA_DATA0
+    lda addr2
     sta R1L
-    lda #>VERA_DATA0
+    lda addr2+1
     sta R1H
     lda #<((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta R2L
@@ -78,10 +72,10 @@ copy_map_to_vram:
     ; Increment mapbase address to next row
     lda addr2
     clc
-    adc #<L0_MB_ROW_SIZE
+    adc #<((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta addr2
     lda addr2+1
-    adc #>L0_MB_ROW_SIZE
+    adc #>((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta addr2+1
     ; change the pixeldata source address
     lda addr
@@ -166,9 +160,9 @@ calc_draw_bank:
     ; draw_offset has the mem offset in this bank
     rts
 
-; Bank data has a 1 bit per tile representation
-; Turn this into 2 bytes
-draw_bank_to_vram:
+vram_hold: .res VRAM_HOLD_SIZE
+
+draw_bank_to_vram_hold:
     lda yPosStartAdj
     sta yOffset
     stz yOffset+1
@@ -209,7 +203,7 @@ draw_bank_to_vram:
     sta mapbase_addr+1
     bra @end_x_pos
 @end_x_pos:
-    jsr copy_map_to_vram
+    jsr copy_map_to_vram_hold
     stz draw_count
     ; Set bank
     lda draw_bank
@@ -227,13 +221,11 @@ draw_bank_to_vram:
     lda addr+1
     adc draw_offset+1
     sta addr+1
-    ; Point to the mapbase
-    lda mapbase_addr
-    sta VERA_ADDR_LO
-    lda mapbase_addr+1
-    sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC2_BITS
-    sta VERA_ADDR_HI_SET
+    ; Point to vram_hold
+    lda #<vram_hold
+    sta addr2
+    lda #>vram_hold
+    sta addr2+1
     stz write_count
     stz tile_count
 @next_byte:
@@ -248,38 +240,18 @@ draw_bank_to_vram:
     adc #0
     beq @zero_tile
     lda #16 ; Tile 16 for hiding tiles
-    sta VERA_DATA0
+    sta (addr2)
     bra @move_addr
 @zero_tile:
     lda tile_count
     cmp #221
-    bne @no_guy
+    bne @move_addr
     lda #17
-    sta VERA_DATA0
-    bra @move_addr
-@no_guy:
-    lda VERA_DATA0 ; Skip overwriting this tile...just read it to advance
+    sta (addr2)
+    bra @move_addr   
 @move_addr:
-    inc write_count
-    lda write_count
-    cmp #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)
-    bne @continue_writes
-    ; end of mapbase row, go to next row
-    stz write_count
-    lda mapbase_addr
-    clc
-    adc #<L0_MB_ROW_SIZE
-    sta mapbase_addr
-    lda mapbase_addr+1
-    adc #>L0_MB_ROW_SIZE
-    sta mapbase_addr+1
-    lda mapbase_addr
-    sta VERA_ADDR_LO
-    lda mapbase_addr+1
-    sta VERA_ADDR_MID
-@continue_writes:
-    clc
     lda addr2
+    clc
     adc #2
     sta addr2
     lda addr2+1
@@ -306,5 +278,62 @@ draw_bank_to_vram:
     bra @next_byte
 @done:
     rts
+
+copy_vram_hold_to_vram:
+    lda #<vram_hold
+    sta addr2
+    lda #>vram_hold
+    sta addr2+1
+    lda #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)
+    sta row_count
+    ; Point to the mapbase
+    lda mapbase_addr
+    sta addr
+    sta VERA_ADDR_LO
+    lda mapbase_addr+1
+    sta addr+1
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+@next_row:
+    lda addr2
+    sta R0L
+    lda addr2 + 1
+    sta R0H
+    lda #<VERA_DATA0
+    sta R1L
+    lda #>VERA_DATA0
+    sta R1H
+    lda #<((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
+    sta R2L
+    lda #>((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
+    sta R2H
+    jsr MEMCOPY
+    dec row_count
+    lda row_count
+    cmp #0
+    beq @done
+    ; Increment mapbase address to next row
+    lda addr2
+    clc
+    adc #<((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
+    sta addr2
+    lda addr2+1
+    adc #>((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
+    sta addr2+1
+    ; change the pixeldata source address
+    lda addr
+    clc
+    adc #<L0_MB_ROW_SIZE
+    sta addr
+    sta VERA_ADDR_LO
+    lda addr+1
+    adc #>L0_MB_ROW_SIZE
+    sta addr+1
+    sta VERA_ADDR_MID
+    bra @next_row
+@done:
+    rts
+
 
 .endif

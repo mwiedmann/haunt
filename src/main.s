@@ -55,7 +55,6 @@ start:
     jsr load_level0
     jsr load_precalc
     jsr clear_l1
-    jsr copy_level_to_vram
     jsr setup_l1_view
     lda #STARTX
     sta xMid
@@ -67,12 +66,6 @@ start:
     jsr check_controls
     lda moved
     beq @waiting
-    lda xMid
-    cmp xLastMid
-    bne @draw_everything
-    lda yMid
-    cmp yLastMid
-    beq @scroll_only
 @draw_everything:
     jsr check_floor_val
     cmp #0
@@ -89,6 +82,7 @@ start:
     sta yLastMid
     jsr set_xy_pos
     jsr calc_draw_bank
+    jsr draw_bank_to_vram_hold
 @waiting:
     lda waitflag
     cmp #0
@@ -96,10 +90,10 @@ start:
     stz waitflag
     inc loopCount
     lda loopCount
-    cmp #2
+    cmp #WAIT_COUNT
     bne @waiting
     stz loopCount
-    jsr draw_bank_to_vram
+    jsr copy_vram_hold_to_vram
     jsr scroll_layers
     bra @main_loop
 @scroll_only:
@@ -109,7 +103,7 @@ start:
     stz waitflag
     inc loopCount
     lda loopCount
-    cmp #2
+    cmp #WAIT_COUNT
     bne @scroll_only
     stz loopCount
     jsr scroll_layers
