@@ -25,6 +25,9 @@ img:
 
 map:
 	node tools/ldtk-convert.js
+
+ui:
+	node tools/ui.js
 	
 calc:
 	node tools/calcall.js

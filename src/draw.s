@@ -172,7 +172,7 @@ clear_extra_vram_row:
 @next_write:
     cpx #0
     beq @done
-    lda #16
+    lda #BLOCK_VIS_TILE
     sta (addr)
     lda addr
     clc
@@ -269,7 +269,7 @@ draw_bank_to_vram_hold:
     lda #0
     adc #0
     beq @move_addr
-    lda #16 ; Tile 16 for hiding tiles
+    lda #BLOCK_VIS_TILE
     sta (addr2)
     bra @move_addr
 @move_addr:
@@ -332,7 +332,7 @@ copy_vram_hold_to_vram:
     lda #>((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta R2H
     jsr MEMCOPY
-    lda #16
+    lda #BLOCK_VIS_TILE
     sta VERA_DATA0 ; Extra shadow to right to handle scrolling issue
     lda #0
     sta VERA_DATA0

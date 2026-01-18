@@ -38,7 +38,6 @@ waitflag: .byte 0
 .include "move.s"
 .include "floor.s"
 .include "draw.s"
-.include "view.s"
 .include "loading.s"
 .include "controls.s"
 .include "pal.s"
@@ -51,11 +50,11 @@ start:
     jsr irq_config
     jsr load_pal
     jsr load_tiles
+    jsr load_ui
     jsr load_level0
     jsr load_precalc
-    jsr clear_l1
-    jsr setup_l1_view
     jsr clear_extra_vram_row
+    jsr create_guy
     lda #STARTX
     sta xMid
     lda #STARTY
@@ -93,8 +92,9 @@ start:
     cmp #WAIT_COUNT
     bne @waiting
     stz loopCount
-    jsr copy_vram_hold_to_vram
     jsr scroll_layers
+    jsr copy_vram_hold_to_vram
+    
     bra @main_loop
 @scroll_only:
     lda waitflag

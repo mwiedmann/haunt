@@ -50,7 +50,7 @@ scroll_layers:
     ; subtract 5 from yPos/vscroll to center it
     lda vscroll
     sec
-    sbc #5
+    sbc #3
     sta vscroll
     lda vscroll+1
     sbc #0
@@ -68,7 +68,7 @@ scroll_layers:
     ; subtract 10 from xPos/hscroll to center it
     lda hscroll
     sec
-    sbc #10
+    sbc #3
     sta hscroll
     lda hscroll+1
     sbc #0
