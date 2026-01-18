@@ -53,6 +53,8 @@ setup_l1_view:
     sta addr+1
     bra @next_row
 @done:
+    ; Draw guy
+    jsr create_guy
     rts
     
 .endif

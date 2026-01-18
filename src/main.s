@@ -10,7 +10,6 @@
     draw_offset: .res 2
     draw_count: .res 1
     write_count: .res 1
-    tile_count: .res 1
     xPosStart: .res 1
     xPosStartAdj: .res 1
     yPosStart: .res 1
@@ -44,6 +43,7 @@ waitflag: .byte 0
 .include "loading.s"
 .include "controls.s"
 .include "pal.s"
+.include "sprites.s"
 
 loopCount: .byte 0
 

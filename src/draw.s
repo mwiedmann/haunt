@@ -227,28 +227,19 @@ draw_bank_to_vram_hold:
     lda #>vram_hold
     sta addr2+1
     stz write_count
-    stz tile_count
 @next_byte:
     ; Get a byte then pull out the 8 bits
     ldy #8
     lda (addr)
 @next_bit:
-    inc tile_count
     asl
     tax ; hold the rest of the bits
     lda #0
     adc #0
-    beq @zero_tile
+    beq @move_addr
     lda #16 ; Tile 16 for hiding tiles
     sta (addr2)
     bra @move_addr
-@zero_tile:
-    lda tile_count
-    cmp #221
-    bne @move_addr
-    lda #17
-    sta (addr2)
-    bra @move_addr   
 @move_addr:
     lda addr2
     clc
