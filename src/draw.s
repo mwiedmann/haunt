@@ -161,6 +161,39 @@ calc_draw_bank:
     rts
 
 vram_hold: .res VRAM_HOLD_SIZE
+extra_vram_row: .res L0_MB_ROW_SIZE
+
+clear_extra_vram_row:
+    lda #<extra_vram_row
+    sta addr
+    lda #>extra_vram_row
+    sta addr+1
+    ldx #((MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)*2)
+@next_write:
+    cpx #0
+    beq @done
+    lda #16
+    sta (addr)
+    lda addr
+    clc
+    adc #1
+    sta addr
+    lda addr+1
+    adc #0
+    sta addr+1
+    lda #0
+    sta (addr)
+    lda addr
+    clc
+    adc #1
+    sta addr
+    lda addr+1
+    adc #0
+    sta addr+1
+    dex
+    bra @next_write
+@done:
+    rts
 
 draw_bank_to_vram_hold:
     lda yPosStartAdj
@@ -226,7 +259,6 @@ draw_bank_to_vram_hold:
     sta addr2
     lda #>vram_hold
     sta addr2+1
-    stz write_count
 @next_byte:
     ; Get a byte then pull out the 8 bits
     ldy #8
@@ -275,7 +307,7 @@ copy_vram_hold_to_vram:
     sta addr2
     lda #>vram_hold
     sta addr2+1
-    lda #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+1)
+    lda #(MAX_VIEW_RADIUS+MAX_VIEW_RADIUS+2) ; Extra row for bottom to handle scrolling issue
     sta row_count
     ; Point to the mapbase
     lda mapbase_addr
@@ -300,9 +332,12 @@ copy_vram_hold_to_vram:
     lda #>((MAX_VIEW_RADIUS + MAX_VIEW_RADIUS +1) * 2)
     sta R2H
     jsr MEMCOPY
+    lda #16
+    sta VERA_DATA0 ; Extra shadow to right to handle scrolling issue
+    lda #0
+    sta VERA_DATA0
     dec row_count
     lda row_count
-    cmp #0
     beq @done
     ; Increment mapbase address to next row
     lda addr2

@@ -9,7 +9,6 @@
     draw_bank: .res 1
     draw_offset: .res 2
     draw_count: .res 1
-    write_count: .res 1
     xPosStart: .res 1
     xPosStartAdj: .res 1
     yPosStart: .res 1
@@ -56,6 +55,7 @@ start:
     jsr load_precalc
     jsr clear_l1
     jsr setup_l1_view
+    jsr clear_extra_vram_row
     lda #STARTX
     sta xMid
     lda #STARTY
