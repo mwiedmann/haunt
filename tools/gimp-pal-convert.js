@@ -16,8 +16,15 @@ const adjustColor = (c) => c>>4
 // The raw data is just a long array of R,G and B bytes
 // Convert them to G+B and R (4 bytes each)
 for (let i = 0; i < palData.length; i+=3) {
-    finalPal.push((adjustColor(palData[i+1])<<4) + adjustColor(palData[i+2]))
-    finalPal.push(adjustColor(palData[i]))
+  // Make not tranparent black out of grey
+  if (palData[i]===88) {
+    console.log('Grey')
+    palData[i]=1
+    palData[i+1]=1
+    palData[i+2]=1
+  }
+  finalPal.push((adjustColor(palData[i+1])<<4) + adjustColor(palData[i+2]))
+  finalPal.push(adjustColor(palData[i]))
 }
 
 let output = new Uint8Array(finalPal);
