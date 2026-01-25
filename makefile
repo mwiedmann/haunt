@@ -18,7 +18,7 @@ debug:
 	$(EMU) -prg HAUNT.PRG -debug
 
 pal:
-	node tools/gimp-pal-convert.js gfx/tiles.data.pal build/PAL.BIN
+	node tools/gimp-pal-convert.js gfx/tiles.data.pal
 
 img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/TILES.BIN 16 16 8 0 8 6

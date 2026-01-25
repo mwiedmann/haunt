@@ -48,7 +48,8 @@ loopCount: .byte 0
 start:
     jsr config
     jsr irq_config
-    jsr load_pal
+    jsr load_pal_to_banks
+    jsr swap_pal1
     jsr load_tiles
     jsr load_ui
     jsr load_level0
@@ -83,31 +84,51 @@ start:
     jsr calc_draw_bank
     jsr draw_bank_to_vram_hold
 @waiting:
-    lda waitflag
-    cmp #0
-    beq @waiting
-    stz waitflag
-    inc loopCount
-    lda loopCount
-    cmp #WAIT_COUNT
-    bne @waiting
-    stz loopCount
+    jsr check_wait
+    jsr check_pal
     jsr scroll_layers
     jsr copy_vram_hold_to_vram
-    
     bra @main_loop
 @scroll_only:
+    jsr check_wait
+    jsr check_pal
+    jsr scroll_layers
+    bra @main_loop
+    rts
+
+check_wait:
     lda waitflag
     cmp #0
-    beq @scroll_only
+    beq check_wait
     stz waitflag
     inc loopCount
     lda loopCount
     cmp #WAIT_COUNT
-    bne @scroll_only
+    bne check_wait
     stz loopCount
-    jsr scroll_layers
-    bra @main_loop
+    rts
+
+check_pal:
+    inc pal_count
+    lda pal_count
+    cmp #24
+    bne @no_pal
+    jsr RAND
+@check_num:
+    cmp #16
+    bcc @num_ok
+    lsr
+    bra @check_num
+@num_ok:
+    cmp #8
+    bcc @num_too_small
+    bra @store_num
+@num_too_small:
+    lda #8
+@store_num:
+    sta pal_count
+    jsr rotate_pal
+@no_pal:
     rts
 
 point_to_mapbase_l0:
