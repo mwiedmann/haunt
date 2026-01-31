@@ -42,6 +42,7 @@ waitflag: .byte 0
 .include "controls.s"
 .include "pal.s"
 .include "sprites.s"
+.include "tiles.s"
 
 loopCount: .byte 0
 
@@ -53,6 +54,7 @@ start:
     jsr load_ui
     jsr load_level0
     jsr load_precalc
+    jsr load_torch
     jsr clear_extra_vram_row
     jsr create_guy
     lda #STARTX
@@ -87,6 +89,7 @@ start:
     cmp #0
     beq @waiting
     stz waitflag
+    jsr torch_anim
     inc loopCount
     lda loopCount
     cmp #WAIT_COUNT

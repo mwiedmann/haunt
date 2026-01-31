@@ -22,6 +22,7 @@ pal:
 
 img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/TILES.BIN 16 16 8 0 8 6
+	node tools/gimp-img-convert.js gfx/tiles.data build/TORCH.BIN 16 16 8 48 4 1
 
 map:
 	node tools/ldtk-convert.js

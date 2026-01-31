@@ -6,6 +6,7 @@ l0_mapbase_filename: .asciiz "l0map.bin"
 precalc_filename: .asciiz "precalc.bin"
 tiles_filename: .asciiz "tiles.bin"
 ui_filename: .asciiz "ui.bin"
+torch_filename: .asciiz "torch.bin"
 
 load_level0:
     ; Floor data
@@ -85,6 +86,24 @@ load_ui:
     lda #2 ; VRAM 1st bank
     ldx #<MAPBASE_L1_ADDR
     ldy #>MAPBASE_L1_ADDR
+    jsr LOAD
+    rts
+
+load_torch:
+    lda #ANIM_BANK
+    sta BANK
+    lda #9
+    ldx #<torch_filename
+    ldy #>torch_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<HIRAM
+    ldy #>HIRAM
     jsr LOAD
     rts
 
