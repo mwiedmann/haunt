@@ -19,10 +19,12 @@ debug:
 
 pal:
 	node tools/gimp-pal-convert.js gfx/tiles.data.pal build/PAL.BIN
+	node tools/gimp-pal-convert.js gfx/title.data.pal build/TITLEPAL.BIN
 
 img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/TILES.BIN 16 16 8 0 8 6
 	node tools/gimp-img-convert.js gfx/tiles.data build/TORCH.BIN 16 16 8 48 4 1
+	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 1 0 1 1
 
 map:
 	node tools/ldtk-convert.js

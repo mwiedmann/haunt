@@ -43,20 +43,27 @@ waitflag: .byte 0
 .include "pal.s"
 .include "sprites.s"
 .include "tiles.s"
+.include "title.s"
+.include "wait.s"
 
 loopCount: .byte 0
 
 start:
-    jsr config
-    jsr irq_config
-    jsr load_pal
-    jsr load_tiles
-    jsr load_ui
+    jsr show_title
     jsr load_level0
     jsr load_precalc
     jsr load_torch
     jsr clear_extra_vram_row
     jsr create_guy
+    ; hide layers until everything loaded
+    lda #VERA_LAYERS_OFF_DC_VIDEO_BITS
+    sta VERA_DC_VIDEO
+    jsr irq_config
+    jsr load_pal
+    jsr load_tiles
+    jsr load_ui
+    jsr config
+    
     lda #STARTX
     sta xMid
     lda #STARTY

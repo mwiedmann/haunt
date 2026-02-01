@@ -24,10 +24,10 @@ config:
     sta VERA_L1_HSCROLL_L
     lda #0
     sta VERA_L1_HSCROLL_H
-    ; lda #64
-    ; sta VERA_HSCALE
-    ; lda #64
-    ; sta VERA_VSCALE
+    lda #128
+    sta VERA_HSCALE
+    lda #128
+    sta VERA_VSCALE
     rts
 
 .endif

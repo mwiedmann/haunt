@@ -6,7 +6,7 @@ const d = JSON.parse(rawText);
 const createLevelCode = (level) => {
   let floor = []
   level.layerInstances[0].gridTiles.forEach(tile => {
-    floor.push(tile.t <24 ? 1 : 0)
+    floor.push(tile.t)
   })
   return floor
 };
@@ -81,10 +81,28 @@ const radius = 10;
 const hiCheck = 0.95;
 const loCheck = 0.05;
 const finalBytes = [];
+const torchTileId=8
 
 for (let startY = 1; startY <= 62; startY++) {
   for (let startX = 1; startX <= 62; startX++) {
     const checkTile = (x, y) => {
+      const dist=Math.trunc(Math.sqrt((x-startX)*(x-startX)+(y-startY)*(y-startY)));
+      if (dist>radius-4) {
+        // Outside radius
+        // See if torch is lighting this square
+        let torchFound=0;
+        for (let tx=x-2;tx<=x+2 && !torchFound;tx++) {
+          for (let ty=y-2;ty<=y+2 && !torchFound;ty++) {
+            if (tx<0 || ty<0 || tx>63 || ty>63) continue;
+            if (mapBaseData[ty * 64 + tx] === torchTileId) {
+              torchFound=1;
+            }
+          }
+        }
+        
+        if (!torchFound) return 0;
+      }
+      
       const lineChecks = [true, true, true, true];
 
       for (let yCheck = startY - radius; yCheck <= startY + radius; yCheck++) {
@@ -97,7 +115,7 @@ for (let startY = 1; startY <= 62; startY++) {
           if (
             (yCheck === startY && xCheck === startX) || // Skip center tile
             (yCheck === y && xCheck === x) || // Skip tile we are currently checking
-            mapBaseData[yCheck * 64 + xCheck] === 0 // Skip checking tiles that are clear
+            mapBaseData[yCheck * 64 + xCheck] >= 24 // Skip checking tiles that are clear
           ) {
             continue;
           }
