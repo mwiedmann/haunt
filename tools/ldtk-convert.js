@@ -7,7 +7,7 @@ const createLevelCode = (level) => {
   let floor = []
   let mapbase = []
   level.layerInstances[0].gridTiles.forEach(tile => {
-    floor.push(tile.t <24 ? 1 : 0)
+    floor.push(tile.t)
   })
 
   let tileCount=0

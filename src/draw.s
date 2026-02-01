@@ -234,8 +234,6 @@ draw_bank_to_vram_hold:
     lda mapbase_addr+1
     adc xOffset+1
     sta mapbase_addr+1
-    bra @end_x_pos
-@end_x_pos:
     jsr copy_map_to_vram_hold
     stz draw_count
     ; Set bank

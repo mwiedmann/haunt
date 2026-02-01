@@ -75,20 +75,21 @@ start:
     lda moved
     beq @waiting
 @draw_everything:
+    jsr set_xy_pos
     jsr check_floor_val
-    cmp #0
+    lda current_tile
     beq @not_blocked
     ; Blocked...move back
     lda xLastMid
     sta xMid
     lda yLastMid
     sta yMid
+    jsr set_xy_pos
 @not_blocked:
     lda xMid
     sta xLastMid
     lda yMid
     sta yLastMid
-    jsr set_xy_pos
     jsr calc_draw_bank
     jsr draw_bank_to_vram_hold
 @waiting:
