@@ -43,9 +43,9 @@ point_to_sprite:
     rts
 
 create_guy:
-    lda #<(TILEBASE_L1_ADDR+(17*256))
+    lda #<(TILEBASE_L1_ADDR+(GUY_TILE*256))
     sta sprite_img_addr
-    lda #>(TILEBASE_L1_ADDR+(17*256))
+    lda #>(TILEBASE_L1_ADDR+(GUY_TILE*256))
     sta sprite_img_addr+1
     stz sprite_img_addr+2
 @start_shift: ; Shift the image addr bits as sprites use bits 12:5 and 16:13 (we default 16 to 0)

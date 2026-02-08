@@ -3,6 +3,9 @@ const fs = require("fs");
 const rawText = fs.readFileSync("haunt.ldtk");
 const d = JSON.parse(rawText);
 
+const convertFlip = (f) =>
+    f === 1 ? 0b100 : f === 2 ? 0b1000 : f === 3 ? 0b1100 : 0
+
 const createLevelCode = (level) => {
   let floor = []
   let mapbase = []
@@ -16,7 +19,10 @@ const createLevelCode = (level) => {
       if (y<32 || y>=96 || x<32 || x>=96) {
         mapbase.push(16,0)
       } else {
-         mapbase.push(level.layerInstances[0].gridTiles[tileCount].t, 0)
+         mapbase.push(
+            level.layerInstances[0].gridTiles[tileCount].t, 
+            convertFlip(level.layerInstances[0].gridTiles[tileCount].f)
+          )
          tileCount++
       }
     }

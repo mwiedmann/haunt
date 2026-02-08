@@ -40,7 +40,6 @@ hscroll: .word 0
 vscroll: .word 0
 
 scroll_layers:
-    ; convert 8 to 16 bit yPosStart with code to handle negatives
     lda yPosStartAdj
     sta vscroll
     stz vscroll+1
