@@ -17,7 +17,7 @@ const adjustColor = (c) => c>>4
 // Convert them to G+B and R (4 bytes each)
 for (let i = 0; i < palData.length; i+=3) {
   // Make not tranparent black out of grey
-  if (palData[i]===88) {
+  if (palData[i]===86 && palData[i+1]===88 && palData[i+2]===85) {
     console.log('Grey')
     palData[i]=1
     palData[i+1]=1

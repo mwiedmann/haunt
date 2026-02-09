@@ -27,7 +27,12 @@ for (ty = 0; ty < yTiles && tilesDone<tileCount; ty++) {
         y * frameCountWidth * frameWidth;
       for (x = 0; x < frameWidth; x++) {
         pixelIdx = start + x;
-        flattenedTiles.push(imageData[pixelIdx]);
+        flattenedTiles.push(
+          tilesDone >= 144
+            ? imageData[pixelIdx] === 0 
+              ? 1 
+              : imageData[pixelIdx] 
+            : imageData[pixelIdx]);
       }
     }
     tilesDone++

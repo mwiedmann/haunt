@@ -81,7 +81,7 @@ const radius = 10;
 const hiCheck = 0.95;
 const loCheck = 0.05;
 const finalBytes = [];
-const torchTileId=16
+const torchTileId=24
 
 for (let startY = 1; startY <= 62; startY++) {
   for (let startX = 1; startX <= 62; startX++) {
@@ -115,7 +115,7 @@ for (let startY = 1; startY <= 62; startY++) {
           if (
             (yCheck === startY && xCheck === startX) || // Skip center tile
             (yCheck === y && xCheck === x) || // Skip tile we are currently checking
-            mapBaseData[yCheck * 64 + xCheck] >= 32 // Skip checking tiles that are clear
+            mapBaseData[yCheck * 64 + xCheck] >= 31 // Skip checking tiles that are clear
           ) {
             continue;
           }

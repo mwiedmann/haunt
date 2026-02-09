@@ -32,7 +32,7 @@ check_floor_val:
     sta addr + 1
     lda (addr)
     sta current_tile
-    cmp #24
+    cmp #48
     bcc @blocked
     stz current_tile
     rts

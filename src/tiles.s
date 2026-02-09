@@ -37,7 +37,7 @@ torch_anim:
     sta VERA_ADDR_LO
     lda #>TORCH_TILE_ADDR
     sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC_BITS
+    lda #VERA_ADDR_HI_INC_UPPERVRAM_BITS
     sta VERA_ADDR_HI_SET
 
     lda addr2

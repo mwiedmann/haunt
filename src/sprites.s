@@ -70,7 +70,7 @@ create_guy:
     lda sprite_img_addr ; Frame addr lo
     sta VERA_DATA0 ; Write the lo addr for the sprite frame based on ang
     lda sprite_img_addr+1 ; Frame addr hi
-    ora #%10000000 ; Keep the 256 color mode on
+    ora #%10001000 ; Keep the 256 color mode on, plus bank 2 in VRAM
     sta VERA_DATA0 ; Write the hi addr for the sprite frame based on ang
     lda #<GUY_PIXEL_X
     sta VERA_DATA0

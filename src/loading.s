@@ -67,7 +67,7 @@ load_tiles:
     ldx #8
     ldy #2
     jsr SETLFS
-    lda #2 ; VRAM 1st bank
+    lda #3 ; VRAM 2nd bank
     ldx #<TILEBASE_L0_ADDR
     ldy #>TILEBASE_L0_ADDR
     jsr LOAD
