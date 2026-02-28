@@ -7,6 +7,7 @@ precalc_filename: .asciiz "precalc.bin"
 tiles_filename: .asciiz "tiles.bin"
 ui_filename: .asciiz "ui.bin"
 torch_filename: .asciiz "torch.bin"
+torch_floor_filename: .asciiz "torchflr.bin"
 
 load_level0:
     ; Floor data
@@ -89,6 +90,11 @@ load_ui:
     jsr LOAD
     rts
 
+load_torches:
+    jsr load_torch
+    jsr load_torch_floor
+    rts
+
 load_torch:
     lda #ANIM_BANK
     sta BANK
@@ -104,6 +110,24 @@ load_torch:
     lda #0
     ldx #<HIRAM
     ldy #>HIRAM
+    jsr LOAD
+    rts
+
+load_torch_floor:
+    lda #ANIM_BANK
+    sta BANK
+    lda #12
+    ldx #<torch_floor_filename
+    ldy #>torch_floor_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<TORCH_FLOOR_MEM_ADDR
+    ldy #>TORCH_FLOOR_MEM_ADDR
     jsr LOAD
     rts
 

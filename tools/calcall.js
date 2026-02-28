@@ -82,6 +82,7 @@ const hiCheck = 0.95;
 const loCheck = 0.05;
 const finalBytes = [];
 const torchTileId=24
+const nonBlockingTorchTileId=36
 
 for (let startY = 1; startY <= 62; startY++) {
   for (let startX = 1; startX <= 62; startX++) {
@@ -94,7 +95,9 @@ for (let startY = 1; startY <= 62; startY++) {
         for (let tx=x-2;tx<=x+2 && !torchFound;tx++) {
           for (let ty=y-2;ty<=y+2 && !torchFound;ty++) {
             if (tx<0 || ty<0 || tx>63 || ty>63) continue;
-            if (mapBaseData[ty * 64 + tx] === torchTileId) {
+            if (mapBaseData[ty * 64 + tx] === torchTileId ||
+              mapBaseData[ty * 64 + tx] === nonBlockingTorchTileId
+            ) {
               torchFound=1;
             }
           }

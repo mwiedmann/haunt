@@ -25,6 +25,26 @@ torch_anim:
     lda #>TORCH_MEM_ADDR
     sta addr2+1
     ldx torch_frame
+    lda #<TORCH_TILE_ADDR
+    sta torch_tile_addr
+    lda #>TORCH_TILE_ADDR
+    sta torch_tile_addr+1
+    jsr handle_torch_frame
+    lda #<TORCH_FLOOR_MEM_ADDR
+    sta addr2
+    lda #>TORCH_FLOOR_MEM_ADDR
+    sta addr2+1
+    ldx torch_frame
+    lda #<TORCH_FLOOR_TILE_ADDR
+    sta torch_tile_addr
+    lda #>TORCH_FLOOR_TILE_ADDR
+    sta torch_tile_addr+1
+    jsr handle_torch_frame
+    rts
+
+torch_tile_addr: .word 0
+
+handle_torch_frame:
 @check_frame:
     ; move to correct frame
     beq @frame_set
@@ -33,9 +53,9 @@ torch_anim:
     cpx #0
     bra @check_frame
 @frame_set:
-    lda #<TORCH_TILE_ADDR
+    lda torch_tile_addr
     sta VERA_ADDR_LO
-    lda #>TORCH_TILE_ADDR
+    lda torch_tile_addr + 1
     sta VERA_ADDR_MID
     lda #VERA_ADDR_HI_INC_UPPERVRAM_BITS
     sta VERA_ADDR_HI_SET
@@ -55,5 +75,5 @@ torch_anim:
     jsr MEMCOPY
     
     rts
-
+    
 .endif

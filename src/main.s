@@ -52,7 +52,7 @@ start:
     jsr show_title
     jsr load_level0
     jsr load_precalc
-    jsr load_torch
+    jsr load_torches
     jsr clear_extra_vram_row
     jsr create_guy
     ; hide layers until everything loaded
