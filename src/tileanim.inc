@@ -1,0 +1,13 @@
+.ifndef TILEANIM_H
+TILEANIM_H=1
+
+.struct TileAnim
+    _time_current .byte
+    _time_max .byte
+    _frame_current .byte
+    _frame_max .byte
+    _frames_addr .word
+    _tile_addr .word ; Assumes upper VRAM
+.endstruct
+
+.endif

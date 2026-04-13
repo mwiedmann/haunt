@@ -19,7 +19,8 @@
     yMidAdj: .res 1
     xLastMid: .res 1
     yLastMid: .res 1
-    
+    tileanimaddr: .res 2
+
 .segment "STARTUP"
     jmp start
 
@@ -27,6 +28,7 @@
 
 .include "x16.inc"
 .include "config.inc"
+.include "tileanim.inc"
 
 .segment "CODE"
 
@@ -63,6 +65,7 @@ start:
     jsr load_tiles
     jsr load_ui
     jsr config
+    jsr init_tile_animations
     
     lda #STARTX
     sta xMid
@@ -97,7 +100,7 @@ start:
     cmp #0
     beq @waiting
     stz waitflag
-    jsr torch_anim
+    jsr run_tile_animations
     inc loopCount
     lda loopCount
     cmp #WAIT_COUNT
