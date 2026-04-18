@@ -9,6 +9,7 @@ ui_filename: .asciiz "ui.bin"
 torch_filename: .asciiz "torch.bin"
 torch_floor_filename: .asciiz "torchflr.bin"
 spikes_filename: .asciiz "spikes.bin"
+pit_filename: .asciiz "pit.bin"
 
 load_level0:
     ; Floor data
@@ -95,6 +96,7 @@ load_animated_tiles:
     jsr load_torch
     jsr load_torch_floor
     jsr load_spikes
+    jsr load_pit
     rts
 
 load_torch:
@@ -148,6 +150,24 @@ load_spikes:
     lda #0
     ldx #<SPIKES_MEM_ADDR
     ldy #>SPIKES_MEM_ADDR
+    jsr LOAD
+    rts
+
+load_pit:
+    lda #ANIM_BANK
+    sta BANK
+    lda #7
+    ldx #<pit_filename
+    ldy #>pit_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<PIT_MEM_ADDR
+    ldy #>PIT_MEM_ADDR
     jsr LOAD
     rts
 
