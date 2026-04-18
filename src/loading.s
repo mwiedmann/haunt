@@ -8,6 +8,7 @@ tiles_filename: .asciiz "tiles.bin"
 ui_filename: .asciiz "ui.bin"
 torch_filename: .asciiz "torch.bin"
 torch_floor_filename: .asciiz "torchflr.bin"
+spikes_filename: .asciiz "spikes.bin"
 
 load_level0:
     ; Floor data
@@ -90,9 +91,10 @@ load_ui:
     jsr LOAD
     rts
 
-load_torches:
+load_animated_tiles:
     jsr load_torch
     jsr load_torch_floor
+    jsr load_spikes
     rts
 
 load_torch:
@@ -128,6 +130,24 @@ load_torch_floor:
     lda #0
     ldx #<TORCH_FLOOR_MEM_ADDR
     ldy #>TORCH_FLOOR_MEM_ADDR
+    jsr LOAD
+    rts
+
+load_spikes:
+    lda #ANIM_BANK
+    sta BANK
+    lda #10
+    ldx #<spikes_filename
+    ldy #>spikes_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<SPIKES_MEM_ADDR
+    ldy #>SPIKES_MEM_ADDR
     jsr LOAD
     rts
 

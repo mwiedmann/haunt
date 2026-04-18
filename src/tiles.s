@@ -41,6 +41,9 @@ init_tile_animations:
     lda #>TORCH_TILE_ADDR
     ldy #TileAnim::_tile_addr+1
     sta (tileanimaddr), y
+    lda #0
+    ldy #TileAnim::_frame_zero_hold_time
+    sta (tileanimaddr), y
 
     jsr inc_tileanimaddr
 
@@ -66,6 +69,37 @@ init_tile_animations:
     sta (tileanimaddr), y
     lda #>TORCH_FLOOR_TILE_ADDR
     ldy #TileAnim::_tile_addr+1
+    sta (tileanimaddr), y
+    lda #0
+    ldy #TileAnim::_frame_zero_hold_time
+    sta (tileanimaddr), y
+    jsr inc_tileanimaddr
+
+; Spikes
+    lda #SPIKES_ANIM_COUNT
+    ldy #TileAnim::_time_max
+    sta (tileanimaddr), y
+    ldy #TileAnim::_time_current
+    sta (tileanimaddr), y
+    lda #SPIKES_FRAMES
+    ldy #TileAnim::_frame_max
+    sta (tileanimaddr), y
+    ldy #TileAnim::_frame_current
+    sta (tileanimaddr), y
+    lda #<SPIKES_MEM_ADDR
+    ldy #TileAnim::_frames_addr
+    sta (tileanimaddr), y
+    lda #>SPIKES_MEM_ADDR
+    ldy #TileAnim::_frames_addr+1
+    sta (tileanimaddr), y
+    lda #<SPIKES_TILE_ADDR
+    ldy #TileAnim::_tile_addr
+    sta (tileanimaddr), y
+    lda #>SPIKES_TILE_ADDR
+    ldy #TileAnim::_tile_addr+1
+    sta (tileanimaddr), y
+    lda #SPIKES_FRAME_ZERO_HOLD_TIME
+    ldy #TileAnim::_frame_zero_hold_time
     sta (tileanimaddr), y
 
     rts
@@ -131,6 +165,15 @@ run_tile_animations:
     ldy #TileAnim::_frame_max
     lda (tileanimaddr), y
     ldy #TileAnim::_frame_current
+    sta (tileanimaddr), y
+
+    ; See if frame 0 is held for extra time
+    ldy #TileAnim::_frame_zero_hold_time
+    lda (tileanimaddr), y
+    beq @next_tile_anim ; No extra hold, move to next anim
+    clc
+    ldy #TileAnim::_time_current
+    adc (tileanimaddr), y
     sta (tileanimaddr), y
 
     bra @next_tile_anim

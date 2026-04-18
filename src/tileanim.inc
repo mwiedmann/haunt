@@ -8,6 +8,7 @@ TILEANIM_H=1
     _frame_max .byte
     _frames_addr .word
     _tile_addr .word ; Assumes upper VRAM
+    _frame_zero_hold_time .byte
 .endstruct
 
 .endif

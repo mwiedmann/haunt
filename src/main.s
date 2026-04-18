@@ -54,7 +54,7 @@ start:
     jsr show_title
     jsr load_level0
     jsr load_precalc
-    jsr load_torches
+    jsr load_animated_tiles
     jsr clear_extra_vram_row
     jsr create_guy
     ; hide layers until everything loaded
@@ -123,31 +123,3 @@ start:
     jsr scroll_layers
     bra @main_loop
     rts
-
-point_to_mapbase_l0:
-    lda #<MAPBASE_L0_ADDR
-    sta VERA_ADDR_LO
-    lda #>MAPBASE_L0_ADDR
-    sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC_BITS
-    sta VERA_ADDR_HI_SET
-    rts
-
-point_to_mapbase_l1:
-    lda #<MAPBASE_L1_ADDR
-    sta VERA_ADDR_LO
-    lda #>MAPBASE_L1_ADDR
-    sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC_BITS
-    sta VERA_ADDR_HI_SET
-    rts
-
-point_to_tilebase_l1:
-    lda #<TILEBASE_L1_ADDR
-    sta VERA_ADDR_LO
-    lda #>TILEBASE_L1_ADDR
-    sta VERA_ADDR_MID
-    lda #VERA_ADDR_HI_INC_BITS
-    sta VERA_ADDR_HI_SET
-    rts
-
