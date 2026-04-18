@@ -27,6 +27,10 @@ init_tile_animations:
     lda #TORCH_FRAMES
     ldy #TileAnim::_frame_max
     sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
     ldy #TileAnim::_frame_current
     sta (tileanimaddr), y
     lda #<TORCH_MEM_ADDR
@@ -44,6 +48,8 @@ init_tile_animations:
     lda #0
     ldy #TileAnim::_frame_zero_hold_time
     sta (tileanimaddr), y
+    ldy #TileAnim::_frame_last_hold_time
+    sta (tileanimaddr), y
 
     jsr inc_tileanimaddr
 
@@ -56,6 +62,10 @@ init_tile_animations:
     lda #TORCH_FRAMES
     ldy #TileAnim::_frame_max
     sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
     ldy #TileAnim::_frame_current
     sta (tileanimaddr), y
     lda #<TORCH_FLOOR_MEM_ADDR
@@ -73,6 +83,8 @@ init_tile_animations:
     lda #0
     ldy #TileAnim::_frame_zero_hold_time
     sta (tileanimaddr), y
+    ldy #TileAnim::_frame_last_hold_time
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; Spikes
@@ -84,6 +96,10 @@ init_tile_animations:
     lda #SPIKES_FRAMES
     ldy #TileAnim::_frame_max
     sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
     ldy #TileAnim::_frame_current
     sta (tileanimaddr), y
     lda #<SPIKES_MEM_ADDR
@@ -101,6 +117,9 @@ init_tile_animations:
     lda #SPIKES_FRAME_ZERO_HOLD_TIME
     ldy #TileAnim::_frame_zero_hold_time
     sta (tileanimaddr), y
+    lda #SPIKES_FRAME_LAST_HOLD_TIME
+    ldy #TileAnim::_frame_last_hold_time
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; Pit
@@ -112,6 +131,10 @@ init_tile_animations:
     lda #PIT_FRAMES
     ldy #TileAnim::_frame_max
     sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
     ldy #TileAnim::_frame_current
     sta (tileanimaddr), y
     lda #<PIT_MEM_ADDR
@@ -128,6 +151,9 @@ init_tile_animations:
     sta (tileanimaddr), y
     lda #PIT_FRAME_ZERO_HOLD_TIME
     ldy #TileAnim::_frame_zero_hold_time
+    sta (tileanimaddr), y
+    lda #PIT_FRAME_LAST_HOLD_TIME
+    ldy #TileAnim::_frame_last_hold_time
     sta (tileanimaddr), y
 
     rts
@@ -161,6 +187,40 @@ run_tile_animations:
     ldy #TileAnim::_time_current
     sta (tileanimaddr), y
 
+    ; Advance the frame
+    ldy #TileAnim::_frame_current
+    lda (tileanimaddr), y
+    inc
+    sta (tileanimaddr), y
+    ldy #TileAnim::_frame_max
+    cmp (tileanimaddr), y
+    bne @check_last_frame
+    ; Loop back to frame 0
+    lda #0
+    ldy #TileAnim::_frame_current
+    sta (tileanimaddr), y
+    ; See if frame 0 is held for extra time
+    ldy #TileAnim::_frame_zero_hold_time
+    lda (tileanimaddr), y
+    beq @show_frame ; No extra hold, move to next anim
+    clc
+    ldy #TileAnim::_time_current
+    adc (tileanimaddr), y
+    sta (tileanimaddr), y
+    bra @show_frame
+@check_last_frame:
+    ldy #TileAnim::_frame_last
+    cmp (tileanimaddr), y
+    bne @show_frame
+    ; See if last is held for extra time
+    ldy #TileAnim::_frame_last_hold_time
+    lda (tileanimaddr), y
+    beq @show_frame ; No extra hold, move to next anim
+    clc
+    ldy #TileAnim::_time_current
+    adc (tileanimaddr), y
+    sta (tileanimaddr), y
+@show_frame:
     lda #ANIM_BANK
     sta BANK
     ldy #TileAnim::_frames_addr
@@ -182,35 +242,12 @@ run_tile_animations:
     sta anim_tile_address+1
 
     jsr handle_anim_frame
-
-    ; Advance the frame
-    ldy #TileAnim::_frame_current
-    lda (tileanimaddr), y
-    dec
-    sta (tileanimaddr), y
-    cmp #0
-    bne @next_tile_anim
-    ldy #TileAnim::_frame_max
-    lda (tileanimaddr), y
-    ldy #TileAnim::_frame_current
-    sta (tileanimaddr), y
-
-    ; See if frame 0 is held for extra time
-    ldy #TileAnim::_frame_zero_hold_time
-    lda (tileanimaddr), y
-    beq @next_tile_anim ; No extra hold, move to next anim
-    clc
-    ldy #TileAnim::_time_current
-    adc (tileanimaddr), y
-    sta (tileanimaddr), y
-
     bra @next_tile_anim
 @done:
     rts
 
 handle_anim_frame:
 ; move to correct frame
-    dex ; counts down to 0
 @check_frame:
     cpx #0
     beq @frame_set
