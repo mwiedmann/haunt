@@ -50,7 +50,11 @@ init_tile_animations:
     sta (tileanimaddr), y
     ldy #TileAnim::_frame_last_hold_time
     sta (tileanimaddr), y
-
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    lda #1 ; Start moving forward
+    ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; Floor torch
@@ -84,6 +88,11 @@ init_tile_animations:
     ldy #TileAnim::_frame_zero_hold_time
     sta (tileanimaddr), y
     ldy #TileAnim::_frame_last_hold_time
+    sta (tileanimaddr), y
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    lda #1 ; Start moving forward
+    ldy #TileAnim::_frame_dir
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
@@ -120,6 +129,11 @@ init_tile_animations:
     lda #SPIKES_FRAME_LAST_HOLD_TIME
     ldy #TileAnim::_frame_last_hold_time
     sta (tileanimaddr), y
+    lda #1 ; Ping pong animation, start moving forward
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; Pit
@@ -155,12 +169,33 @@ init_tile_animations:
     lda #PIT_FRAME_LAST_HOLD_TIME
     ldy #TileAnim::_frame_last_hold_time
     sta (tileanimaddr), y
+    lda #1 ; Ping pong animation, start moving forward
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    jsr inc_tileanimaddr
 
     rts
 
 anim_idx: .byte 0
 anim_frame: .byte 0
 anim_tile_address: .word 0
+
+reverse_anim_frame:
+    ; Ping pong - reverse direction
+    ldy #TileAnim::_frame_dir
+    lda (tileanimaddr), y
+    eor #$FE ; Flip between 1 and -1
+    sta (tileanimaddr), y
+    rts
+
+advance_frame:
+    ldy #TileAnim::_frame_current
+    clc
+    adc (tileanimaddr), y
+    sta (tileanimaddr), y
+    rts
 
 run_tile_animations:
     lda #TILE_ANIMS_COUNT+1
@@ -169,17 +204,19 @@ run_tile_animations:
     sta tileanimaddr
     lda #>tile_animations
     sta tileanimaddr+1
-@next_tile_anim:
+next_tile_anim:
     dec anim_idx
     lda anim_idx
-    beq @done
+    bne @process_tile_anim
+    rts
+@process_tile_anim:
     ldy #TileAnim::_time_current
     lda (tileanimaddr), y
     dec
     sta (tileanimaddr), y
     beq @next_tile_frame
     jsr inc_tileanimaddr
-    bra @next_tile_anim
+    jmp next_tile_anim
 @next_tile_frame:
     ; Reset the time
     ldy #TileAnim::_time_max
@@ -188,17 +225,36 @@ run_tile_animations:
     sta (tileanimaddr), y
 
     ; Advance the frame
-    ldy #TileAnim::_frame_current
+    ldy #TileAnim::_frame_dir
     lda (tileanimaddr), y
-    inc
-    sta (tileanimaddr), y
+    jsr advance_frame
     ldy #TileAnim::_frame_max
     cmp (tileanimaddr), y
+    beq @check_frame_type
+@check_frame_zero:
+    ldy #TileAnim::_frame_current
+    lda (tileanimaddr), y
     bne @check_last_frame
-    ; Loop back to frame 0
+    ; check if ping pong or looping
+    ; ldy #TileAnim::_frame_loop_type
+    ; lda (tileanimaddr), y
+    ; beq @loop_back
+    jsr reverse_anim_frame
+    bra @check_zero_frame
+@check_frame_type:
+    ; check if ping pong or looping
+    ldy #TileAnim::_frame_loop_type
+    lda (tileanimaddr), y
+    beq @loop_back
+    jsr reverse_anim_frame
+    ; move the frame back within bounds
+    jsr advance_frame
+    bra @check_last_frame
+@loop_back:
     lda #0
     ldy #TileAnim::_frame_current
     sta (tileanimaddr), y
+@check_zero_frame:
     ; See if frame 0 is held for extra time
     ldy #TileAnim::_frame_zero_hold_time
     lda (tileanimaddr), y
@@ -242,7 +298,7 @@ run_tile_animations:
     sta anim_tile_address+1
 
     jsr handle_anim_frame
-    bra @next_tile_anim
+    jmp next_tile_anim
 @done:
     rts
 
