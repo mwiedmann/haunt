@@ -19,6 +19,9 @@ init_tile_animations:
     lda #>tile_animations
     sta tileanimaddr+1
 ; Wall torch
+    lda #TORCH_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
     lda #TORCH_ANIM_COUNT
     ldy #TileAnim::_time_max
     sta (tileanimaddr), y
@@ -58,6 +61,9 @@ init_tile_animations:
     jsr inc_tileanimaddr
 
 ; Floor torch
+    lda #TORCH_FLOOR_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
     lda #TORCH_ANIM_COUNT
     ldy #TileAnim::_time_max
     sta (tileanimaddr), y
@@ -97,6 +103,9 @@ init_tile_animations:
     jsr inc_tileanimaddr
 
 ; Spikes
+    lda #SPIKES_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
     lda #SPIKES_ANIM_COUNT
     ldy #TileAnim::_time_max
     sta (tileanimaddr), y
@@ -137,6 +146,9 @@ init_tile_animations:
     jsr inc_tileanimaddr
 
 ; Pit
+    lda #PIT_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
     lda #PIT_ANIM_COUNT
     ldy #TileAnim::_time_max
     sta (tileanimaddr), y

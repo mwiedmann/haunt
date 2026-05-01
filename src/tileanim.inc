@@ -2,6 +2,7 @@
 TILEANIM_H=1
 
 .struct TileAnim
+    _tile_id .byte
     _time_current .byte
     _time_max .byte
     _frame_current .byte
