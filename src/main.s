@@ -75,11 +75,11 @@ start:
     bra @draw_everything ; initial draw
 @main_loop:
     jsr check_controls
+    jsr set_xy_pos
+    jsr check_floor_val
     lda moved
     beq @waiting
 @draw_everything:
-    jsr set_xy_pos
-    jsr check_floor_val
     lda current_tile
     beq @not_blocked
     ; Blocked...move back

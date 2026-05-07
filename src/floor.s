@@ -32,7 +32,7 @@ check_floor_val:
     sta addr + 1
     lda (addr)
     sta current_tile
-    cmp #46
+    cmp #43
     bcc @blocked
     cmp #48
     bcc @check_traps
@@ -50,9 +50,19 @@ check_traps:
     beq @trap
     cmp #PIT_TILE_ID
     beq @trap
+    cmp #DART_TILE_ID
+    beq @darts
+    cmp #DART2_TILE_ID
+    beq @darts
+    cmp #DART3_TILE_ID
+    beq @darts
     rts
 @trap:
     jsr check_if_trap_active
+    stz current_tile
+    rts
+@darts:
+    jsr check_if_darts_active
     stz current_tile
     rts
 
@@ -83,6 +93,35 @@ check_if_trap_active:
     rts
 @dead:
     ; Hit trap
+    bra @dead
+
+check_if_darts_active:
+    lda #TILE_ANIMS_COUNT+1
+    sta anim_idx
+    lda #<tile_animations
+    sta tileanimaddr
+    lda #>tile_animations
+    sta tileanimaddr+1
+@next_tile_anim:
+    dec anim_idx
+    lda anim_idx
+    bne @check_tile_anim
+    rts
+@check_tile_anim:
+    ldy #TileAnim::_tile_id
+    lda (tileanimaddr), y
+    cmp current_tile
+    beq @found_tile_anim
+    jsr inc_tileanimaddr
+    bra @next_tile_anim
+@found_tile_anim:
+    ldy #TileAnim::_frame_current
+    lda (tileanimaddr), y
+    cmp #0
+    bne @dead
+    rts
+@dead:
+    ; Hit dart
     bra @dead
 
 check_treasure:
