@@ -46,6 +46,8 @@ check_controls:
     lda joy_a
     bit #%10 ; Pressing left?
     bne @check_right
+    lda #1
+    sta guy_left
     lda guyX
     sec
     sbc #GUY_SPEED
@@ -56,6 +58,7 @@ check_controls:
     lda joy_a
     bit #%1 ; Pressing right?
     bne @done_move
+    stz guy_left
     lda guyX
     clc
     adc #GUY_SPEED

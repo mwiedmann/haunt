@@ -79,7 +79,9 @@ start:
     jsr set_xy_pos
     jsr check_floor_val
     lda moved
-    beq @waiting
+    bne @draw_everything
+    jsr guy_still
+    bra @waiting
 @draw_everything:
     jsr move_guy_sprite
     lda current_tile

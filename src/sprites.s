@@ -9,6 +9,7 @@ pts_sprite_num: .byte 0
 guy_anim_frame: .byte 0
 guy_anim_frame_count: .byte GUY_ANIM_COUNT
 guy_image_addr_adjusted: .word 0
+guy_left: .byte 0
 
 point_to_sprite:
     lda #<SPRITE_ADDR
@@ -96,6 +97,20 @@ create_guy:
 
     rts
 
+guy_still:
+    lda #1
+    sta guy_anim_frame_count
+    lda #0
+    sta guy_anim_frame
+    ; Reset to first frame
+    lda guy_image_addr_adjusted
+    sta sprite_img_addr
+    lda guy_image_addr_adjusted+1
+    sta sprite_img_addr+1
+    stz sprite_img_addr+2
+    jsr move_guy_sprite
+    rts
+
 move_guy_sprite:
     dec guy_anim_frame_count
     lda guy_anim_frame_count
@@ -135,6 +150,20 @@ move_guy_sprite:
     ora #%10000000 ; Keep the 256 color mode on, plus bank 1 in VRAM
     sta VERA_DATA0 ; Write the hi addr for the sprite frame based on ang
 
+    ; Skip the x/y attribs
+    lda VERA_DATA0
+    lda VERA_DATA0
+    lda VERA_DATA0
+    lda VERA_DATA0
+
+    lda guy_left
+    beq @not_left
+    lda #%00001001
+    sta VERA_DATA0
+    bra @done
+@not_left:
+    lda #%00001000
+    sta VERA_DATA0
 @done:
     rts
 
