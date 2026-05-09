@@ -10,7 +10,8 @@ torch_filename: .asciiz "torch.bin"
 torch_floor_filename: .asciiz "torchflr.bin"
 spikes_filename: .asciiz "spikes.bin"
 pit_filename: .asciiz "pit.bin"
-dart_filename: .asciiz "dart.bin"
+darth_filename: .asciiz "darth.bin"
+dartv_filename: .asciiz "dartv.bin"
 
 load_level0:
     ; Floor data
@@ -98,7 +99,8 @@ load_animated_tiles:
     jsr load_torch_floor
     jsr load_spikes
     jsr load_pit
-    jsr load_dart
+    jsr load_darth
+    jsr load_dartv
     rts
 
 load_torch:
@@ -173,12 +175,12 @@ load_pit:
     jsr LOAD
     rts
 
-load_dart:
+load_darth:
     lda #ANIM_BANK
     sta BANK
-    lda #8
-    ldx #<dart_filename
-    ldy #>dart_filename
+    lda #9
+    ldx #<darth_filename
+    ldy #>darth_filename
     jsr SETNAM
     ; 0,8,2
     lda #0
@@ -186,8 +188,26 @@ load_dart:
     ldy #2
     jsr SETLFS
     lda #0
-    ldx #<DART_MEM_ADDR
-    ldy #>DART_MEM_ADDR
+    ldx #<DARTH_MEM_ADDR
+    ldy #>DARTH_MEM_ADDR
+    jsr LOAD
+    rts
+
+load_dartv:
+    lda #ANIM_BANK
+    sta BANK
+    lda #9
+    ldx #<dartv_filename
+    ldy #>dartv_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<DARTV_MEM_ADDR
+    ldy #>DARTV_MEM_ADDR
     jsr LOAD
     rts
 

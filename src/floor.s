@@ -32,7 +32,7 @@ check_floor_val:
     sta addr + 1
     lda (addr)
     sta current_tile
-    cmp #43
+    cmp #40
     bcc @blocked
     cmp #48
     bcc @check_traps
@@ -50,11 +50,17 @@ check_traps:
     beq @trap
     cmp #PIT_TILE_ID
     beq @trap
-    cmp #DART_TILE_ID
+    cmp #DARTH_TILE_ID
     beq @darts
-    cmp #DART2_TILE_ID
+    cmp #DARTH2_TILE_ID
     beq @darts
-    cmp #DART3_TILE_ID
+    cmp #DARTH3_TILE_ID
+    beq @darts
+    cmp #DARTV_TILE_ID
+    beq @darts
+    cmp #DARTV2_TILE_ID
+    beq @darts
+    cmp #DARTV3_TILE_ID
     beq @darts
     rts
 @trap:

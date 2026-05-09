@@ -27,7 +27,8 @@ img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/TORCHFLR.BIN 16 16 12 240 4 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/SPIKES.BIN 16 16 12 252 4 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/PIT.BIN 16 16 12 264 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/DART.BIN 16 16 12 276 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/DARTV.BIN 16 16 12 276 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/DARTH.BIN 16 16 12 288 4 1
 	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 1 0 1 1
 
 map:

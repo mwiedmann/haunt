@@ -188,17 +188,17 @@ init_tile_animations:
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
-; Dart-1
-    lda #DART_TILE_ID
+; DARTH-1
+    lda #DARTH_TILE_ID
     ldy #TileAnim::_tile_id
     sta (tileanimaddr), y
-    lda #DART_ANIM_COUNT
+    lda #DARTH_ANIM_COUNT
     ldy #TileAnim::_time_max
     sta (tileanimaddr), y
-    lda #DART_ANIM_COUNT*3
+    lda #DARTH_ANIM_COUNT*3
     ldy #TileAnim::_time_current
     sta (tileanimaddr), y
-    lda #DART_FRAMES
+    lda #DARTH_FRAMES
     ldy #TileAnim::_frame_max
     sta (tileanimaddr), y
     dec
@@ -207,19 +207,19 @@ init_tile_animations:
     lda #0
     ldy #TileAnim::_frame_current
     sta (tileanimaddr), y
-    lda #<DART_MEM_ADDR
+    lda #<DARTH_MEM_ADDR
     ldy #TileAnim::_frames_addr
     sta (tileanimaddr), y
-    lda #>DART_MEM_ADDR
+    lda #>DARTH_MEM_ADDR
     ldy #TileAnim::_frames_addr+1
     sta (tileanimaddr), y
-    lda #<DART_TILE_ADDR
+    lda #<DARTH_TILE_ADDR
     ldy #TileAnim::_tile_addr
     sta (tileanimaddr), y
-    lda #>DART_TILE_ADDR
+    lda #>DARTH_TILE_ADDR
     ldy #TileAnim::_tile_addr+1
     sta (tileanimaddr), y
-    lda #DART_FRAME_ZERO_HOLD_TIME
+    lda #DARTH_FRAME_ZERO_HOLD_TIME
     ldy #TileAnim::_frame_zero_hold_time
     sta (tileanimaddr), y
     lda #0 ; Regular animation
@@ -230,17 +230,17 @@ init_tile_animations:
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
-; Dart-2
-    lda #DART2_TILE_ID
+; DARTH-2
+    lda #DARTH2_TILE_ID
     ldy #TileAnim::_tile_id
     sta (tileanimaddr), y
-    lda #DART_ANIM_COUNT
+    lda #DARTH_ANIM_COUNT
     ldy #TileAnim::_time_max
     sta (tileanimaddr), y
-    lda #DART_ANIM_COUNT*2*3
+    lda #DARTH_ANIM_COUNT*2*3
     ldy #TileAnim::_time_current
     sta (tileanimaddr), y
-    lda #DART_FRAMES
+    lda #DARTH_FRAMES
     ldy #TileAnim::_frame_max
     sta (tileanimaddr), y
     dec
@@ -249,19 +249,19 @@ init_tile_animations:
     lda #0
     ldy #TileAnim::_frame_current
     sta (tileanimaddr), y
-    lda #<DART_MEM_ADDR
+    lda #<DARTH_MEM_ADDR
     ldy #TileAnim::_frames_addr
     sta (tileanimaddr), y
-    lda #>DART_MEM_ADDR
+    lda #>DARTH_MEM_ADDR
     ldy #TileAnim::_frames_addr+1
     sta (tileanimaddr), y
-    lda #<DART2_TILE_ADDR
+    lda #<DARTH2_TILE_ADDR
     ldy #TileAnim::_tile_addr
     sta (tileanimaddr), y
-    lda #>DART2_TILE_ADDR
+    lda #>DARTH2_TILE_ADDR
     ldy #TileAnim::_tile_addr+1
     sta (tileanimaddr), y
-    lda #DART_FRAME_ZERO_HOLD_TIME
+    lda #DARTH_FRAME_ZERO_HOLD_TIME
     ldy #TileAnim::_frame_zero_hold_time
     sta (tileanimaddr), y
     lda #0 ; Regular animation
@@ -272,17 +272,17 @@ init_tile_animations:
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
-    ; Dart-3
-    lda #DART3_TILE_ID
+    ; DARTH-3
+    lda #DARTH3_TILE_ID
     ldy #TileAnim::_tile_id
     sta (tileanimaddr), y
-    lda #DART_ANIM_COUNT
+    lda #DARTH_ANIM_COUNT
     ldy #TileAnim::_time_max
     sta (tileanimaddr), y
-    lda #DART_ANIM_COUNT*3*3
+    lda #DARTH_ANIM_COUNT*3*3
     ldy #TileAnim::_time_current
     sta (tileanimaddr), y
-    lda #DART_FRAMES
+    lda #DARTH_FRAMES
     ldy #TileAnim::_frame_max
     sta (tileanimaddr), y
     dec
@@ -291,19 +291,145 @@ init_tile_animations:
     lda #0
     ldy #TileAnim::_frame_current
     sta (tileanimaddr), y
-    lda #<DART_MEM_ADDR
+    lda #<DARTH_MEM_ADDR
     ldy #TileAnim::_frames_addr
     sta (tileanimaddr), y
-    lda #>DART_MEM_ADDR
+    lda #>DARTH_MEM_ADDR
     ldy #TileAnim::_frames_addr+1
     sta (tileanimaddr), y
-    lda #<DART3_TILE_ADDR
+    lda #<DARTH3_TILE_ADDR
     ldy #TileAnim::_tile_addr
     sta (tileanimaddr), y
-    lda #>DART3_TILE_ADDR
+    lda #>DARTH3_TILE_ADDR
     ldy #TileAnim::_tile_addr+1
     sta (tileanimaddr), y
-    lda #DART_FRAME_ZERO_HOLD_TIME
+    lda #DARTH_FRAME_ZERO_HOLD_TIME
+    ldy #TileAnim::_frame_zero_hold_time
+    sta (tileanimaddr), y
+    lda #0 ; Regular animation
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    lda #1
+    ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    jsr inc_tileanimaddr
+
+; DARTV-1
+    lda #DARTV_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
+    lda #DARTV_ANIM_COUNT
+    ldy #TileAnim::_time_max
+    sta (tileanimaddr), y
+    lda #DARTV_ANIM_COUNT*3
+    ldy #TileAnim::_time_current
+    sta (tileanimaddr), y
+    lda #DARTV_FRAMES
+    ldy #TileAnim::_frame_max
+    sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
+    ldy #TileAnim::_frame_current
+    sta (tileanimaddr), y
+    lda #<DARTV_MEM_ADDR
+    ldy #TileAnim::_frames_addr
+    sta (tileanimaddr), y
+    lda #>DARTV_MEM_ADDR
+    ldy #TileAnim::_frames_addr+1
+    sta (tileanimaddr), y
+    lda #<DARTV_TILE_ADDR
+    ldy #TileAnim::_tile_addr
+    sta (tileanimaddr), y
+    lda #>DARTV_TILE_ADDR
+    ldy #TileAnim::_tile_addr+1
+    sta (tileanimaddr), y
+    lda #DARTV_FRAME_ZERO_HOLD_TIME
+    ldy #TileAnim::_frame_zero_hold_time
+    sta (tileanimaddr), y
+    lda #0 ; Regular animation
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    lda #1
+    ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    jsr inc_tileanimaddr
+
+; DARTV-2
+    lda #DARTV2_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
+    lda #DARTV_ANIM_COUNT
+    ldy #TileAnim::_time_max
+    sta (tileanimaddr), y
+    lda #DARTV_ANIM_COUNT*2*3
+    ldy #TileAnim::_time_current
+    sta (tileanimaddr), y
+    lda #DARTV_FRAMES
+    ldy #TileAnim::_frame_max
+    sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
+    ldy #TileAnim::_frame_current
+    sta (tileanimaddr), y
+    lda #<DARTV_MEM_ADDR
+    ldy #TileAnim::_frames_addr
+    sta (tileanimaddr), y
+    lda #>DARTV_MEM_ADDR
+    ldy #TileAnim::_frames_addr+1
+    sta (tileanimaddr), y
+    lda #<DARTV2_TILE_ADDR
+    ldy #TileAnim::_tile_addr
+    sta (tileanimaddr), y
+    lda #>DARTV2_TILE_ADDR
+    ldy #TileAnim::_tile_addr+1
+    sta (tileanimaddr), y
+    lda #DARTV_FRAME_ZERO_HOLD_TIME
+    ldy #TileAnim::_frame_zero_hold_time
+    sta (tileanimaddr), y
+    lda #0 ; Regular animation
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    lda #1
+    ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    jsr inc_tileanimaddr
+
+    ; DARTV-3
+    lda #DARTV3_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
+    lda #DARTV_ANIM_COUNT
+    ldy #TileAnim::_time_max
+    sta (tileanimaddr), y
+    lda #DARTV_ANIM_COUNT*3*3
+    ldy #TileAnim::_time_current
+    sta (tileanimaddr), y
+    lda #DARTV_FRAMES
+    ldy #TileAnim::_frame_max
+    sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
+    ldy #TileAnim::_frame_current
+    sta (tileanimaddr), y
+    lda #<DARTV_MEM_ADDR
+    ldy #TileAnim::_frames_addr
+    sta (tileanimaddr), y
+    lda #>DARTV_MEM_ADDR
+    ldy #TileAnim::_frames_addr+1
+    sta (tileanimaddr), y
+    lda #<DARTV3_TILE_ADDR
+    ldy #TileAnim::_tile_addr
+    sta (tileanimaddr), y
+    lda #>DARTV3_TILE_ADDR
+    ldy #TileAnim::_tile_addr+1
+    sta (tileanimaddr), y
+    lda #DARTV_FRAME_ZERO_HOLD_TIME
     ldy #TileAnim::_frame_zero_hold_time
     sta (tileanimaddr), y
     lda #0 ; Regular animation
