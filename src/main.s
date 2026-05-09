@@ -81,6 +81,7 @@ start:
     lda moved
     beq @waiting
 @draw_everything:
+    jsr move_guy_sprite
     lda current_tile
     beq @not_blocked
     ; Blocked...move back

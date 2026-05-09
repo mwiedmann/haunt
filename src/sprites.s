@@ -6,6 +6,10 @@ sprite_offset: .word 0
 sprite_img_addr: .dword 0
 pts_sprite_num: .byte 0
 
+guy_anim_frame: .byte 0
+guy_anim_frame_count: .byte GUY_ANIM_COUNT
+guy_image_addr_adjusted: .word 0
+
 point_to_sprite:
     lda #<SPRITE_ADDR
     sta active_sprite
@@ -43,9 +47,9 @@ point_to_sprite:
     rts
 
 create_guy:
-    lda #<(TILEBASE_L1_ADDR+(GUY_TILE*256))
+    lda #<GUY_MEM_ADDR
     sta sprite_img_addr
-    lda #>(TILEBASE_L1_ADDR+(GUY_TILE*256))
+    lda #>GUY_MEM_ADDR
     sta sprite_img_addr+1
     stz sprite_img_addr+2
 @start_shift: ; Shift the image addr bits as sprites use bits 12:5 and 16:13 (we default 16 to 0)
@@ -70,7 +74,7 @@ create_guy:
     lda sprite_img_addr ; Frame addr lo
     sta VERA_DATA0 ; Write the lo addr for the sprite frame based on ang
     lda sprite_img_addr+1 ; Frame addr hi
-    ora #%10001000 ; Keep the 256 color mode on, plus bank 2 in VRAM
+    ora #%10000000 ; Keep the 256 color mode on, plus bank 1 in VRAM
     sta VERA_DATA0 ; Write the hi addr for the sprite frame based on ang
     lda #<GUY_PIXEL_X
     sta VERA_DATA0
@@ -85,6 +89,53 @@ create_guy:
     lda #%01010000
     sta VERA_DATA0
 
+    lda sprite_img_addr
+    sta guy_image_addr_adjusted
+    lda sprite_img_addr+1
+    sta guy_image_addr_adjusted+1
+
+    rts
+
+move_guy_sprite:
+    dec guy_anim_frame_count
+    lda guy_anim_frame_count
+    bne @done
+
+    ; Next frame
+    lda sprite_img_addr
+    clc
+    adc #%1000
+    sta sprite_img_addr
+    lda sprite_img_addr+1
+    adc #0
+    sta sprite_img_addr+1
+
+    lda #GUY_ANIM_COUNT
+    sta guy_anim_frame_count
+    inc guy_anim_frame
+    lda guy_anim_frame
+    cmp #GUY_FRAMES
+    bne @update_frame
+    stz guy_anim_frame
+    ; Reset to first frame
+    lda guy_image_addr_adjusted
+    sta sprite_img_addr
+    lda guy_image_addr_adjusted+1
+    sta sprite_img_addr+1
+    stz sprite_img_addr+2
+@update_frame:
+    lda #1
+    sta pts_sprite_num
+    jsr point_to_sprite
+    
+    ; We have the new address of the sprite frame...point to to
+    lda sprite_img_addr
+    sta VERA_DATA0 ; Write the lo addr for the sprite frame based on ang
+    lda sprite_img_addr+1
+    ora #%10000000 ; Keep the 256 color mode on, plus bank 1 in VRAM
+    sta VERA_DATA0 ; Write the hi addr for the sprite frame based on ang
+
+@done:
     rts
 
 .endif
