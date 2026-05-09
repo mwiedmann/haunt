@@ -12,6 +12,7 @@ spikes_filename: .asciiz "spikes.bin"
 pit_filename: .asciiz "pit.bin"
 darth_filename: .asciiz "darth.bin"
 dartv_filename: .asciiz "dartv.bin"
+lava_filename: .asciiz "lava.bin"
 
 load_level0:
     ; Floor data
@@ -101,6 +102,7 @@ load_animated_tiles:
     jsr load_pit
     jsr load_darth
     jsr load_dartv
+    jsr load_lava
     rts
 
 load_torch:
@@ -208,6 +210,24 @@ load_dartv:
     lda #0
     ldx #<DARTV_MEM_ADDR
     ldy #>DARTV_MEM_ADDR
+    jsr LOAD
+    rts
+
+load_lava:
+    lda #ANIM_BANK
+    sta BANK
+    lda #8
+    ldx #<lava_filename
+    ldy #>lava_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<LAVA_MEM_ADDR
+    ldy #>LAVA_MEM_ADDR
     jsr LOAD
     rts
 

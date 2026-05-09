@@ -46,6 +46,7 @@ waitflag: .byte 0
 .include "sprites.s"
 .include "tiles.s"
 .include "title.s"
+.include "dead.s"
 .include "wait.s"
 
 loopCount: .byte 0

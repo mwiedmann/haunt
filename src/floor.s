@@ -32,7 +32,7 @@ check_floor_val:
     sta addr + 1
     lda (addr)
     sta current_tile
-    cmp #40
+    cmp #39
     bcc @blocked
     cmp #48
     bcc @check_traps
@@ -46,6 +46,8 @@ check_floor_val:
     rts
 
 check_traps:
+    cmp #LAVA_TILE_ID
+    beq @lava
     cmp #SPIKES_TILE_ID
     beq @trap
     cmp #PIT_TILE_ID
@@ -70,6 +72,9 @@ check_traps:
 @darts:
     jsr check_if_darts_active
     stz current_tile
+    rts
+@lava:
+    jsr dead
     rts
 
 check_if_trap_active:
@@ -99,7 +104,8 @@ check_if_trap_active:
     rts
 @dead:
     ; Hit trap
-    bra @dead
+    jsr dead
+    rts
 
 check_if_darts_active:
     lda #TILE_ANIMS_COUNT+1
@@ -127,8 +133,8 @@ check_if_darts_active:
     bne @dead
     rts
 @dead:
-    ; Hit dart
-    bra @dead
+    jsr dead
+    rts
 
 check_treasure:
     cmp #TREASURE_TILE
