@@ -36,6 +36,8 @@ default_irq: .word 0
 waitflag: .byte 0
 
 .include "config.s"
+.include "guy.s"
+.include "ui.s"
 .include "irq.s"
 .include "move.s"
 .include "floor.s"
@@ -73,6 +75,7 @@ start:
     lda #STARTY
     sta yMid
     jsr set_xy_pos
+    jsr guy_reset_health
     bra @draw_everything ; initial draw
 @main_loop:
     jsr check_controls
