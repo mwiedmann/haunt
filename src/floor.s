@@ -75,6 +75,7 @@ check_traps:
     rts
 @lava:
     jsr dead
+    stz current_tile
     rts
 
 check_if_trap_active:
