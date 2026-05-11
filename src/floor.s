@@ -209,7 +209,7 @@ check_treasure:
     adc xOffset+1
     sta addr+1
 
-    lda #32 ; replace treasure with floor tile
+    lda #48; replace treasure with floor tile
     sta (addr)
     rts
 

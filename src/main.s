@@ -38,6 +38,7 @@ waitflag: .byte 0
 .include "config.s"
 .include "guy.s"
 .include "ui.s"
+.include "gas.s"
 .include "irq.s"
 .include "move.s"
 .include "floor.s"
@@ -78,6 +79,7 @@ start:
     jsr guy_reset_health
     bra @draw_everything ; initial draw
 @main_loop:
+    jsr check_gas
     lda guy_stunned
     bne @cant_move
     jsr check_controls
