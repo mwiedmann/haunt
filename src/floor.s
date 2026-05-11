@@ -74,6 +74,8 @@ check_traps:
     stz current_tile
     rts
 @lava:
+    lda #LAVA_DAMAGE
+    sta damage_amount
     jsr dead
     stz current_tile
     rts
@@ -107,6 +109,8 @@ check_if_trap_active:
     lda current_tile
     cmp #PIT_TILE_ID
     beq @pit
+    lda #SPIKES_DAMAGE
+    sta damage_amount
     jsr dead
     rts
 @pit:
@@ -142,6 +146,8 @@ check_if_darts_active:
 @dead:
     lda #1
     sta guy_stunned
+    lda #DART_DAMAGE
+    sta damage_amount
     jsr dead
     rts
 
