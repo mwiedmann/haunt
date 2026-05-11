@@ -104,8 +104,14 @@ check_if_trap_active:
     beq @dead
     rts
 @dead:
-    ; Hit trap
+    lda current_tile
+    cmp #PIT_TILE_ID
+    beq @pit
     jsr dead
+    rts
+@pit:
+    lda #1
+    sta guy_stunned
     rts
 
 check_if_darts_active:
@@ -134,6 +140,8 @@ check_if_darts_active:
     bne @dead
     rts
 @dead:
+    lda #1
+    sta guy_stunned
     jsr dead
     rts
 

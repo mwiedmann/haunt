@@ -7,6 +7,8 @@ GUY_START_HEALTH = $1234
 guy_health:     .word GUY_START_HEALTH
 guy_health_tmp: .word 0  ; set lo+hi before calling take_damage or heal
 
+guy_stunned: .byte 0
+
 ; Set guy_health_tmp_lo/hi to BCD amount before calling.
 ; Clamps to $0000 on underflow.
 guy_take_damage:
@@ -14,7 +16,7 @@ guy_take_damage:
     sec
     lda guy_health
     sbc guy_health_tmp
-    tax                         ; save lo result
+    tax                       ; save lo result
     lda guy_health+1
     sbc guy_health_tmp+1
     bcs @no_underflow

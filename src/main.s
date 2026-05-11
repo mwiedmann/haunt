@@ -78,7 +78,11 @@ start:
     jsr guy_reset_health
     bra @draw_everything ; initial draw
 @main_loop:
+    lda guy_stunned
+    bne @cant_move
     jsr check_controls
+@cant_move:
+    stz guy_stunned
     jsr set_xy_pos
     jsr check_floor_val
     lda moved
