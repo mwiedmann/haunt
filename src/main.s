@@ -90,7 +90,8 @@ start:
     lda moved
     bne @draw_everything
     jsr guy_still
-    bra @waiting
+    lda gas_spread
+    beq @waiting
 @draw_everything:
     jsr move_guy_sprite
     lda current_tile

@@ -32,7 +32,7 @@ check_floor_val:
     sta addr + 1
     lda (addr)
     sta current_tile
-    cmp #39
+    cmp #BLOCKING_TILE_MAX
     bcc @blocked
     cmp #48
     bcc @check_traps
@@ -64,6 +64,8 @@ check_traps:
     beq @darts
     cmp #DARTV3_TILE_ID
     beq @darts
+    cmp #GAS_TILE_ID
+    beq @gas
     rts
 @trap:
     jsr check_if_trap_active
@@ -75,6 +77,12 @@ check_traps:
     rts
 @lava:
     lda #LAVA_DAMAGE
+    sta damage_amount
+    jsr dead
+    stz current_tile
+    rts
+@gas:
+    lda #GAS_DAMAGE
     sta damage_amount
     jsr dead
     stz current_tile

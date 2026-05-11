@@ -31,6 +31,7 @@ img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/DARTH.BIN 16 16 12 288 4 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/LAVA.BIN 16 16 12 300 4 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/GUY.BIN 16 16 12 312 9 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/GAS.BIN 16 16 12 324 4 1
 	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 1 0 1 1
 
 map:
