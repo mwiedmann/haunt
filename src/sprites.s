@@ -99,16 +99,13 @@ create_guy:
 
 guy_still:
     lda #1
-    sta guy_anim_frame_count
-    lda #0
-    sta guy_anim_frame
-    ; Reset to first frame
-    lda guy_image_addr_adjusted
-    sta sprite_img_addr
-    lda guy_image_addr_adjusted+1
-    sta sprite_img_addr+1
-    stz sprite_img_addr+2
-    jsr move_guy_sprite
+    sta pts_sprite_num
+    jsr point_to_sprite
+    lda #<GUY_STILL_ADDR_ADJUSTED
+    sta VERA_DATA0
+    lda #>GUY_STILL_ADDR_ADJUSTED
+    ora #%10000000 ; Keep the 256 color mode on, plus bank 1 in VRAM
+    sta VERA_DATA0 ; Write the hi addr for the sprite frame based on ang
     rts
 
 move_guy_sprite:
