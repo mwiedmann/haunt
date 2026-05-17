@@ -1,9 +1,9 @@
 .ifndef LOADING_S
 LOADING_S = 1
 
-l0_floor_filename: .asciiz "l0floor.bin"
-l0_mapbase_filename: .asciiz "l0map.bin"
-precalc_filename: .asciiz "precalc.bin"
+floor_filename: .asciiz "l00floor.bin"
+mapbase_filename: .asciiz "l00map.bin"
+precalc_filename: .asciiz "l00calc.bin"
 tiles_filename: .asciiz "tiles.bin"
 ui_filename: .asciiz "ui.bin"
 torch_filename: .asciiz "torch.bin"
@@ -16,11 +16,11 @@ lava_filename: .asciiz "lava.bin"
 guy_filename: .asciiz "guy.bin"
 gas_filename: .asciiz "gas.bin"
 
-load_level0:
+load_level_floor_and_mapbase:
     ; Floor data
-    lda #11
-    ldx #<l0_floor_filename
-    ldy #>l0_floor_filename
+    lda #12
+    ldx #<floor_filename
+    ldy #>floor_filename
     jsr SETNAM
     lda #0
     ldx #8
@@ -33,9 +33,9 @@ load_level0:
     ; Level data into banked ram
     lda #LEVEL_BANK
     sta BANK
-    lda #9
-    ldx #<l0_mapbase_filename
-    ldy #>l0_mapbase_filename
+    lda #10
+    ldx #<mapbase_filename
+    ldy #>mapbase_filename
     jsr SETNAM
     lda #0
     ldx #8

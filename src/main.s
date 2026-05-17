@@ -39,6 +39,7 @@ waitflag: .byte 0
 .include "guy.s"
 .include "ui.s"
 .include "gas.s"
+.include "level.s"
 .include "irq.s"
 .include "move.s"
 .include "floor.s"
@@ -56,8 +57,7 @@ loopCount: .byte 0
 
 start:
     jsr show_title
-    jsr load_level0
-    jsr load_precalc
+    jsr load_level
     jsr load_animated_tiles
     jsr clear_extra_vram_row
     jsr create_guy

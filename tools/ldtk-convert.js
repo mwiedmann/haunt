@@ -29,9 +29,15 @@ const createLevelCode = (level) => {
   }
 
   return { floor, mapbase }
-};
+}
 
-const data = createLevelCode(d.levels[0]);
-
-fs.writeFileSync(`build/L0FLOOR.BIN`, new Uint8Array([...data.floor]), "binary");
-fs.writeFileSync(`build/L0MAP.BIN`, new Uint8Array([...data.mapbase]), "binary");
+for (let i=0; i<d.levels.length; i++) {
+  const level = d.levels[i];
+  if (level.identifier.startsWith("Level_")) {
+    const levelNum = parseInt(level.identifier.split("_")[1])
+    const data = createLevelCode(level);
+    fs.writeFileSync(`build/L${levelNum.toString().padStart(2, '0')}FLOOR.BIN`, new Uint8Array([...data.floor]), "binary");
+    fs.writeFileSync(`build/L${levelNum.toString().padStart(2, '0')}MAP.BIN`, new Uint8Array([...data.mapbase]), "binary");
+    console.log(`Created Level ${level.identifier}`)
+  }
+}

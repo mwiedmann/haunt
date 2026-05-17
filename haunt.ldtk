@@ -140,7 +140,7 @@
 	] },
 	"levels": [
 		{
-			"identifier": "Level_0",
+			"identifier": "Level_1",
 			"iid": "43329db0-d380-11f0-a00e-8b12f9110d32",
 			"uid": 0,
 			"worldX": 0,
@@ -150,7 +150,7 @@
 			"pxHei": 1024,
 			"__bgColor": "#696A79",
 			"bgColor": null,
-			"useAutoIdentifier": true,
+			"useAutoIdentifier": false,
 			"bgRelPath": null,
 			"bgPos": null,
 			"bgPivotX": 0.5,
