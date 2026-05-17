@@ -4,6 +4,8 @@ FLOOR_S = 1
 floor: .res 4096
 current_tile: .byte 0
 
+hit_exit: .byte 0
+
 check_floor_val:
     lda #<floor
     sta addr
@@ -40,6 +42,7 @@ check_floor_val:
     rts
 @blocked:
     jsr check_treasure
+    jsr check_exit
     rts
 @check_traps:
     jsr check_traps
@@ -157,6 +160,16 @@ check_if_darts_active:
     lda #DART_DAMAGE
     sta damage_amount
     jsr dead
+    rts
+
+check_exit:
+    cmp #EXIT_TILE
+    beq @is_exit
+    rts
+@is_exit:
+    stz current_tile
+    inc hit_exit
+    inc level
     rts
 
 check_treasure:

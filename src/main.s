@@ -53,8 +53,6 @@ waitflag: .byte 0
 .include "dead.s"
 .include "wait.s"
 
-loopCount: .byte 0
-
 start:
     jsr show_title
     jsr load_level
@@ -70,7 +68,6 @@ start:
     jsr load_ui
     jsr config
     jsr init_tile_animations
-    
     lda #STARTX
     sta xMid
     lda #STARTY
@@ -88,6 +85,8 @@ start:
     stz guy_stunned
     jsr set_xy_pos
     jsr check_floor_val
+    lda hit_exit
+    bne @next_level
     lda moved
     bne @draw_everything
     jsr guy_still
@@ -116,25 +115,23 @@ start:
     beq @waiting
     stz waitflag
     jsr run_tile_animations
-    inc loopCount
-    lda loopCount
-    cmp #WAIT_COUNT
-    bne @waiting
-    stz loopCount
     jsr scroll_layers
     jsr copy_vram_hold_to_vram
-    
     bra @main_loop
 @scroll_only:
     lda waitflag
     cmp #0
     beq @scroll_only
     stz waitflag
-    inc loopCount
-    lda loopCount
-    cmp #WAIT_COUNT
-    bne @scroll_only
-    stz loopCount
     jsr scroll_layers
     bra @main_loop
     rts
+@next_level:
+    stz hit_exit
+    jsr load_level
+    lda #STARTX
+    sta xMid
+    lda #STARTY
+    sta yMid
+    jsr set_xy_pos
+    bra @draw_everything ; initial draw
