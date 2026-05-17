@@ -77,6 +77,7 @@ start:
     sta yMid
     jsr set_xy_pos
     jsr guy_reset_health
+    jsr guy_reset_score
     bra @draw_everything ; initial draw
 @main_loop:
     jsr check_gas

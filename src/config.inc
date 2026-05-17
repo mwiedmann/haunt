@@ -141,4 +141,5 @@ GAS_SPREAD_TIME=60
 BLOCKING_TILE_MAX=37 ; Tiles with IDs <= this are considered blocking for movement
 GAS_MAX_TILE_ID=37 ; Only cover tiles with IDs less than this with gas
 
+TREASURE_SCORE=$1234
 .endif

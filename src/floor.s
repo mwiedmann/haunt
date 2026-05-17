@@ -167,6 +167,12 @@ check_treasure:
     lda #0
     sta current_tile
     sta (addr)
+    ; Add score for treasure
+    lda #<TREASURE_SCORE
+    sta guy_score_tmp
+    lda #>TREASURE_SCORE
+    sta guy_score_tmp+1
+    jsr guy_add_score
     ; remove treasure from map
     lda yMidAdj
     sta yOffset
