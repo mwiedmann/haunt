@@ -22,6 +22,7 @@
     guyLastX: .res 1
     guyLastY: .res 1
     tileanimaddr: .res 2
+    treasureaddr: .res 2
     gasaddr: .res 2
 
 .segment "STARTUP"
@@ -32,6 +33,7 @@
 .include "x16.inc"
 .include "config.inc"
 .include "tileanim.inc"
+.include "treasure.inc"
 
 .segment "CODE"
 
@@ -55,6 +57,7 @@ waitflag: .byte 0
 .include "title.s"
 .include "dead.s"
 .include "wait.s"
+.include "treasure.s"
 
 start:
     jsr show_title

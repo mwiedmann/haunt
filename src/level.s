@@ -57,6 +57,9 @@ load_level:
     sta (addr)
 
     jsr load_precalc
+
+    jsr init_treasure_sets
+    
     rts
 
 .endif
