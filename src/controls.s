@@ -22,6 +22,10 @@ joy1:
 moved: .byte 0
 
 check_controls:
+    lda guyX
+    sta guyLastX
+    lda guyY
+    sta guyLastY
     stz moved
     jsr joy1
     lda joy_a

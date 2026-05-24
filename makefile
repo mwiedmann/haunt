@@ -42,6 +42,9 @@ ui:
 	
 calc:
 	node tools/calcall.js
+
+gas:
+	node tools/gas.js
 	
 zip:
 	cd build && \

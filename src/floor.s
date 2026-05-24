@@ -173,8 +173,12 @@ check_exit:
     rts
 
 check_treasure:
-    cmp #TREASURE_TILE
-    beq @is_treasure
+    cmp #TREASURE_TILE_START
+    bcs @maybe_treasure
+    rts
+@maybe_treasure:
+    cmp #TREASURE_TILE_END+1
+    bcc @is_treasure
     rts
 @is_treasure:
     lda #0

@@ -4,6 +4,7 @@ LOADING_S = 1
 floor_filename: .asciiz "l00floor.bin"
 mapbase_filename: .asciiz "l00map.bin"
 precalc_filename: .asciiz "l00calc.bin"
+gasmap_filename: .asciiz "l00gas.bin"
 tiles_filename: .asciiz "tiles.bin"
 ui_filename: .asciiz "ui.bin"
 torch_filename: .asciiz "torch.bin"
@@ -16,7 +17,7 @@ lava_filename: .asciiz "lava.bin"
 guy_filename: .asciiz "guy.bin"
 gas_filename: .asciiz "gas.bin"
 
-load_level_floor_and_mapbase:
+load_level_files:
     ; Floor data
     lda #12
     ldx #<floor_filename
@@ -36,6 +37,21 @@ load_level_floor_and_mapbase:
     lda #10
     ldx #<mapbase_filename
     ldy #>mapbase_filename
+    jsr SETNAM
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<HIRAM
+    ldy #>HIRAM
+    jsr LOAD
+    ; Level gas map into banked ram
+    lda #GAS_BANK
+    sta BANK
+    lda #10
+    ldx #<gasmap_filename
+    ldy #>gasmap_filename
     jsr SETNAM
     lda #0
     ldx #8

@@ -26,7 +26,24 @@ load_level:
     adc level
     sta (addr)
 
-    jsr load_level_floor_and_mapbase
+    lda #<gasmap_filename
+    sta addr
+    lda #>gasmap_filename
+    sta addr + 1
+    inc addr
+    inc addr
+    lda #48 ; "0"
+    clc
+    adc level
+    sta (addr)
+
+    jsr load_level_files
+
+    ; Reset gas addr
+    lda #<HIRAM
+    sta gasaddr
+    lda #>HIRAM
+    sta gasaddr + 1
 
     lda #<precalc_filename
     sta addr

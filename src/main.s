@@ -19,7 +19,10 @@
     yMidAdj: .res 1
     xLastMid: .res 1
     yLastMid: .res 1
+    guyLastX: .res 1
+    guyLastY: .res 1
     tileanimaddr: .res 2
+    gasaddr: .res 2
 
 .segment "STARTUP"
     jmp start
@@ -101,6 +104,10 @@ start:
     sta xMid
     lda yLastMid
     sta yMid
+    lda guyLastX
+    sta guyX
+    lda guyLastY
+    sta guyY
     jsr set_xy_pos
 @not_blocked:
     lda xMid

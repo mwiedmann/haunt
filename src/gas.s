@@ -1,103 +1,64 @@
 .ifndef GAS_S
 GAS_S = 1
 
-gas_counter: .byte GAS_START_TIME
-gas_x_start: .byte STARTX-1
-gas_y_start: .byte STARTY-1
-gas_x_end: .byte STARTX+2
-gas_y_end: .byte STARTY+2
-
+gas_counter: .word GAS_START_TIME
 gas_x_current: .byte 0
 gas_y_current: .byte 0
 
-gas_spread: .byte 0
+gas_spread: .byte 0 ; signals if need to redraw
 
 check_gas:
     stz gas_spread
-    dec gas_counter
     lda gas_counter
-    beq @next_gas
-    rts
-@next_gas:
+    sec
+    sbc #1
+    sta gas_counter
+    lda gas_counter+1
+    sbc #0
+    sta gas_counter+1
+    lda gas_counter
+    bne @done
+    lda gas_counter+1
+    bne @done
+@trigger_gas:
     lda #1
     sta gas_spread
     lda #GAS_SPREAD_TIME ; time to next spread
     sta gas_counter
-    lda gas_x_start
+@next_gas:
+    lda #GAS_BANK
+    sta BANK
+    lda (gasaddr)
+    cmp #GAS_DONE_MARKER
+    beq @done
+    cmp #GAS_ITERATION_MARKER
+    beq @iteration_done
     sta gas_x_current
-    lda gas_y_start
+    jsr inc_gasaddr
+    lda (gasaddr)
     sta gas_y_current
     jsr get_floor_val
-    ; Add gas to the floor
-@next_x:
-    lda gas_x_current
-    cmp gas_x_end
-    beq @next_y
-    jsr add_gas_to_floor
-    inc gas_x_current
-    lda addr2
-    clc
-    adc #1
-    sta addr2
-    lda addr2 + 1
-    adc #0
-    sta addr2 + 1
-    bra @next_x
-@next_y:
-    lda gas_x_start
-    sta gas_x_current
-    inc gas_y_current
-    lda gas_y_current
-    cmp gas_y_end
-    beq @done_gas
-    jsr get_floor_val
-    bra @next_x
-@done_gas:
-    lda gas_x_start
-    cmp #1
-    beq @x_min
-    dec gas_x_start
-@x_min:
-    lda gas_x_end
-    cmp #63
-    beq @x_max
-    inc gas_x_end
-@x_max:
-    lda gas_y_start
-    cmp #1
-    beq @y_min
-    dec gas_y_start
-@y_min:
-    lda gas_y_end
-    cmp #63
-    beq @y_max
-    inc gas_y_end
-@y_max:
-    rts
-
-add_gas_to_floor:
-    ; Only need to add the outside edges of the gas, since the inside will already be gas
-    lda gas_x_current
-    cmp gas_x_start
-    beq @add_gas
-    inc
-    cmp gas_x_end
-    beq @add_gas
-    ; also the entire top and bottom rows
-    lda gas_y_current
-    cmp gas_y_start
-    beq @add_gas
-    inc
-    cmp gas_y_end
-    beq @add_gas
-    rts
-@add_gas:
-    ; Don't replace walls
-    lda (addr2)
-    cmp #GAS_MAX_TILE_ID
-    bcc @wall
     lda #GAS_TILE_ID
     sta (addr2) ; add gas to floor
+    jsr add_gas_to_stored_mapbase
+    jsr inc_gasaddr
+    bra @next_gas
+@iteration_done:
+    jsr inc_gasaddr
+@done:
+    rts
+
+inc_gasaddr:
+    lda gasaddr
+    clc
+    adc #1
+    sta gasaddr
+    lda gasaddr + 1
+    adc #0
+    sta gasaddr + 1
+    rts
+
+add_gas_to_stored_mapbase:
     ; Now update the stored mapbase
     lda gas_y_current
     clc
@@ -153,7 +114,6 @@ add_gas_to_floor:
     sta addr+1
     lda #GAS_TILE_ID ; replace with gas
     sta (addr)
-@wall:
     rts
 
 get_floor_val:
