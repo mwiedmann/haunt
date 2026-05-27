@@ -53,6 +53,9 @@ init_treasure_sets:
     lda #>CHALICE_SET_BONUS_SCORE
     ldy #TreasureSet::_set_score+1
     sta (treasureaddr), y
+    lda #CHALICE_SET_SIZE
+    ldy #TreasureSet::_set_size
+    sta (treasureaddr), y
     lda #0
     ldy #TreasureSet::_collected
     sta (treasureaddr), y
@@ -88,6 +91,9 @@ init_treasure_sets:
     sta (treasureaddr), y
     lda #>IDOL_SET_BONUS_SCORE
     ldy #TreasureSet::_set_score+1
+    sta (treasureaddr), y
+    lda #IDOL_SET_SIZE
+    ldy #TreasureSet::_set_size
     sta (treasureaddr), y
     lda #0
     ldy #TreasureSet::_collected
@@ -136,6 +142,22 @@ score_treasure:
     bra @next_item
 @found_item:
     ldy treasure_offset
+    lda (treasureaddr), y
+    sta guy_score_tmp
+    iny
+    lda (treasureaddr), y
+    sta guy_score_tmp+1
+    jsr guy_add_score
+    ; See if bonus for set
+    ldy #TreasureSet::_collected
+    lda (treasureaddr), y
+    inc
+    sta (treasureaddr), y
+    ldy #TreasureSet::_set_size
+    cmp (treasureaddr), y
+    bne @done
+    ; Set complete, add bonus score
+    ldy #TreasureSet::_set_score
     lda (treasureaddr), y
     sta guy_score_tmp
     iny
