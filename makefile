@@ -23,16 +23,16 @@ pal:
 
 img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/TILES.BIN 16 16 12 0 12 19
-	node tools/gimp-img-convert.js gfx/tiles.data build/TORCH.BIN 16 16 12 228 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/TORCHFLR.BIN 16 16 12 240 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/SPIKES.BIN 16 16 12 252 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/PIT.BIN 16 16 12 264 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/DARTV.BIN 16 16 12 276 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/DARTH.BIN 16 16 12 288 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/LAVA.BIN 16 16 12 300 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/GUY.BIN 16 16 12 312 9 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/GAS.BIN 16 16 12 324 4 1
-	node tools/gimp-img-convert.js gfx/tiles.data build/ACID.BIN 16 16 12 336 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/TORCH.BIN 16 16 12 252 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/TORCHFLR.BIN 16 16 12 264 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/SPIKES.BIN 16 16 12 276 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/PIT.BIN 16 16 12 288 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/DARTV.BIN 16 16 12 300 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/DARTH.BIN 16 16 12 312 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/LAVA.BIN 16 16 12 324 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/GUY.BIN 16 16 12 336 9 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/GAS.BIN 16 16 12 348 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/ACID.BIN 16 16 12 360 4 1
 	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 1 0 1 1
 
 map:
