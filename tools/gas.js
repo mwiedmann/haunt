@@ -33,7 +33,7 @@ const calcData = (level) => {
     const key = x + "," + y
     if (!gasFloor.has(key) || gasFloor.get(key) > iteration) {
       // See if this tile blocks gas
-      if (floor.get(key) >= 36) {
+      if (floor.get(key) >= 60) {
         gasFloor.set(key, iteration)
         checkSpot(x+1, y, iteration+1)
         checkSpot(x-1, y, iteration+1)

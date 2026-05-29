@@ -36,7 +36,7 @@ check_floor_val:
     sta current_tile
     cmp #BLOCKING_TILE_MAX
     bcc @blocked
-    cmp #48
+    cmp #TRAP_TILE_MAX
     bcc @check_traps
     stz current_tile
     rts
@@ -236,7 +236,7 @@ check_treasure:
     adc xOffset+1
     sta addr+1
 
-    lda #48; replace treasure with floor tile
+    lda #FLOOR_TILE; replace treasure with floor tile
     sta (addr)
     rts
 
