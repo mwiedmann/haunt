@@ -16,6 +16,7 @@ dartv_filename: .asciiz "dartv.bin"
 lava_filename: .asciiz "lava.bin"
 guy_filename: .asciiz "guy.bin"
 gas_filename: .asciiz "gas.bin"
+acid_filename: .asciiz "acid.bin"
 
 load_level_files:
     ; Floor data
@@ -122,6 +123,7 @@ load_animated_tiles:
     jsr load_dartv
     jsr load_lava
     jsr load_gas
+    jsr load_acid
     jsr load_guy
     rts
 
@@ -266,6 +268,24 @@ load_gas:
     lda #0
     ldx #<GAS_MEM_ADDR
     ldy #>GAS_MEM_ADDR
+    jsr LOAD
+    rts
+
+load_acid:
+    lda #ANIM_BANK2
+    sta BANK
+    lda #8
+    ldx #<acid_filename
+    ldy #>acid_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<ACID_MEM_ADDR
+    ldy #>ACID_MEM_ADDR
     jsr LOAD
     rts
 

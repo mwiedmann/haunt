@@ -14,6 +14,7 @@ TILEANIM_H=1
     _frame_last_hold_time .byte
     _frame_loop_type .byte ; 0 for loop, 1 for ping-pong
     _frame_dir .byte ; 1 for forward, -1 for backward, used for ping-pong animations
+    _bank .byte
 .endstruct
 
 .endif

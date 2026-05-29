@@ -58,6 +58,9 @@ init_tile_animations:
     lda #1 ; Start moving forward
     ldy #TileAnim::_frame_dir
     sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; Floor torch
@@ -99,6 +102,9 @@ init_tile_animations:
     sta (tileanimaddr), y
     lda #1 ; Start moving forward
     ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
@@ -143,6 +149,9 @@ init_tile_animations:
     sta (tileanimaddr), y
     ldy #TileAnim::_frame_dir
     sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; Pit
@@ -186,6 +195,9 @@ init_tile_animations:
     sta (tileanimaddr), y
     ldy #TileAnim::_frame_dir
     sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; DARTH-1
@@ -227,6 +239,9 @@ init_tile_animations:
     sta (tileanimaddr), y
     lda #1
     ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
@@ -270,9 +285,12 @@ init_tile_animations:
     lda #1
     ldy #TileAnim::_frame_dir
     sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
-    ; DARTH-3
+; DARTH-3
     lda #DARTH3_TILE_ID
     ldy #TileAnim::_tile_id
     sta (tileanimaddr), y
@@ -311,6 +329,9 @@ init_tile_animations:
     sta (tileanimaddr), y
     lda #1
     ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
@@ -354,6 +375,9 @@ init_tile_animations:
     lda #1
     ldy #TileAnim::_frame_dir
     sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; DARTV-2
@@ -395,6 +419,9 @@ init_tile_animations:
     sta (tileanimaddr), y
     lda #1
     ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
@@ -438,6 +465,9 @@ init_tile_animations:
     lda #1
     ldy #TileAnim::_frame_dir
     sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; LAVA
@@ -480,6 +510,9 @@ init_tile_animations:
     lda #1
     ldy #TileAnim::_frame_dir
     sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
 ; GAS
@@ -521,6 +554,55 @@ init_tile_animations:
     sta (tileanimaddr), y
     lda #1
     ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
+    jsr inc_tileanimaddr
+
+; Acid
+    lda #ACID_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
+    lda #ACID_ANIM_COUNT
+    ldy #TileAnim::_time_max
+    sta (tileanimaddr), y
+    ldy #TileAnim::_time_current
+    sta (tileanimaddr), y
+    lda #ACID_FRAMES
+    ldy #TileAnim::_frame_max
+    sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
+    ldy #TileAnim::_frame_current
+    sta (tileanimaddr), y
+    lda #<ACID_MEM_ADDR
+    ldy #TileAnim::_frames_addr
+    sta (tileanimaddr), y
+    lda #>ACID_MEM_ADDR
+    ldy #TileAnim::_frames_addr+1
+    sta (tileanimaddr), y
+    lda #<ACID_TILE_ADDR
+    ldy #TileAnim::_tile_addr
+    sta (tileanimaddr), y
+    lda #>ACID_TILE_ADDR
+    ldy #TileAnim::_tile_addr+1
+    sta (tileanimaddr), y
+    lda #ACID_FRAME_ZERO_HOLD_TIME
+    ldy #TileAnim::_frame_zero_hold_time
+    sta (tileanimaddr), y
+    lda #ACID_FRAME_LAST_HOLD_TIME
+    ldy #TileAnim::_frame_last_hold_time
+    sta (tileanimaddr), y
+    lda #1 ; Ping pong animation, start moving forward
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    lda #ANIM_BANK2
+    ldy #TileAnim::_bank
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
@@ -625,7 +707,8 @@ next_tile_anim:
     adc (tileanimaddr), y
     sta (tileanimaddr), y
 @show_frame:
-    lda #ANIM_BANK
+    ldy #TileAnim::_bank
+    lda (tileanimaddr), y
     sta BANK
     ldy #TileAnim::_frames_addr
     lda (tileanimaddr), y
