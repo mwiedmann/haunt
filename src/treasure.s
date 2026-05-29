@@ -151,6 +151,63 @@ init_treasure_sets:
     sta (treasureaddr), y
     jsr inc_treasureaddr  
 
+; Gem set
+    lda #GEM_SET_TILE_START
+    ldy #TreasureSet::_tile_id_start
+    sta (treasureaddr), y
+    lda #GEM_SET_TILE_END+1
+    ldy #TreasureSet::_tile_id_end
+    sta (treasureaddr), y
+    lda #<GEM_SET_SCORE1
+    ldy #TreasureSet::_scores
+    sta (treasureaddr), y
+    lda #>GEM_SET_SCORE1
+    ldy #TreasureSet::_scores+1
+    sta (treasureaddr), y
+    lda #<GEM_SET_SCORE2
+    ldy #TreasureSet::_scores+2
+    sta (treasureaddr), y
+    lda #>GEM_SET_SCORE2
+    ldy #TreasureSet::_scores+3
+    sta (treasureaddr), y
+    lda #<GEM_SET_SCORE3
+    ldy #TreasureSet::_scores+4
+    sta (treasureaddr), y
+    lda #>GEM_SET_SCORE3
+    ldy #TreasureSet::_scores+5
+    sta (treasureaddr), y
+    lda #<GEM_SET_SCORE4
+    ldy #TreasureSet::_scores+6
+    sta (treasureaddr), y
+    lda #>GEM_SET_SCORE4
+    ldy #TreasureSet::_scores+7
+    sta (treasureaddr), y
+    lda #<GEM_SET_SCORE5
+    ldy #TreasureSet::_scores+8
+    sta (treasureaddr), y
+    lda #>GEM_SET_SCORE5
+    ldy #TreasureSet::_scores+9
+    sta (treasureaddr), y
+    lda #<GEM_SET_SCORE6
+    ldy #TreasureSet::_scores+10
+    sta (treasureaddr), y
+    lda #>GEM_SET_SCORE6
+    ldy #TreasureSet::_scores+11
+    sta (treasureaddr), y
+    lda #<GEM_SET_BONUS_SCORE
+    ldy #TreasureSet::_set_score
+    sta (treasureaddr), y
+    lda #>GEM_SET_BONUS_SCORE
+    ldy #TreasureSet::_set_score+1
+    sta (treasureaddr), y
+    lda #GEM_SET_SIZE
+    ldy #TreasureSet::_set_size
+    sta (treasureaddr), y
+    lda #0
+    ldy #TreasureSet::_collected
+    sta (treasureaddr), y
+    jsr inc_treasureaddr  
+
     rts
 
 score_treasure:
