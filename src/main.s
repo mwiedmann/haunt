@@ -74,10 +74,7 @@ start:
     jsr load_ui
     jsr config
     jsr init_tile_animations
-    lda #STARTX
-    sta xMid
-    lda #STARTY
-    sta yMid
+    jsr find_start
     jsr set_xy_pos
     jsr guy_reset_health
     jsr guy_reset_score
@@ -140,9 +137,6 @@ start:
 @next_level:
     stz hit_exit
     jsr load_level
-    lda #STARTX
-    sta xMid
-    lda #STARTY
-    sta yMid
+    jsr find_start
     jsr set_xy_pos
     bra @draw_everything ; initial draw

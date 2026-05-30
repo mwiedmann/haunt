@@ -7,8 +7,8 @@ viewStartX: .byte 0
 viewStartY: .byte 0
 viewEndX: .byte 0
 viewEndY: .byte 0
-guyX: .byte 0
-guyY: .byte 0
+guyX: .byte 8
+guyY: .byte 8
 
 set_xy_pos:
     lda xMid

@@ -6,6 +6,40 @@ current_tile: .byte 0
 
 hit_exit: .byte 0
 
+find_start:
+    lda #<floor
+    sta addr
+    lda #>floor
+    sta addr + 1
+    stz xMid
+    stz yMid
+@next_tile_check:
+    lda (addr)
+    cmp #ENTRY_TILE
+    beq @found_start
+    ; Advance to next tile
+    clc
+    lda addr
+    adc #1
+    sta addr
+    lda addr + 1
+    adc #0
+    sta addr + 1
+    ; Advance x and y
+    inc xMid
+    lda xMid
+    cmp #64
+    bne @next_tile_check
+    stz xMid
+    inc yMid
+    bra @next_tile_check
+    ; Something strange happening with memory here.
+    ; Added extra nops to fix it. Not sure why this is needed.
+    nop
+    nop
+@found_start:
+    rts
+
 check_floor_val:
     lda #<floor
     sta addr
