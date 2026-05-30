@@ -71,6 +71,8 @@ check_traps:
     beq @darts
     cmp #GAS_TILE_ID
     beq @gas
+    cmp #WATER_TILE_ID
+    beq @water
     rts
 @trap:
     jsr check_if_trap_active
@@ -90,6 +92,10 @@ check_traps:
     lda #GAS_DAMAGE
     sta damage_amount
     jsr dead
+    stz current_tile
+    rts
+@water:
+    ; TODO: Will put out fire on guy
     stz current_tile
     rts
 

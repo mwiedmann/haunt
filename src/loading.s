@@ -17,6 +17,7 @@ lava_filename: .asciiz "lava.bin"
 guy_filename: .asciiz "guy.bin"
 gas_filename: .asciiz "gas.bin"
 acid_filename: .asciiz "acid.bin"
+water_filename: .asciiz "water.bin"
 
 load_level_files:
     ; Floor data
@@ -124,6 +125,7 @@ load_animated_tiles:
     jsr load_lava
     jsr load_gas
     jsr load_acid
+    jsr load_water
     jsr load_guy
     rts
 
@@ -286,6 +288,24 @@ load_acid:
     lda #0
     ldx #<ACID_MEM_ADDR
     ldy #>ACID_MEM_ADDR
+    jsr LOAD
+    rts
+
+load_water:
+    lda #ANIM_BANK2
+    sta BANK
+    lda #9
+    ldx #<water_filename
+    ldy #>water_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<WATER_MEM_ADDR
+    ldy #>WATER_MEM_ADDR
     jsr LOAD
     rts
 

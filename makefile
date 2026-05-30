@@ -33,6 +33,7 @@ img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/GUY.BIN 16 16 12 336 9 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/GAS.BIN 16 16 12 348 4 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/ACID.BIN 16 16 12 360 4 1
+	node tools/gimp-img-convert.js gfx/tiles.data build/WATER.BIN 16 16 12 372 4 1
 	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 1 0 1 1
 
 map:

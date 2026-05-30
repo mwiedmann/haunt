@@ -606,6 +606,51 @@ init_tile_animations:
     sta (tileanimaddr), y
     jsr inc_tileanimaddr
 
+; Water
+    lda #WATER_TILE_ID
+    ldy #TileAnim::_tile_id
+    sta (tileanimaddr), y
+    lda #WATER_ANIM_COUNT
+    ldy #TileAnim::_time_max
+    sta (tileanimaddr), y
+    ldy #TileAnim::_time_current
+    sta (tileanimaddr), y
+    lda #WATER_FRAMES
+    ldy #TileAnim::_frame_max
+    sta (tileanimaddr), y
+    dec
+    ldy #TileAnim::_frame_last
+    sta (tileanimaddr), y
+    lda #0
+    ldy #TileAnim::_frame_current
+    sta (tileanimaddr), y
+    lda #<WATER_MEM_ADDR
+    ldy #TileAnim::_frames_addr
+    sta (tileanimaddr), y
+    lda #>WATER_MEM_ADDR
+    ldy #TileAnim::_frames_addr+1
+    sta (tileanimaddr), y
+    lda #<WATER_TILE_ADDR
+    ldy #TileAnim::_tile_addr
+    sta (tileanimaddr), y
+    lda #>WATER_TILE_ADDR
+    ldy #TileAnim::_tile_addr+1
+    sta (tileanimaddr), y
+    lda #0
+    ldy #TileAnim::_frame_zero_hold_time
+    sta (tileanimaddr), y
+    ldy #TileAnim::_frame_last_hold_time
+    sta (tileanimaddr), y
+    ldy #TileAnim::_frame_loop_type
+    sta (tileanimaddr), y
+    lda #1
+    ldy #TileAnim::_frame_dir
+    sta (tileanimaddr), y
+    lda #ANIM_BANK2
+    ldy #TileAnim::_bank
+    sta (tileanimaddr), y
+    jsr inc_tileanimaddr
+
     rts
 
 anim_idx: .byte 0
