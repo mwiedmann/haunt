@@ -23,6 +23,8 @@ const calcData = (level) => {
 
   const startX = 16
   const startY = 15
+  const blocksGasTileIdStart=60
+
   let maxIteration = 0
 
   const checkSpot = (x, y, iteration) => {
@@ -33,7 +35,7 @@ const calcData = (level) => {
     const key = x + "," + y
     if (!gasFloor.has(key) || gasFloor.get(key) > iteration) {
       // See if this tile blocks gas
-      if (floor.get(key) >= 60) {
+      if (floor.get(key) >= blocksGasTileIdStart) {
         gasFloor.set(key, iteration)
         checkSpot(x+1, y, iteration+1)
         checkSpot(x-1, y, iteration+1)

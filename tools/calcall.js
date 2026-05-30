@@ -84,7 +84,8 @@ const calcData = (level) => {
   const loCheck = 0.05;
   const finalBytes = [];
   const torchTileId=48
-  const nonBlockingTorchTileId=60
+  const nonBlockingTorchTileId=59
+  const clearTileStartId=55
 
   for (let startY = 1; startY <= 62; startY++) {
     for (let startX = 1; startX <= 62; startX++) {
@@ -120,7 +121,7 @@ const calcData = (level) => {
             if (
               (yCheck === startY && xCheck === startX) || // Skip center tile
               (yCheck === y && xCheck === x) || // Skip tile we are currently checking
-              mapBaseData[yCheck * 64 + xCheck] >= 55 // Skip checking tiles that are clear
+              mapBaseData[yCheck * 64 + xCheck] >= clearTileStartId // Skip checking tiles that are clear
             ) {
               continue;
             }
