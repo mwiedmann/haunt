@@ -84,6 +84,7 @@ start:
     bra @draw_everything ; initial draw
 @main_loop:
     jsr check_gas
+    jsr guy_check_fire
     lda guy_stunned
     bne @cant_move
     jsr check_controls

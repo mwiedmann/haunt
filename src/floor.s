@@ -83,6 +83,7 @@ check_traps:
     stz current_tile
     rts
 @lava:
+    jsr guy_burned
     lda #LAVA_DAMAGE
     sta damage_amount
     jsr dead
@@ -95,7 +96,7 @@ check_traps:
     stz current_tile
     rts
 @water:
-    ; TODO: Will put out fire on guy
+    stz guy_on_fire
     stz current_tile
     rts
 

@@ -3,6 +3,8 @@ GUY_S = 1
 
 GUY_MAX_HEALTH = $9999
 GUY_START_HEALTH = $1000
+GUY_FIRE_TICKS=60
+GUY_FIRE_DAMAGE = $01
 
 guy_health:     .word GUY_START_HEALTH
 guy_health_tmp: .word 0  ; set lo+hi before calling take_damage or heal
@@ -11,6 +13,38 @@ guy_stunned: .byte 0
 
 guy_score: .dword 0
 guy_score_tmp: .dword 0
+guy_on_fire: .byte 0
+guy_fire_timer: .byte 0
+
+guy_burned:
+    lda #1
+    sta guy_on_fire
+    lda guy_fire_timer ; see if already on fire
+    beq @start_fire
+    rts
+@start_fire:
+    lda #GUY_FIRE_TICKS
+    sta guy_fire_timer
+    rts
+    
+guy_check_fire:
+    lda guy_on_fire
+    beq @not_on_fire
+    dec guy_fire_timer
+    lda guy_fire_timer
+    beq @on_fire
+    rts
+@on_fire:
+    lda #GUY_FIRE_TICKS
+    sta guy_fire_timer
+    stz guy_health_tmp
+    stz guy_health_tmp+1
+    lda #GUY_FIRE_DAMAGE
+    sta guy_health_tmp
+    jsr guy_take_damage
+    rts
+@not_on_fire:
+    rts
 
 ; Set guy_health_tmp_lo/hi to BCD amount before calling.
 ; Clamps to $0000 on underflow.
