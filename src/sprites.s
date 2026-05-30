@@ -11,6 +11,8 @@ guy_anim_frame_count: .byte GUY_ANIM_COUNT
 guy_image_addr_adjusted: .word 0
 guyfire_image_addr_adjusted: .word 0
 guy_left: .byte 0
+guy_still_ticks: .byte 0
+guy_still_frame: .byte 0
 
 point_to_sprite:
     lda #<SPRITE_ADDR
@@ -107,6 +109,14 @@ create_guy:
     rts
 
 guy_still:
+    lda guy_still_ticks
+    bne @show_frame
+    lda #GUY_STILL_TICKS
+    sta guy_still_ticks
+    lda guy_still_frame
+    eor #1
+    sta guy_still_frame
+@show_frame:
     lda #1
     sta pts_sprite_num
     jsr point_to_sprite
@@ -119,11 +129,22 @@ guy_still:
     sta VERA_DATA0 ; Write the hi addr for the sprite frame based on ang
     rts
 @on_fire:
+    lda guy_still_frame
+    bne @on_fire_frame2
     lda #<GUYFIRE_STILL_ADDR_ADJUSTED
     sta VERA_DATA0
     lda #>GUYFIRE_STILL_ADDR_ADJUSTED
     ora #%10000000 ; Keep the 256 color mode on, plus bank 1 in VRAM
     sta VERA_DATA0 ; Write the hi addr for the sprite frame based on ang
+    bra @done
+@on_fire_frame2:
+    lda #<(GUYFIRE_STILL_ADDR_ADJUSTED+8)
+    sta VERA_DATA0
+    lda #>(GUYFIRE_STILL_ADDR_ADJUSTED+8)
+    ora #%10000000 ; Keep the 256 color mode on, plus bank 1 in VRAM
+    sta VERA_DATA0 ; Write the hi addr for the sprite frame based on ang
+@done:
+    dec guy_still_ticks
     rts
 
 guy_reset_frames:

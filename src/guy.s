@@ -5,6 +5,7 @@ GUY_MAX_HEALTH = $9999
 GUY_START_HEALTH = $1000
 GUY_FIRE_TICKS=60
 GUY_FIRE_DAMAGE = $01
+GUY_STILL_TICKS = 10
 
 guy_health:     .word GUY_START_HEALTH
 guy_health_tmp: .word 0  ; set lo+hi before calling take_damage or heal
