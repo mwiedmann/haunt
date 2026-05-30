@@ -17,16 +17,33 @@ guy_on_fire: .byte 0
 guy_fire_timer: .byte 0
 
 guy_burned:
-    lda #1
-    sta guy_on_fire
-    lda guy_fire_timer ; see if already on fire
-    beq @start_fire
-    rts
-@start_fire:
+    lda guy_on_fire
+    bne @done
+    inc guy_on_fire
     lda #GUY_FIRE_TICKS
     sta guy_fire_timer
+    lda guyfire_image_addr_adjusted
+    sta sprite_img_addr
+    lda guyfire_image_addr_adjusted+1
+    sta sprite_img_addr+1
+    stz sprite_img_addr+2
+    jsr guy_reset_frames
+@done:
     rts
-    
+
+guy_extinguished:
+    lda guy_on_fire
+    beq @done
+    stz guy_on_fire
+    lda guy_image_addr_adjusted
+    sta sprite_img_addr
+    lda guy_image_addr_adjusted+1
+    sta sprite_img_addr+1
+    stz sprite_img_addr+2
+    jsr guy_reset_frames
+@done:
+    rts
+
 guy_check_fire:
     lda guy_on_fire
     beq @not_on_fire

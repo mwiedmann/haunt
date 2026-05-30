@@ -18,6 +18,7 @@ guy_filename: .asciiz "guy.bin"
 gas_filename: .asciiz "gas.bin"
 acid_filename: .asciiz "acid.bin"
 water_filename: .asciiz "water.bin"
+guyfire_filename: .asciiz "guyfire.bin"
 
 load_level_files:
     ; Floor data
@@ -127,6 +128,7 @@ load_animated_tiles:
     jsr load_acid
     jsr load_water
     jsr load_guy
+    jsr load_guyfire
     rts
 
 load_torch:
@@ -322,6 +324,22 @@ load_guy:
     lda #2 ; VRAM 1st bank
     ldx #<GUY_MEM_ADDR
     ldy #>GUY_MEM_ADDR
+    jsr LOAD
+    rts
+
+load_guyfire:
+    lda #11
+    ldx #<guyfire_filename
+    ldy #>guyfire_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #2 ; VRAM 1st bank
+    ldx #<GUYFIRE_MEM_ADDR
+    ldy #>GUYFIRE_MEM_ADDR
     jsr LOAD
     rts
 

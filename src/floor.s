@@ -96,7 +96,7 @@ check_traps:
     stz current_tile
     rts
 @water:
-    stz guy_on_fire
+    jsr guy_extinguished
     stz current_tile
     rts
 
