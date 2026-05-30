@@ -1,12 +1,12 @@
 .ifndef UI_S
 UI_S = 1
 
-GUY_SCORE_X = 31
+GUY_SCORE_X = 28
 GUY_SCORE_Y = 12
 SCORE_L1_MAPBASE_ADDR = MAPBASE_L1_ADDR + (L1_WIDTH*2*GUY_SCORE_Y) + (GUY_SCORE_X*2)
 
-GUY_HEALTH_X = 31
-GUY_HEALTH_Y = 15
+GUY_HEALTH_X = 34
+GUY_HEALTH_Y = 12
 HEALTH_L1_MAPBASE_ADDR = MAPBASE_L1_ADDR + (L1_WIDTH*2*GUY_HEALTH_Y) + (GUY_HEALTH_X*2)
 TILE_DIGIT_START = 122
 
@@ -53,22 +53,10 @@ update_score:
     sta VERA_ADDR_MID
     lda #VERA_ADDR_HI_INC_BITS
     sta VERA_ADDR_HI_SET
-    
-    lda guy_score+3
-    jsr get_font_num
-
-    lda num_low
-    sta VERA_DATA0
-    lda #0
-    sta VERA_DATA0
 
     lda guy_score+2
     jsr get_font_num
 
-    lda num_high
-    sta VERA_DATA0
-    lda #0
-    sta VERA_DATA0
     lda num_low
     sta VERA_DATA0
     lda #0

@@ -22,7 +22,7 @@ pal:
 	node tools/gimp-pal-convert.js gfx/title.data.pal build/TITLEPAL.BIN
 
 img:
-	node tools/gimp-img-convert.js gfx/tiles.data build/TILES.BIN 16 16 12 0 12 19
+	node tools/gimp-img-convert.js gfx/tiles.data build/TILES.BIN 16 16 12 0 12 20
 	node tools/gimp-img-convert.js gfx/tiles.data build/TORCH.BIN 16 16 12 252 4 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/TORCHFLR.BIN 16 16 12 264 4 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/SPIKES.BIN 16 16 12 276 4 1
