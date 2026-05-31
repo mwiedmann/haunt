@@ -3,10 +3,6 @@ MOVE_S = 1
 
 viewRadius: .byte STARTING_VIEW_RADIUS
 viewRadiusDiff: .byte (MAX_VIEW_RADIUS-STARTING_VIEW_RADIUS)
-viewStartX: .byte 0
-viewStartY: .byte 0
-viewEndX: .byte 0
-viewEndY: .byte 0
 guyX: .byte 8
 guyY: .byte 8
 

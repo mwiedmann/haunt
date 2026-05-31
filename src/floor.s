@@ -35,10 +35,163 @@ find_start:
     inc yMid
     bra @next_tile_check
 @found_start:
+    lda xMid
+    sta xLastMid
+    lda yMid
+    sta yLastMid
     ; Clear the start tile so we don't immediately exit
     lda #ENTRY_TILE
     sta (addr)
+    sta current_tile
     ; TODO: Change the visual tile
+    rts
+
+remove_found_treasure:
+    lda #<floor
+    sta addr2
+    lda #>floor
+    sta addr2 + 1
+    stz xMid
+    stz yMid
+@next_tile_check:
+    lda (addr2)
+    cmp #TREASURE_TILE_START
+    bcc @not_treasure
+    cmp #TREASURE_TILE_END+1
+    bcs @not_treasure
+    jsr see_if_treasure_already_collected
+@not_treasure:
+    lda addr2
+    clc
+    adc #1
+    sta addr2
+    lda addr2 + 1
+    adc #0
+    sta addr2 + 1
+    ; Advance x and y
+    inc xMid
+    lda xMid
+    cmp #64
+    bne @next_tile_check
+    stz xMid
+    inc yMid
+    lda yMid
+    cmp #64
+    bne @next_tile_check
+    rts
+
+see_if_treasure_already_collected:
+    ; Found a treasure, see if player already collected it
+    sta current_tile
+    lda #TREASURE_SET_COUNT
+    sta treasure_count
+    lda #<treasure_sets
+    sta treasureaddr
+    lda #>treasure_sets
+    sta treasureaddr+1
+@check_set:
+    lda treasure_count
+    beq @done
+    dec treasure_count
+    lda current_tile
+    ldy #TreasureSet::_tile_id_start
+    cmp (treasureaddr), y
+    bcs @maybe_treasure
+    bra @next_set
+@maybe_treasure:
+    ldy #TreasureSet::_tile_id_end
+    cmp (treasureaddr), y
+    bcc @found_set
+@next_set:
+    jsr inc_treasureaddr
+    bra @check_set
+@found_set:
+    ; See if the player already collected this treasure
+    lda #TreasureSet::_collected
+    sta treasure_collected_offset
+    ldy #TreasureSet::_tile_id_start
+    lda (treasureaddr), y
+    sta treasure_temp
+@next_item:
+    lda current_tile
+    cmp treasure_temp
+    beq @found_item
+    inc treasure_collected_offset
+    inc treasure_temp
+    bra @next_item
+@found_item:
+    ; See if this treasure is collected
+    ldy treasure_collected_offset
+    lda (treasureaddr), y
+    beq @done
+    lda #FLOOR_TILE ; replace treasure on floor with floor tile
+    sta (addr2)
+    jsr remove_treasure_from_mapbase
+@done:
+    rts
+
+remove_treasure_from_mapbase:
+    ; Remove from mapbase
+    ; Set the adjusted x/y
+    lda yMid
+    clc
+    adc #POS_ADJUST
+    sta yMidAdj
+    lda xMid
+    clc
+    adc #POS_ADJUST
+    sta xMidAdj
+    lda yMidAdj
+    sta yOffset
+    stz yOffset+1
+    ; Multiply by 256 to get start pos
+    stz mapbase_addr
+    stz mapbase_addr+1
+    ldy #8
+@pos_y_start:
+    cpy #0
+    beq @end_pos_y_start
+    dey
+    asl yOffset
+    rol yOffset+1
+    bra @pos_y_start
+@end_pos_y_start:
+    lda mapbase_addr
+    clc
+    adc yOffset
+    sta mapbase_addr
+    lda mapbase_addr+1
+    adc yOffset+1
+    sta mapbase_addr+1
+@check_x_offset:
+    ; Map is 32k, across 4 banks
+    ; Need to get the starting bank, then advance bank as address moves to next bank
+    lda #<HIRAM
+    clc
+    adc mapbase_addr
+    sta addr
+    lda #>HIRAM
+    adc mapbase_addr+1
+    sta addr + 1
+    lda #LEVEL_BANK
+    sta temp_bank
+    jsr check_bank_address
+    ; addr should be pointing to correct y location
+    ; adjust for x
+    stz xOffset+1
+    lda xMidAdj
+    asl
+    sta xOffset
+    lda addr
+    clc
+    adc xOffset
+    sta addr
+    lda addr+1
+    adc xOffset+1
+    sta addr+1
+
+    lda #FLOOR_TILE; replace treasure with floor tile
+    sta (addr)
     rts
 
 check_floor_val:

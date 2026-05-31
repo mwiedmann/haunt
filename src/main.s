@@ -62,6 +62,7 @@ waitflag: .byte 0
 start:
     jsr show_title
     jsr load_level
+    jsr init_treasure_sets
     jsr load_animated_tiles
     jsr clear_extra_vram_row
     jsr create_guy
@@ -137,6 +138,7 @@ start:
 @next_level:
     stz hit_exit
     jsr load_level
+    jsr remove_found_treasure
     jsr find_start
     jsr set_xy_pos
     bra @draw_everything ; initial draw
