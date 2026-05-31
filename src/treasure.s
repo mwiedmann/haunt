@@ -6,6 +6,8 @@ treasure_temp: .byte 0
 treasure_score_offset: .byte 0
 treasure_collected_offset: .byte 0
 treasure_count: .byte 0
+treasure_ui_offset: .byte 0
+treasure_ui_addr: .word 0
 
 inc_treasureaddr:
     clc
@@ -76,6 +78,12 @@ init_treasure_sets:
     lda #0
     ldy #TreasureSet::_count
     sta (treasureaddr), y
+    lda #<CHALICE_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address
+    sta (treasureaddr), y
+    lda #>CHALICE_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address+1
+    sta (treasureaddr), y
     jsr clear_collected
     jsr inc_treasureaddr
 
@@ -115,6 +123,12 @@ init_treasure_sets:
     sta (treasureaddr), y
     lda #0
     ldy #TreasureSet::_count
+    sta (treasureaddr), y
+    lda #<IDOL_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address
+    sta (treasureaddr), y
+    lda #>IDOL_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address+1
     sta (treasureaddr), y
     jsr clear_collected
     jsr inc_treasureaddr  
@@ -167,6 +181,12 @@ init_treasure_sets:
     sta (treasureaddr), y
     lda #0
     ldy #TreasureSet::_count
+    sta (treasureaddr), y
+    lda #<BRICK_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address
+    sta (treasureaddr), y
+    lda #>BRICK_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address+1
     sta (treasureaddr), y
     jsr clear_collected
     jsr inc_treasureaddr  
@@ -226,6 +246,12 @@ init_treasure_sets:
     lda #0
     ldy #TreasureSet::_count
     sta (treasureaddr), y
+    lda #<GEM_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address
+    sta (treasureaddr), y
+    lda #>GEM_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address+1
+    sta (treasureaddr), y
     jsr clear_collected
     jsr inc_treasureaddr  
 
@@ -263,6 +289,7 @@ score_treasure:
     ldy #TreasureSet::_tile_id_start
     lda (treasureaddr), y
     sta treasure_temp
+    stz treasure_ui_offset
 @next_item:
     lda current_tile
     cmp treasure_temp
@@ -271,9 +298,34 @@ score_treasure:
     inc treasure_score_offset
     inc treasure_collected_offset
     inc treasure_temp
+    inc treasure_ui_offset
+    inc treasure_ui_offset
     bra @next_item
 @found_item:
-    ; Mark this treasure as collected
+    jsr mark_treasure_collected
+    bne @done
+    ; Set complete, add bonus score
+    ldy #TreasureSet::_set_score
+    lda (treasureaddr), y
+    sta guy_score_tmp
+    iny
+    lda (treasureaddr), y
+    sta guy_score_tmp+1
+    jsr guy_add_score
+@done:
+    ; Update UI
+    jsr update_treasure_ui
+    rts
+@single_treasure:
+    lda #<TREASURE_SINGLE_SCORE
+    sta guy_score_tmp
+    lda #>TREASURE_SINGLE_SCORE
+    sta guy_score_tmp+1
+    jsr guy_add_score
+    rts
+    
+mark_treasure_collected:
+     ; Mark this treasure as collected
     ldy treasure_collected_offset
     lda #1
     sta (treasureaddr), y
@@ -292,23 +344,32 @@ score_treasure:
     sta (treasureaddr), y
     ldy #TreasureSet::_set_size
     cmp (treasureaddr), y
-    bne @done
-    ; Set complete, add bonus score
-    ldy #TreasureSet::_set_score
+    rts
+
+update_treasure_ui:
+    ldy #TreasureSet::_ui_address
     lda (treasureaddr), y
-    sta guy_score_tmp
+    sta treasure_ui_addr
     iny
     lda (treasureaddr), y
-    sta guy_score_tmp+1
-    jsr guy_add_score
-@done:
+    sta treasure_ui_addr+1
+    lda treasure_ui_addr
+    clc
+    adc treasure_ui_offset
+    sta treasure_ui_addr
+    lda treasure_ui_addr+1
+    adc #0
+    sta treasure_ui_addr+1
+    lda treasure_ui_addr
+    sta VERA_ADDR_LO
+    lda treasure_ui_addr+1
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    lda current_tile
+    sta VERA_DATA0
+    lda #0
+    sta VERA_DATA0
     rts
-@single_treasure:
-    lda #<TREASURE_SINGLE_SCORE
-    sta guy_score_tmp
-    lda #>TREASURE_SINGLE_SCORE
-    sta guy_score_tmp+1
-    jsr guy_add_score
-    rts
-    
+
 .endif

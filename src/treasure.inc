@@ -7,6 +7,7 @@ TREASURE_SET_H=1
     _set_size .byte ; treasures in this set
     _scores .res 12 ; 6 treasures max in set, each with 2 bytes for score value
     _collected .res 6 ; 1 byte per treasure to track if collected
+    _ui_address .word ; address in VRAM for UI display of this set
     _set_score .word ; bonus score for collecting the whole set
     _count .byte ; how many treasures collected in this set
 .endstruct
@@ -21,6 +22,9 @@ CHALICE_SET_SCORE1=$500
 CHALICE_SET_SCORE2=$1000
 CHALICE_SET_SCORE3=$2000
 CHALICE_SET_BONUS_SCORE=$5000
+CHALICE_SET_UI_X=28
+CHALICE_SET_UI_Y=15
+CHALICE_SET_UI_ADDR= MAPBASE_L1_ADDR + (L1_WIDTH * CHALICE_SET_UI_Y * 2) + (CHALICE_SET_UI_X * 2)
 
 IDOL_SET_TILE_START=15
 IDOL_SET_TILE_END=17
@@ -29,6 +33,9 @@ IDOL_SET_SCORE1=$750
 IDOL_SET_SCORE2=$1500
 IDOL_SET_SCORE3=$3000
 IDOL_SET_BONUS_SCORE=$7500
+IDOL_SET_UI_X=28
+IDOL_SET_UI_Y=18
+IDOL_SET_UI_ADDR= MAPBASE_L1_ADDR + (L1_WIDTH * IDOL_SET_UI_Y * 2) + (IDOL_SET_UI_X * 2)
 
 BRICK_SET_TILE_START=18
 BRICK_SET_TILE_END=22
@@ -39,6 +46,9 @@ BRICK_SET_SCORE3=$1875
 BRICK_SET_SCORE4=$2925
 BRICK_SET_SCORE5=$4995
 BRICK_SET_BONUS_SCORE=$8500
+BRICK_SET_UI_X=33
+BRICK_SET_UI_Y=18
+BRICK_SET_UI_ADDR= MAPBASE_L1_ADDR + (L1_WIDTH * BRICK_SET_UI_Y * 2) + (BRICK_SET_UI_X * 2)
 
 GEM_SET_TILE_START=24
 GEM_SET_TILE_END=29
@@ -50,5 +60,8 @@ GEM_SET_SCORE4=$4040
 GEM_SET_SCORE5=$5050
 GEM_SET_SCORE6=$6060
 GEM_SET_BONUS_SCORE=$7070
+GEM_SET_UI_X=32
+GEM_SET_UI_Y=15
+GEM_SET_UI_ADDR= MAPBASE_L1_ADDR + (L1_WIDTH * GEM_SET_UI_Y * 2) + (GEM_SET_UI_X * 2)
 
 .endif
