@@ -8,8 +8,13 @@ load_level:
     sta addr
     lda #>floor_filename
     sta addr + 1
-    inc addr
-    inc addr
+    lda addr
+    clc
+    adc #2
+    sta addr
+    lda addr + 1
+    adc #0
+    sta addr + 1
     lda #48 ; "0"
     clc
     adc level
@@ -19,8 +24,13 @@ load_level:
     sta addr
     lda #>mapbase_filename
     sta addr + 1
-    inc addr
-    inc addr
+    lda addr
+    clc
+    adc #2
+    sta addr
+    lda addr + 1
+    adc #0
+    sta addr + 1
     lda #48 ; "0"
     clc
     adc level
@@ -30,8 +40,13 @@ load_level:
     sta addr
     lda #>gasmap_filename
     sta addr + 1
-    inc addr
-    inc addr
+    lda addr
+    clc
+    adc #2
+    sta addr
+    lda addr + 1
+    adc #0
+    sta addr + 1
     lda #48 ; "0"
     clc
     adc level
@@ -49,8 +64,13 @@ load_level:
     sta addr
     lda #>precalc_filename
     sta addr + 1
-    inc addr
-    inc addr
+    lda addr
+    clc
+    adc #2
+    sta addr
+    lda addr + 1
+    adc #0
+    sta addr + 1
     lda #48 ; "0"
     clc
     adc level

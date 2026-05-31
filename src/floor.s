@@ -5,6 +5,7 @@ floor: .res 4096
 current_tile: .byte 0
 
 hit_exit: .byte 0
+exit_tile: .byte EXIT_TILE
 
 find_start:
     lda #<floor
@@ -15,7 +16,7 @@ find_start:
     stz yMid
 @next_tile_check:
     lda (addr)
-    cmp #ENTRY_TILE
+    cmp exit_tile
     beq @found_start
     ; Advance to next tile
     clc
@@ -38,6 +39,10 @@ find_start:
     nop
     nop
 @found_start:
+    ; Clear the start tile so we don't immediately exit
+    lda #ENTRY_TILE
+    sta (addr)
+    ; TODO: Change the visual tile
     rts
 
 check_floor_val:
@@ -214,12 +219,24 @@ check_if_darts_active:
 
 check_exit:
     cmp #EXIT_TILE
-    beq @is_exit
+    bcs @maybe_exit
+    rts
+@maybe_exit:
+    cmp #EXIT_TILE+3
+    bcc @is_exit
     rts
 @is_exit:
+    sta exit_tile
     stz current_tile
     inc hit_exit
     inc level
+    lda level
+    cmp #MAX_LEVEL+1
+    bcs @back_to_level_1
+    rts
+@back_to_level_1:
+    lda #1
+    sta level
     rts
 
 check_treasure:
