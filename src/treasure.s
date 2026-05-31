@@ -3,7 +3,8 @@ TREASURE_S = 1
 
 treasure_sets: .res .sizeof(TreasureSet) * TREASURE_SET_COUNT
 treasure_temp: .byte 0
-treasure_offset: .byte 0
+treasure_score_offset: .byte 0
+treasure_collected_offset: .byte 0
 treasure_count: .byte 0
 
 inc_treasureaddr:
@@ -14,6 +15,22 @@ inc_treasureaddr:
     lda treasureaddr+1
     adc #>(.sizeof(TreasureSet))
     sta treasureaddr+1
+    rts
+
+clear_collected:
+    lda #0
+    ldy #TreasureSet::_collected
+    sta (treasureaddr), y
+    iny
+    sta (treasureaddr), y
+    iny
+    sta (treasureaddr), y
+    iny
+    sta (treasureaddr), y
+    iny
+    sta (treasureaddr), y
+    iny
+    sta (treasureaddr), y
     rts
 
 init_treasure_sets:
@@ -57,8 +74,9 @@ init_treasure_sets:
     ldy #TreasureSet::_set_size
     sta (treasureaddr), y
     lda #0
-    ldy #TreasureSet::_collected
+    ldy #TreasureSet::_count
     sta (treasureaddr), y
+    jsr clear_collected
     jsr inc_treasureaddr
 
 ; Idol set
@@ -96,8 +114,9 @@ init_treasure_sets:
     ldy #TreasureSet::_set_size
     sta (treasureaddr), y
     lda #0
-    ldy #TreasureSet::_collected
+    ldy #TreasureSet::_count
     sta (treasureaddr), y
+    jsr clear_collected
     jsr inc_treasureaddr  
 
 ; Brick set
@@ -147,8 +166,9 @@ init_treasure_sets:
     ldy #TreasureSet::_set_size
     sta (treasureaddr), y
     lda #0
-    ldy #TreasureSet::_collected
+    ldy #TreasureSet::_count
     sta (treasureaddr), y
+    jsr clear_collected
     jsr inc_treasureaddr  
 
 ; Gem set
@@ -204,8 +224,9 @@ init_treasure_sets:
     ldy #TreasureSet::_set_size
     sta (treasureaddr), y
     lda #0
-    ldy #TreasureSet::_collected
+    ldy #TreasureSet::_count
     sta (treasureaddr), y
+    jsr clear_collected
     jsr inc_treasureaddr  
 
     rts
@@ -236,7 +257,9 @@ score_treasure:
 @found_set:
     ; Calculate the score for the found treasure set
     lda #TreasureSet::_scores
-    sta treasure_offset
+    sta treasure_score_offset
+    lda #TreasureSet::_collected
+    sta treasure_collected_offset
     ldy #TreasureSet::_tile_id_start
     lda (treasureaddr), y
     sta treasure_temp
@@ -244,12 +267,18 @@ score_treasure:
     lda current_tile
     cmp treasure_temp
     beq @found_item
-    inc treasure_offset
-    inc treasure_offset
+    inc treasure_score_offset
+    inc treasure_score_offset
+    inc treasure_collected_offset
     inc treasure_temp
     bra @next_item
 @found_item:
-    ldy treasure_offset
+    ; Mark this treasure as collected
+    ldy treasure_collected_offset
+    lda #1
+    sta (treasureaddr), y
+    ; Load the score for this treasure and add to player score
+    ldy treasure_score_offset
     lda (treasureaddr), y
     sta guy_score_tmp
     iny
@@ -257,7 +286,7 @@ score_treasure:
     sta guy_score_tmp+1
     jsr guy_add_score
     ; See if bonus for set
-    ldy #TreasureSet::_collected
+    ldy #TreasureSet::_count
     lda (treasureaddr), y
     inc
     sta (treasureaddr), y

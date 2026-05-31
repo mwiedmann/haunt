@@ -34,10 +34,6 @@ find_start:
     stz xMid
     inc yMid
     bra @next_tile_check
-    ; Something strange happening with memory here.
-    ; Added extra nops to fix it. Not sure why this is needed.
-    nop
-    nop
 @found_start:
     ; Clear the start tile so we don't immediately exit
     lda #ENTRY_TILE
