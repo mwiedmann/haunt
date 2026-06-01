@@ -39,11 +39,19 @@ find_start:
     sta xLastMid
     lda yMid
     sta yLastMid
+    lda #8
+    sta guyX
+    sta guyLastX
+    sta guyY
+    sta guyLastY
     ; Clear the start tile so we don't immediately exit
     lda #ENTRY_TILE
     sta (addr)
     sta current_tile
+    sta replace_tileid
+    jsr replace_tile_on_mapbase
     ; TODO: Change the visual tile
+
     rts
 
 remove_found_treasure:
@@ -126,11 +134,14 @@ see_if_treasure_already_collected:
     beq @done
     lda #FLOOR_TILE ; replace treasure on floor with floor tile
     sta (addr2)
-    jsr remove_treasure_from_mapbase
+    sta replace_tileid
+    jsr replace_tile_on_mapbase
 @done:
     rts
 
-remove_treasure_from_mapbase:
+replace_tileid: .byte 0
+
+replace_tile_on_mapbase:
     ; Remove from mapbase
     ; Set the adjusted x/y
     lda yMid
@@ -190,7 +201,7 @@ remove_treasure_from_mapbase:
     adc xOffset+1
     sta addr+1
 
-    lda #FLOOR_TILE; replace treasure with floor tile
+    lda replace_tileid; replace with another tile
     sta (addr)
     rts
 
