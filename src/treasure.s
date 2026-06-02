@@ -346,6 +346,103 @@ init_treasure_sets:
     sta (treasureaddr), y
     jsr inc_treasureaddr  
 
+; Key set
+    jsr clear_treasure_set
+    lda #KEY_SET_TILE_START
+    ldy #TreasureSet::_tile_id_start
+    sta (treasureaddr), y
+    lda #KEY_SET_TILE_END+1
+    ldy #TreasureSet::_tile_id_end
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE1
+    ldy #TreasureSet::_scores
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE1
+    ldy #TreasureSet::_scores+1
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE2
+    ldy #TreasureSet::_scores+2
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE2
+    ldy #TreasureSet::_scores+3
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE3
+    ldy #TreasureSet::_scores+4
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE3
+    ldy #TreasureSet::_scores+5
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE4
+    ldy #TreasureSet::_scores+6
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE4
+    ldy #TreasureSet::_scores+7
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE5
+    ldy #TreasureSet::_scores+8
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE5
+    ldy #TreasureSet::_scores+9
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE6
+    ldy #TreasureSet::_scores+10
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE6
+    ldy #TreasureSet::_scores+11
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE7
+    ldy #TreasureSet::_scores+12
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE7
+    ldy #TreasureSet::_scores+13
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE8
+    ldy #TreasureSet::_scores+14
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE8
+    ldy #TreasureSet::_scores+15
+    sta (treasureaddr), y
+     lda #<KEY_SET_SCORE9
+    ldy #TreasureSet::_scores+16
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE9
+    ldy #TreasureSet::_scores+17
+    sta (treasureaddr), y
+    lda #<KEY_SET_SCORE10
+    ldy #TreasureSet::_scores+18
+    sta (treasureaddr), y
+    lda #>KEY_SET_SCORE10
+    ldy #TreasureSet::_scores+19
+    sta (treasureaddr), y
+    lda #<KEY_SET_BONUS_SCORE
+    ldy #TreasureSet::_set_score
+    sta (treasureaddr), y
+    lda #>KEY_SET_BONUS_SCORE
+    ldy #TreasureSet::_set_score+1
+    sta (treasureaddr), y
+    lda #KEY_SET_SIZE
+    ldy #TreasureSet::_set_size
+    sta (treasureaddr), y
+    lda #0
+    ldy #TreasureSet::_count
+    sta (treasureaddr), y
+    lda #<KEY_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address
+    sta (treasureaddr), y
+    lda #>KEY_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address+1
+    sta (treasureaddr), y
+    lda #KEY_SET_SIZE/2
+    ldy #TreasureSet::_row_count
+    sta (treasureaddr), y
+    lda #<KEY_SET_UI_ROW2_ADDR
+    ldy #TreasureSet::_ui_address_row2
+    sta (treasureaddr), y
+    lda #>KEY_SET_UI_ROW2_ADDR
+    ldy #TreasureSet::_ui_address_row2+1
+    sta (treasureaddr), y
+    jsr inc_treasureaddr  
+
     rts
 
 score_treasure:
