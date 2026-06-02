@@ -256,6 +256,8 @@ check_traps:
     beq @trap
     cmp #ACID_TILE_ID
     beq @trap
+    cmp #FIRE_TILE_ID
+    beq @trap
     cmp #DARTH_TILE_ID
     beq @darts
     cmp #DARTH2_TILE_ID
@@ -330,6 +332,8 @@ check_if_trap_active:
     beq @pit
     cmp #ACID_TILE_ID
     beq @acid
+    cmp #FIRE_TILE_ID
+    beq @fire
     lda #SPIKES_DAMAGE
     sta damage_amount
     jsr dead
@@ -340,6 +344,12 @@ check_if_trap_active:
     rts
 @acid:
     lda #ACID_DAMAGE
+    sta damage_amount
+    jsr dead
+    rts
+@fire:
+    jsr guy_burned
+    lda #FIRE_DAMAGE
     sta damage_amount
     jsr dead
     rts
