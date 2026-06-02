@@ -8,6 +8,7 @@ treasure_collected_offset: .byte 0
 treasure_count: .byte 0
 treasure_ui_offset: .byte 0
 treasure_ui_addr: .word 0
+treasure_set_count: .byte 0
 
 inc_treasureaddr:
     clc
@@ -19,8 +20,10 @@ inc_treasureaddr:
     sta treasureaddr+1
     rts
 
-clear_collected:
+clear_treasure_set:
     lda #0
+    ldy #TreasureSet::_ui_address_row2
+    sta (treasureaddr), y
     ldy #TreasureSet::_collected
     sta (treasureaddr), y
     iny
@@ -33,6 +36,9 @@ clear_collected:
     sta (treasureaddr), y
     iny
     sta (treasureaddr), y
+    lda #255
+    ldy #TreasureSet::_row_count
+    sta (treasureaddr), y
     rts
 
 init_treasure_sets:
@@ -41,6 +47,7 @@ init_treasure_sets:
     lda #>treasure_sets
     sta treasureaddr+1
 ; Chalice set
+    jsr clear_treasure_set
     lda #CHALICE_SET_TILE_START
     ldy #TreasureSet::_tile_id_start
     sta (treasureaddr), y
@@ -84,10 +91,10 @@ init_treasure_sets:
     lda #>CHALICE_SET_UI_ADDR
     ldy #TreasureSet::_ui_address+1
     sta (treasureaddr), y
-    jsr clear_collected
     jsr inc_treasureaddr
 
 ; Idol set
+    jsr clear_treasure_set
     lda #IDOL_SET_TILE_START
     ldy #TreasureSet::_tile_id_start
     sta (treasureaddr), y
@@ -130,10 +137,10 @@ init_treasure_sets:
     lda #>IDOL_SET_UI_ADDR
     ldy #TreasureSet::_ui_address+1
     sta (treasureaddr), y
-    jsr clear_collected
     jsr inc_treasureaddr  
 
 ; Brick set
+    jsr clear_treasure_set
     lda #BRICK_SET_TILE_START
     ldy #TreasureSet::_tile_id_start
     sta (treasureaddr), y
@@ -188,10 +195,10 @@ init_treasure_sets:
     lda #>BRICK_SET_UI_ADDR
     ldy #TreasureSet::_ui_address+1
     sta (treasureaddr), y
-    jsr clear_collected
     jsr inc_treasureaddr  
 
 ; Gem set
+    jsr clear_treasure_set
     lda #GEM_SET_TILE_START
     ldy #TreasureSet::_tile_id_start
     sta (treasureaddr), y
@@ -252,7 +259,91 @@ init_treasure_sets:
     lda #>GEM_SET_UI_ADDR
     ldy #TreasureSet::_ui_address+1
     sta (treasureaddr), y
-    jsr clear_collected
+    jsr inc_treasureaddr  
+
+; Beetle set
+    jsr clear_treasure_set
+    lda #BEETLE_SET_TILE_START
+    ldy #TreasureSet::_tile_id_start
+    sta (treasureaddr), y
+    lda #BEETLE_SET_TILE_END+1
+    ldy #TreasureSet::_tile_id_end
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_SCORE1
+    ldy #TreasureSet::_scores
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_SCORE1
+    ldy #TreasureSet::_scores+1
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_SCORE2
+    ldy #TreasureSet::_scores+2
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_SCORE2
+    ldy #TreasureSet::_scores+3
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_SCORE3
+    ldy #TreasureSet::_scores+4
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_SCORE3
+    ldy #TreasureSet::_scores+5
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_SCORE4
+    ldy #TreasureSet::_scores+6
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_SCORE4
+    ldy #TreasureSet::_scores+7
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_SCORE5
+    ldy #TreasureSet::_scores+8
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_SCORE5
+    ldy #TreasureSet::_scores+9
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_SCORE6
+    ldy #TreasureSet::_scores+10
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_SCORE6
+    ldy #TreasureSet::_scores+11
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_SCORE7
+    ldy #TreasureSet::_scores+12
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_SCORE7
+    ldy #TreasureSet::_scores+13
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_SCORE8
+    ldy #TreasureSet::_scores+14
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_SCORE8
+    ldy #TreasureSet::_scores+15
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_BONUS_SCORE
+    ldy #TreasureSet::_set_score
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_BONUS_SCORE
+    ldy #TreasureSet::_set_score+1
+    sta (treasureaddr), y
+    lda #BEETLE_SET_SIZE
+    ldy #TreasureSet::_set_size
+    sta (treasureaddr), y
+    lda #0
+    ldy #TreasureSet::_count
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_UI_ADDR
+    ldy #TreasureSet::_ui_address+1
+    sta (treasureaddr), y
+    lda #BEETLE_SET_SIZE/2
+    ldy #TreasureSet::_row_count
+    sta (treasureaddr), y
+    lda #<BEETLE_SET_UI_ROW2_ADDR
+    ldy #TreasureSet::_ui_address_row2
+    sta (treasureaddr), y
+    lda #>BEETLE_SET_UI_ROW2_ADDR
+    ldy #TreasureSet::_ui_address_row2+1
+    sta (treasureaddr), y
     jsr inc_treasureaddr  
 
     rts
@@ -290,6 +381,7 @@ score_treasure:
     lda (treasureaddr), y
     sta treasure_temp
     stz treasure_ui_offset
+    stz treasure_set_count
 @next_item:
     lda current_tile
     cmp treasure_temp
@@ -300,6 +392,7 @@ score_treasure:
     inc treasure_temp
     inc treasure_ui_offset
     inc treasure_ui_offset
+    inc treasure_set_count
     bra @next_item
 @found_item:
     jsr mark_treasure_collected
@@ -347,6 +440,11 @@ mark_treasure_collected:
     rts
 
 update_treasure_ui:
+    lda treasure_set_count
+    ldy #TreasureSet::_row_count
+    cmp (treasureaddr), y
+    bcs @update_row2
+    ; Update first row
     ldy #TreasureSet::_ui_address
     lda (treasureaddr), y
     sta treasure_ui_addr
@@ -360,6 +458,28 @@ update_treasure_ui:
     lda treasure_ui_addr+1
     adc #0
     sta treasure_ui_addr+1
+    bra @write_to_ui
+@update_row2:
+    lda treasure_set_count
+    sec
+    ldy #TreasureSet::_row_count
+    sbc (treasureaddr), y
+    asl
+    sta treasure_ui_offset
+    ldy #TreasureSet::_ui_address_row2
+    lda (treasureaddr), y
+    sta treasure_ui_addr
+    iny
+    lda (treasureaddr), y
+    sta treasure_ui_addr+1
+    lda treasure_ui_addr
+    clc
+    adc treasure_ui_offset
+    sta treasure_ui_addr
+    lda treasure_ui_addr+1
+    adc #0
+    sta treasure_ui_addr+1
+@write_to_ui:
     lda treasure_ui_addr
     sta VERA_ADDR_LO
     lda treasure_ui_addr+1

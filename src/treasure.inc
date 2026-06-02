@@ -5,14 +5,16 @@ TREASURE_SET_H=1
     _tile_id_start .byte
     _tile_id_end .byte
     _set_size .byte ; treasures in this set
-    _scores .res 12 ; 6 treasures max in set, each with 2 bytes for score value
-    _collected .res 6 ; 1 byte per treasure to track if collected
+    _scores .res 20 ; 10 treasures max in set, each with 2 bytes for score value
+    _collected .res 10 ; 1 byte per treasure to track if collected
     _ui_address .word ; address in VRAM for UI display of this set
+    _ui_address_row2 .word
+    _row_count .byte ; how many treasures in each row of the UI display
     _set_score .word ; bonus score for collecting the whole set
     _count .byte ; how many treasures collected in this set
 .endstruct
 
-TREASURE_SET_COUNT=4
+TREASURE_SET_COUNT=5
 TREASURE_SINGLE_SCORE=$75
 
 CHALICE_SET_TILE_START=12
@@ -63,5 +65,22 @@ GEM_SET_BONUS_SCORE=$7070
 GEM_SET_UI_X=32
 GEM_SET_UI_Y=15
 GEM_SET_UI_ADDR= MAPBASE_L1_ADDR + (L1_WIDTH * GEM_SET_UI_Y * 2) + (GEM_SET_UI_X * 2)
+
+BEETLE_SET_TILE_START=30
+BEETLE_SET_TILE_END=37
+BEETLE_SET_SIZE=8
+BEETLE_SET_SCORE1=$750
+BEETLE_SET_SCORE2=$1500
+BEETLE_SET_SCORE3=$2250
+BEETLE_SET_SCORE4=$3000
+BEETLE_SET_SCORE5=$3750
+BEETLE_SET_SCORE6=$4500
+BEETLE_SET_SCORE7=$5250
+BEETLE_SET_SCORE8=$6000
+BEETLE_SET_BONUS_SCORE=$9000
+BEETLE_SET_UI_X=28
+BEETLE_SET_UI_Y=21
+BEETLE_SET_UI_ADDR= MAPBASE_L1_ADDR + (L1_WIDTH * BEETLE_SET_UI_Y * 2) + (BEETLE_SET_UI_X * 2)
+BEETLE_SET_UI_ROW2_ADDR=BEETLE_SET_UI_ADDR + (L1_WIDTH * 2) ; second row is directly below first row in VRAM
 
 .endif
