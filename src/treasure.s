@@ -119,6 +119,12 @@ init_treasure_sets:
     lda #>IDOL_SET_SCORE3
     ldy #TreasureSet::_scores+5
     sta (treasureaddr), y
+    lda #<IDOL_SET_SCORE4
+    ldy #TreasureSet::_scores+6
+    sta (treasureaddr), y
+    lda #>IDOL_SET_SCORE4
+    ldy #TreasureSet::_scores+7
+    sta (treasureaddr), y
     lda #<IDOL_SET_BONUS_SCORE
     ldy #TreasureSet::_set_score
     sta (treasureaddr), y
@@ -454,7 +460,7 @@ score_treasure:
     sta treasureaddr+1
 @check_set:
     lda treasure_count
-    beq @single_treasure
+    beq @no_treasure_found
     dec treasure_count
     lda current_tile
     ldy #TreasureSet::_tile_id_start
@@ -506,12 +512,8 @@ score_treasure:
     ; Update UI
     jsr update_treasure_ui
     rts
-@single_treasure:
-    lda #<TREASURE_SINGLE_SCORE
-    sta guy_score_tmp
-    lda #>TREASURE_SINGLE_SCORE
-    sta guy_score_tmp+1
-    jsr guy_add_score
+@no_treasure_found:
+    ; Shouldn't happen, but just return if we didn't find the treasure for some reason
     rts
     
 mark_treasure_collected:

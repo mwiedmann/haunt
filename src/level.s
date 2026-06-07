@@ -42,14 +42,27 @@ load_level:
     sta addr + 1
     lda addr
     clc
-    adc #2
+    adc #1
     sta addr
     lda addr + 1
     adc #0
     sta addr + 1
-    lda #48 ; "0"
+    lda #48 ; "0
     clc
-    adc level
+    adc level ; add level numbber to the filename
+    sta (addr)
+    lda addr
+    clc
+    adc #1
+    sta addr
+    lda addr + 1
+    adc #0
+    sta addr + 1
+    lda #58
+    sec
+    sbc exit_tile ; Add the exit number to the filename
+    clc
+    adc #48
     sta (addr)
 
     jsr load_level_files
