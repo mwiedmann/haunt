@@ -91,6 +91,12 @@ load_level:
 
     jsr load_precalc
     
+    ; Reset the gas counter
+    lda #<GAS_START_TIME
+    sta gas_counter
+    lda #>GAS_START_TIME
+    sta gas_counter + 1
+
     rts
 
 .endif
