@@ -31,9 +31,60 @@ load_title_pal:
     ldy #2
     jsr SETLFS
     lda #3 ; VRAM 2nd bank
-    ldx #<PALETTE_ADDR 
+    ldx #<PALETTE_ADDR
     ldy #>PALETTE_ADDR
     jsr LOAD
+    rts
+
+change_wall_color:
+    lda level
+    cmp #2
+    beq @set_level_2
+@set_level_1:
+    lda #<(PALETTE_ADDR+(197*2))
+    sta VERA_ADDR_LO
+    lda #>(PALETTE_ADDR+(197*2))
+    sta VERA_ADDR_MID
+    lda #(VERA_ADDR_HI_INC_BITS+1)
+    sta VERA_ADDR_HI_SET
+    lda #131
+    sta VERA_DATA0
+    lda #15
+    sta VERA_DATA0
+
+    lda #<(PALETTE_ADDR+(135*2))
+    sta VERA_ADDR_LO
+    lda #>(PALETTE_ADDR+(135*2))
+    sta VERA_ADDR_MID
+    lda #(VERA_ADDR_HI_INC_BITS+1)
+    sta VERA_ADDR_HI_SET
+    lda #83
+    sta VERA_DATA0
+    lda #11
+    sta VERA_DATA0
+    rts
+@set_level_2:
+    lda #<(PALETTE_ADDR+(197*2))
+    sta VERA_ADDR_LO
+    lda #>(PALETTE_ADDR+(197*2))
+    sta VERA_ADDR_MID
+    lda #(VERA_ADDR_HI_INC_BITS+1)
+    sta VERA_ADDR_HI_SET
+    lda #%11110000
+    sta VERA_DATA0
+    lda #0
+    sta VERA_DATA0
+
+    lda #<(PALETTE_ADDR+(135*2))
+    sta VERA_ADDR_LO
+    lda #>(PALETTE_ADDR+(135*2))
+    sta VERA_ADDR_MID
+    lda #(VERA_ADDR_HI_INC_BITS+1)
+    sta VERA_ADDR_HI_SET
+    lda #%10000000
+    sta VERA_DATA0
+    lda #0
+    sta VERA_DATA0
     rts
 
 .endif

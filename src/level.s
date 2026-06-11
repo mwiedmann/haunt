@@ -97,6 +97,8 @@ load_level:
     lda #>GAS_START_TIME
     sta gas_counter + 1
 
+    jsr change_wall_color
+    
     rts
 
 .endif
