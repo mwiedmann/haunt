@@ -97,6 +97,9 @@ load_level:
     lda #>GAS_START_TIME
     sta gas_counter + 1
 
+    lda #60
+    sta gas_second_counter
+    
     rts
 
 .endif

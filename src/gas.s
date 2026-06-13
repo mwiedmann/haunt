@@ -2,6 +2,7 @@
 GAS_S = 1
 
 gas_counter: .word GAS_START_TIME
+gas_second_counter: .byte 60
 gas_x_current: .byte 0
 gas_y_current: .byte 0
 
@@ -9,13 +10,30 @@ gas_spread: .byte 0 ; signals if need to redraw
 
 check_gas:
     stz gas_spread
+    dec gas_second_counter
+    lda gas_second_counter
+    bne @done
+    lda #60
+    sta gas_second_counter
+    ; See if gas_counter already at 0
     lda gas_counter
+    bne @reduce_counter
+    lda gas_counter+1
+    bne @reduce_counter
+    ; No need to reduce counter, already at 0, but need to trigger gas spread
+    bra @trigger_gas
+@reduce_counter:
+    lda gas_counter
+    sed
     sec
     sbc #1
     sta gas_counter
     lda gas_counter+1
     sbc #0
     sta gas_counter+1
+    cld
+    ; Update the ui counter
+    jsr update_gas_counter
     lda gas_counter
     bne @done
     lda gas_counter+1
@@ -24,7 +42,7 @@ check_gas:
     lda #1
     sta gas_spread
     lda #GAS_SPREAD_TIME ; time to next spread
-    sta gas_counter
+    sta gas_second_counter
 @next_gas:
     lda #GAS_BANK
     sta BANK
