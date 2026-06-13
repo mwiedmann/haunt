@@ -71,6 +71,7 @@ start:
     sta VERA_DC_VIDEO
     jsr irq_config
     jsr load_pal
+    jsr change_wall_color
     jsr load_tiles
     jsr load_ui
     jsr config
@@ -138,6 +139,7 @@ start:
 @next_level:
     stz hit_exit
     jsr load_level
+    jsr change_wall_color
     jsr remove_found_treasure
     jsr find_start
     jsr set_xy_pos

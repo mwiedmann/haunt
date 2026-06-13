@@ -36,54 +36,87 @@ load_title_pal:
     jsr LOAD
     rts
 
-change_wall_color:
-    lda level
-    cmp #2
-    beq @set_level_2
-@set_level_1:
+load_color1_addr:
     lda #<(PALETTE_ADDR+(197*2))
     sta VERA_ADDR_LO
     lda #>(PALETTE_ADDR+(197*2))
     sta VERA_ADDR_MID
     lda #(VERA_ADDR_HI_INC_BITS+1)
     sta VERA_ADDR_HI_SET
-    lda #131
-    sta VERA_DATA0
-    lda #15
-    sta VERA_DATA0
+    rts
 
+load_color2_addr:
     lda #<(PALETTE_ADDR+(135*2))
     sta VERA_ADDR_LO
     lda #>(PALETTE_ADDR+(135*2))
     sta VERA_ADDR_MID
     lda #(VERA_ADDR_HI_INC_BITS+1)
     sta VERA_ADDR_HI_SET
+    rts
+
+change_wall_color:
+    lda level
+    cmp #2
+    beq @set_level_2
+    cmp #3
+    beq @set_level_3
+    cmp #4
+    beq @set_level_4
+@set_level_1:
+    jsr load_color1_addr
+    ; Orange walls
+    lda #131
+    sta VERA_DATA0
+    lda #15
+    sta VERA_DATA0
+
+    jsr load_color2_addr
     lda #83
     sta VERA_DATA0
     lda #11
     sta VERA_DATA0
     rts
 @set_level_2:
-    lda #<(PALETTE_ADDR+(197*2))
-    sta VERA_ADDR_LO
-    lda #>(PALETTE_ADDR+(197*2))
-    sta VERA_ADDR_MID
-    lda #(VERA_ADDR_HI_INC_BITS+1)
-    sta VERA_ADDR_HI_SET
+    jsr load_color1_addr
+    ; Green walls
     lda #%11110000
     sta VERA_DATA0
     lda #0
     sta VERA_DATA0
 
-    lda #<(PALETTE_ADDR+(135*2))
-    sta VERA_ADDR_LO
-    lda #>(PALETTE_ADDR+(135*2))
-    sta VERA_ADDR_MID
-    lda #(VERA_ADDR_HI_INC_BITS+1)
-    sta VERA_ADDR_HI_SET
+    jsr load_color2_addr
     lda #%10000000
     sta VERA_DATA0
     lda #0
+    sta VERA_DATA0
+    rts
+@set_level_3:
+    jsr load_color1_addr
+    ; Blue walls
+    lda #%1111
+    sta VERA_DATA0
+    lda #0
+    sta VERA_DATA0
+
+    jsr load_color2_addr
+    lda #%1000
+    sta VERA_DATA0
+    lda #0
+    sta VERA_DATA0
+    rts
+
+@set_level_4:
+    jsr load_color1_addr
+    ; Red walls
+    lda #0
+    sta VERA_DATA0
+    lda #%1111
+    sta VERA_DATA0
+
+    jsr load_color2_addr
+    lda #0
+    sta VERA_DATA0
+    lda #%1000
     sta VERA_DATA0
     rts
 
