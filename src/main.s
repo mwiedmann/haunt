@@ -82,6 +82,10 @@ start:
     jsr guy_reset_score
     bra @draw_everything ; initial draw
 @main_loop:
+    lda guy_dead
+    beq @not_dead
+    jmp dead
+@not_dead:
     jsr check_gas
     jsr guy_check_fire
     lda guy_stunned
@@ -144,3 +148,6 @@ start:
     jsr find_start
     jsr set_xy_pos
     bra @draw_everything ; initial draw
+
+dead:
+    jmp dead

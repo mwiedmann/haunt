@@ -77,6 +77,14 @@ update_health:
     sta VERA_DATA0
     lda #0
     sta VERA_DATA0
+
+    ; check if guy is dead
+    lda guy_health
+    bne @not_dead
+    lda guy_health+1
+    bne @not_dead
+    inc guy_dead
+@not_dead:
     rts
 
 update_score:

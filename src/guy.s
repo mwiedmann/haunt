@@ -16,6 +16,7 @@ guy_score: .dword 0
 guy_score_tmp: .dword 0
 guy_on_fire: .byte 0
 guy_fire_timer: .byte 0
+guy_dead: .byte 0
 
 guy_burned:
     lda guy_on_fire

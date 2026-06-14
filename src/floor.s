@@ -287,13 +287,13 @@ check_traps:
     jsr guy_burned
     lda #LAVA_DAMAGE
     sta damage_amount
-    jsr dead
+    jsr guy_hurt
     stz current_tile
     rts
 @gas:
     lda #GAS_DAMAGE
     sta damage_amount
-    jsr dead
+    jsr guy_hurt
     stz current_tile
     rts
 @water:
@@ -336,7 +336,7 @@ check_if_trap_active:
     beq @fire
     lda #SPIKES_DAMAGE
     sta damage_amount
-    jsr dead
+    jsr guy_hurt
     rts
 @pit:
     lda #1
@@ -345,13 +345,13 @@ check_if_trap_active:
 @acid:
     lda #ACID_DAMAGE
     sta damage_amount
-    jsr dead
+    jsr guy_hurt
     rts
 @fire:
     jsr guy_burned
     lda #FIRE_DAMAGE
     sta damage_amount
-    jsr dead
+    jsr guy_hurt
     rts
 
 check_if_darts_active:
@@ -384,7 +384,7 @@ check_if_darts_active:
     sta guy_stunned
     lda #DART_DAMAGE
     sta damage_amount
-    jsr dead
+    jsr guy_hurt
     rts
 
 check_exit:

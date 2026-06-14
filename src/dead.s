@@ -3,7 +3,7 @@ DEAD_S = 1
 
 damage_amount: .byte 0
 
-dead:
+guy_hurt:
     lda damage_amount
     sta guy_health_tmp
     stz guy_health_tmp+1
