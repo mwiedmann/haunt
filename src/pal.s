@@ -62,9 +62,33 @@ change_wall_color:
     beq @set_level_3
     cmp #4
     beq @set_level_4
+    cmp #5
+    beq @set_level_5
+    cmp #6
+    beq @set_level_6
 @set_level_1:
-    jsr load_color1_addr
+    jsr level_1_colors
+    rts
+@set_level_2:
+    jsr level_2_colors
+    rts
+@set_level_3:
+    jsr level_3_colors
+    rts
+@set_level_4:
+    jsr level_4_colors
+    rts
+@set_level_5:
+    jsr level_5_colors
+    rts
+@set_level_6:
+    jsr level_6_colors
+    rts
+
+
+level_1_colors:
     ; Orange walls
+    jsr load_color1_addr
     lda #131
     sta VERA_DATA0
     lda #15
@@ -76,9 +100,10 @@ change_wall_color:
     lda #11
     sta VERA_DATA0
     rts
-@set_level_2:
-    jsr load_color1_addr
+
+level_2_colors:
     ; Green walls
+    jsr load_color1_addr
     lda #%11110000
     sta VERA_DATA0
     lda #0
@@ -90,9 +115,10 @@ change_wall_color:
     lda #0
     sta VERA_DATA0
     rts
-@set_level_3:
-    jsr load_color1_addr
+
+level_3_colors:
     ; Blue walls
+    jsr load_color1_addr
     lda #%1111
     sta VERA_DATA0
     lda #0
@@ -105,9 +131,9 @@ change_wall_color:
     sta VERA_DATA0
     rts
 
-@set_level_4:
-    jsr load_color1_addr
+level_4_colors:
     ; Red walls
+    jsr load_color1_addr
     lda #0
     sta VERA_DATA0
     lda #%1111
@@ -115,6 +141,36 @@ change_wall_color:
 
     jsr load_color2_addr
     lda #0
+    sta VERA_DATA0
+    lda #%1000
+    sta VERA_DATA0
+    rts
+
+level_5_colors:
+    ; Grey walls
+    jsr load_color1_addr
+    lda #%11001100
+    sta VERA_DATA0
+    lda #%1100
+    sta VERA_DATA0
+
+    jsr load_color2_addr
+    lda #%10001000
+    sta VERA_DATA0
+    lda #%1000
+    sta VERA_DATA0
+    rts
+
+level_6_colors:
+    ; Purple walls
+    jsr load_color1_addr
+    lda #%00111111
+    sta VERA_DATA0
+    lda #%1111
+    sta VERA_DATA0
+
+    jsr load_color2_addr
+    lda #%00001000
     sta VERA_DATA0
     lda #%1000
     sta VERA_DATA0
