@@ -86,12 +86,13 @@ const calcData = (level) => {
   const torchTileId=48
   const nonBlockingTorchTileId=59
   const clearTileStartId=55
+  const siteRadiusAdjust=levelNum !== 0 ? 4 : 0
 
   for (let startY = 1; startY <= 62; startY++) {
     for (let startX = 1; startX <= 62; startX++) {
       const checkTile = (x, y) => {
         const dist=Math.trunc(Math.sqrt((x-startX)*(x-startX)+(y-startY)*(y-startY)));
-        if (dist>radius-4) {
+        if (dist>radius-siteRadiusAdjust) {
           // Outside radius
           // See if torch is lighting this square
           let torchFound=0;
@@ -111,77 +112,79 @@ const calcData = (level) => {
         
         const lineChecks = [true, true, true, true];
 
-        for (let yCheck = startY - radius; yCheck <= startY + radius; yCheck++) {
-          for (
-            let xCheck = startX - radius;
-            xCheck <= startX + radius;
-            xCheck++
-          ) {
-            // Skip checking the middle (start) tile and the end tile for the lint
-            if (
-              (yCheck === startY && xCheck === startX) || // Skip center tile
-              (yCheck === y && xCheck === x) || // Skip tile we are currently checking
-              mapBaseData[yCheck * 64 + xCheck] >= clearTileStartId // Skip checking tiles that are clear
+        if (levelNum !== 0) {
+          for (let yCheck = startY - radius; yCheck <= startY + radius; yCheck++) {
+            for (
+              let xCheck = startX - radius;
+              xCheck <= startX + radius;
+              xCheck++
             ) {
-              continue;
-            }
+              // Skip checking the middle (start) tile and the end tile for the lint
+              if (
+                (yCheck === startY && xCheck === startX) || // Skip center tile
+                (yCheck === y && xCheck === x) || // Skip tile we are currently checking
+                mapBaseData[yCheck * 64 + xCheck] >= clearTileStartId // Skip checking tiles that are clear
+              ) {
+                continue;
+              }
 
-            // Check line seg from center tile to 4 spots in the source tile
-            // See if any of them overlap with ANY square
-            if (
-              segmentIntersectsSquare(
-                startX + 0.5,
-                startY + 0.5,
-                x + loCheck,
-                y + loCheck,
-                xCheck,
-                yCheck,
-                1
-              )
-            ) {
-              lineChecks[0] = false;
-            }
+              // Check line seg from center tile to 4 spots in the source tile
+              // See if any of them overlap with ANY square
+              if (
+                segmentIntersectsSquare(
+                  startX + 0.5,
+                  startY + 0.5,
+                  x + loCheck,
+                  y + loCheck,
+                  xCheck,
+                  yCheck,
+                  1
+                )
+              ) {
+                lineChecks[0] = false;
+              }
 
-            if (
-              segmentIntersectsSquare(
-                startX + 0.5,
-                startY + 0.5,
-                x + hiCheck,
-                y + loCheck,
-                xCheck,
-                yCheck,
-                1
-              )
-            ) {
-              lineChecks[1] = false;
-            }
+              if (
+                segmentIntersectsSquare(
+                  startX + 0.5,
+                  startY + 0.5,
+                  x + hiCheck,
+                  y + loCheck,
+                  xCheck,
+                  yCheck,
+                  1
+                )
+              ) {
+                lineChecks[1] = false;
+              }
 
-            if (
-              segmentIntersectsSquare(
-                startX + 0.5,
-                startY + 0.5,
-                x + loCheck,
-                y + hiCheck,
-                xCheck,
-                yCheck,
-                1
-              )
-            ) {
-              lineChecks[2] = false;
-            }
+              if (
+                segmentIntersectsSquare(
+                  startX + 0.5,
+                  startY + 0.5,
+                  x + loCheck,
+                  y + hiCheck,
+                  xCheck,
+                  yCheck,
+                  1
+                )
+              ) {
+                lineChecks[2] = false;
+              }
 
-            if (
-              segmentIntersectsSquare(
-                startX + 0.5,
-                startY + 0.5,
-                x + hiCheck,
-                y + hiCheck,
-                xCheck,
-                yCheck,
-                1
-              )
-            ) {
-              lineChecks[3] = false;
+              if (
+                segmentIntersectsSquare(
+                  startX + 0.5,
+                  startY + 0.5,
+                  x + hiCheck,
+                  y + hiCheck,
+                  xCheck,
+                  yCheck,
+                  1
+                )
+              ) {
+                lineChecks[3] = false;
+              }
             }
           }
         }
@@ -228,13 +231,14 @@ const calcData = (level) => {
     new Uint8Array([...finalBytes]),
     "binary"
   );
+
+  console.log(`Calculated data for Level ${level.identifier}`)
 }
 
 
 for (let i=0; i<d.levels.length; i++) {
   const level = d.levels[i];
-  if (level.identifier.startsWith("Level_")) {
+  if (level.identifier.startsWith("Level_0")) {
     calcData(level);
-    console.log(`Calculated data for Level ${level.identifier}`)
   }
 }

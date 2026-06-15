@@ -1,7 +1,7 @@
 .ifndef LEVEL_S
 LEVEL_S = 1
 
-level: .byte 1
+level: .byte 0
 
 load_level:
     lda #<floor_filename

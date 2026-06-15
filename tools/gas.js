@@ -22,6 +22,12 @@ const createLevelCode = (level) => {
 
 const calcData = (level) => {
   const levelNum = parseInt(level.identifier.split("_")[1])
+
+  if (levelNum === 0) {
+    // Instruction level, no need to calculate gas data
+    return;
+  }
+
   const { floor, exits } = createLevelCode(level);
 
   if (exits.length !== 3) {
@@ -90,6 +96,8 @@ const calcData = (level) => {
   exits.forEach(exit => {
     gasForExit(exit.x, exit.y, exit.tileId)
   })
+
+  console.log(`Calculated data for Level ${level.identifier}`)
 }
 
 
@@ -97,6 +105,5 @@ for (let i=0; i<d.levels.length; i++) {
   const level = d.levels[i];
   if (level.identifier.startsWith("Level_")) {
     calcData(level);
-    console.log(`Calculated data for Level ${level.identifier}`)
   }
 }

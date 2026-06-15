@@ -8,6 +8,14 @@ hit_exit: .byte 0
 exit_tile: .byte EXIT_TILE
 
 find_start:
+    lda level
+    bne @not_level_0
+    lda #16
+    sta xMid
+    lda #14
+    sta yMid
+    rts
+@not_level_0:
     lda #<floor
     sta addr
     lda #>floor
@@ -50,8 +58,6 @@ find_start:
     sta current_tile
     sta replace_tileid
     jsr replace_tile_on_mapbase
-    ; TODO: Change the visual tile
-
     rts
 
 remove_found_treasure:

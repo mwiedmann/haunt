@@ -10,6 +10,11 @@ gas_spread: .byte 0 ; signals if need to redraw
 
 check_gas:
     stz gas_spread
+    lda level
+    bne @not_level_0
+    ; No gas on level 0
+    rts
+@not_level_0:
     dec gas_second_counter
     lda gas_second_counter
     bne @done
