@@ -61,15 +61,12 @@ waitflag: .byte 0
 
 start:
     jsr show_title
-    jsr load_level
-    jsr init_treasure_sets
-    jsr load_animated_tiles
-    jsr clear_extra_vram_row
-    jsr create_guy
+    jsr reset_game
+    jsr irq_config
+restart:
     ; hide layers until everything loaded
     lda #VERA_LAYERS_OFF_DC_VIDEO_BITS
     sta VERA_DC_VIDEO
-    jsr irq_config
     jsr load_pal
     jsr change_wall_color
     jsr load_tiles
@@ -150,4 +147,17 @@ start:
     bra @draw_everything ; initial draw
 
 dead:
-    jmp dead
+    jsr show_game_over
+    jsr reset_game
+    jmp restart
+
+reset_game:
+    stz level
+    stz guy_dead
+    stz guy_on_fire
+    jsr load_level
+    jsr init_treasure_sets
+    jsr load_animated_tiles
+    jsr clear_extra_vram_row
+    jsr create_guy
+    rts

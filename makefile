@@ -20,6 +20,7 @@ debug:
 pal:
 	node tools/gimp-pal-convert.js gfx/tiles.data.pal build/PAL.BIN
 	node tools/gimp-pal-convert.js gfx/title.data.pal build/TITLEPAL.BIN
+	node tools/gimp-pal-convert.js gfx/gameover.data.pal build/OVERPAL.BIN
 
 img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/TILES.BIN 16 16 12 0 12 20
@@ -37,6 +38,7 @@ img:
 	node tools/gimp-img-convert.js gfx/tiles.data build/GUYFIRE.BIN 16 16 12 384 10 1
 	node tools/gimp-img-convert.js gfx/tiles.data build/FIRE.BIN 16 16 12 396 4 1
 	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 1 0 1 1
+	node tools/gimp-img-convert.js gfx/gameover.data build/GAMEOVER.BIN 320 240 1 0 1 1
 
 map:
 	node tools/ldtk-convert.js
