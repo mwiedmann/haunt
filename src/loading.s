@@ -7,6 +7,7 @@ precalc_filename: .asciiz "l00calc.bin"
 gasmap_filename: .asciiz "l00gas.bin"
 tiles_filename: .asciiz "tiles.bin"
 ui_filename: .asciiz "ui.bin"
+ui2_filename: .asciiz "ui2.bin"
 torch_filename: .asciiz "torch.bin"
 torch_floor_filename: .asciiz "torchflr.bin"
 spikes_filename: .asciiz "spikes.bin"
@@ -105,6 +106,22 @@ load_ui:
     lda #6
     ldx #<ui_filename
     ldy #>ui_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #2 ; VRAM 1st bank
+    ldx #<MAPBASE_L1_ADDR
+    ldy #>MAPBASE_L1_ADDR
+    jsr LOAD
+    rts
+
+load_ui2:
+    lda #7
+    ldx #<ui2_filename
+    ldy #>ui2_filename
     jsr SETNAM
     ; 0,8,2
     lda #0

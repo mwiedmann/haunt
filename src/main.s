@@ -147,6 +147,8 @@ restart:
     bra @draw_everything ; initial draw
 
 dead:
+    jsr load_ui2
+    jsr watch_for_joystick_press
     jsr show_game_over
     jsr reset_game
     jmp restart

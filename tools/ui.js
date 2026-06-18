@@ -22,6 +22,8 @@ const createUICode = (level) => {
   return mapbase
 }
 
-const data = createUICode(d.levels.find((l) => l.identifier === "UI"))
-
+let data = createUICode(d.levels.find((l) => l.identifier === "UI"))
 fs.writeFileSync(`build/UI.BIN`, new Uint8Array([...data]), "binary")
+
+data = createUICode(d.levels.find((l) => l.identifier === "UI2"))
+fs.writeFileSync(`build/UI2.BIN`, new Uint8Array([...data]), "binary")
