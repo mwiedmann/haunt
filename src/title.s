@@ -7,6 +7,7 @@ TITLE_VERA_L1_TILEBASE_BITS = 0
 
 title_filename: .asciiz "title.bin"
 gameover_filename: .asciiz "gameover.bin"
+escaped_filename: .asciiz "escaped.bin"
 
 show_title:
     ; hide layers until everything loaded
@@ -81,5 +82,39 @@ show_game_over:
     ; wait then hide
     jsr watch_for_joystick_press
     rts
-    
+
+show_escaped:
+    ; hide layers until everything loaded
+    lda #VERA_LAYERS_OFF_DC_VIDEO_BITS
+    sta VERA_DC_VIDEO
+    ; load game over and pal
+    lda #11
+    ldx #<escaped_filename
+    ldy #>escaped_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #2 ; VRAM 1st bank
+    ldx #0
+    ldy #0
+    jsr LOAD
+    jsr load_escaped_pal
+    ; now turn on layer to show game over
+    lda #TITLE_VERA_DC_VIDEO_BITS
+    sta VERA_DC_VIDEO
+    lda #TITLE_VERA_L1_CONFIG_BITS
+    sta VERA_L1_CONFIG
+    lda #TITLE_VERA_L1_TILEBASE_BITS
+    sta VERA_L1_TILEBASE
+    lda #64
+    sta VERA_HSCALE
+    lda #64
+    sta VERA_VSCALE
+    ; wait then hide
+    jsr watch_for_joystick_press
+    rts
+
 .endif

@@ -9,6 +9,7 @@ treasure_count: .byte 0
 treasure_ui_offset: .byte 0
 treasure_ui_addr: .word 0
 treasure_set_count: .byte 0
+treasure_total_collected: .byte 0
 
 inc_treasureaddr:
     clc
@@ -518,6 +519,7 @@ score_treasure:
     
 mark_treasure_collected:
      ; Mark this treasure as collected
+    inc treasure_total_collected ; helper to track when all treasure collected
     ldy treasure_collected_offset
     lda #1
     sta (treasureaddr), y

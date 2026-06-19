@@ -129,16 +129,13 @@ restart:
     jsr scroll_layers
     jsr copy_vram_hold_to_vram
     bra @main_loop
-@scroll_only:
-    lda waitflag
-    cmp #0
-    beq @scroll_only
-    stz waitflag
-    jsr scroll_layers
-    bra @main_loop
-    rts
 @next_level:
     stz hit_exit
+    lda treasure_total_collected
+    cmp #TREASURE_TOTAL_COUNT
+    bne @not_last_treasure
+    jmp escaped
+@not_last_treasure:
     jsr load_level
     jsr change_wall_color
     jsr remove_found_treasure
@@ -156,10 +153,16 @@ dead:
     jsr reset_game
     jmp restart
 
+escaped:
+    jsr show_escaped
+    jsr reset_game
+    jmp restart
+
 reset_game:
     stz level
     stz guy_dead
     stz guy_on_fire
+    stz treasure_total_collected
     jsr load_level
     jsr init_treasure_sets
     jsr load_animated_tiles
