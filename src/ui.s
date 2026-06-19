@@ -17,6 +17,8 @@ GAS_L1_COUNTER_MAPBASE_ADDR = MAPBASE_L1_ADDR + (L1_WIDTH*2*GAS_COUNTER_Y) + (GA
 num_low: .byte 0
 num_high: .byte 0
 
+ranking_ui_y: .word MAPBASE_L1_ADDR+(L1_WIDTH*2*22)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*19)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*18)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*17)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*16)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*13)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*12)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*11)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*10)+8, MAPBASE_L1_ADDR+(L1_WIDTH*2*8)+8
+
 update_gas_counter:
     lda #<GAS_L1_COUNTER_MAPBASE_ADDR
     sta VERA_ADDR_LO
@@ -128,6 +130,20 @@ update_score:
     sta VERA_DATA0
     rts
 
+pick_ranking:
+    lda guy_score+2
+    asl
+    tax
+    lda ranking_ui_y, x
+    sta VERA_ADDR_LO
+    lda ranking_ui_y+1, x
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    lda #27
+    sta VERA_DATA0
+    rts
+    
 get_font_num:
     pha
     and #%1111 ; remove high part

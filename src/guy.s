@@ -146,6 +146,7 @@ guy_add_score:
 guy_reset_score:
     stz guy_score
     stz guy_score+1
+    stz guy_score+2
     jsr update_score
     rts
 

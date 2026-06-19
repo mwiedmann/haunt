@@ -10,9 +10,9 @@ exit_tile: .byte EXIT_TILE
 find_start:
     lda level
     bne @not_level_0
-    lda #16
+    lda #15
     sta xMid
-    lda #14
+    lda #6
     sta yMid
     bra @found_start
 @not_level_0:
