@@ -148,6 +148,7 @@ restart:
 
 dead:
     jsr load_ui2
+    jsr draw_all_treasure_ui
     jsr watch_for_joystick_press
     jsr show_game_over
     jsr reset_game

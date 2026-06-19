@@ -14,7 +14,7 @@ find_start:
     sta xMid
     lda #14
     sta yMid
-    rts
+    bra @found_start
 @not_level_0:
     lda #<floor
     sta addr

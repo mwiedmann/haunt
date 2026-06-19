@@ -591,4 +591,69 @@ update_treasure_ui:
     sta VERA_DATA0
     rts
 
+draw_all_treasure_ui:
+    lda #TREASURE_TILE_START
+    sta current_tile
+@next_treasure:
+    lda current_tile
+    cmp #TREASURE_TILE_END+1
+    bcs @done
+    jsr draw_single_treasure_ui
+    inc current_tile
+    bra @next_treasure
+@done:
+    rts
+
+draw_single_treasure_ui:
+    lda #TREASURE_SET_COUNT
+    sta treasure_count
+    lda #<treasure_sets
+    sta treasureaddr
+    lda #>treasure_sets
+    sta treasureaddr+1
+@check_set:
+    lda treasure_count
+    beq @treasure_not_collected
+    dec treasure_count
+    lda current_tile
+    ldy #TreasureSet::_tile_id_start
+    cmp (treasureaddr), y
+    bcs @maybe_treasure
+    bra @next_set
+@maybe_treasure:
+    ldy #TreasureSet::_tile_id_end
+    cmp (treasureaddr), y
+    bcc @found_set
+@next_set:
+    jsr inc_treasureaddr
+    bra @check_set
+@found_set:
+    lda #TreasureSet::_collected
+    sta treasure_collected_offset
+    ldy #TreasureSet::_tile_id_start
+    lda (treasureaddr), y
+    sta treasure_temp
+    stz treasure_ui_offset
+    stz treasure_set_count
+@next_item:
+    lda current_tile
+    cmp treasure_temp
+    beq @found_item
+    inc treasure_collected_offset
+    inc treasure_temp
+    inc treasure_ui_offset
+    inc treasure_ui_offset
+    inc treasure_set_count
+    bra @next_item
+@found_item:
+    ; check if this treasure was collected
+    ldy treasure_collected_offset
+    lda (treasureaddr), y
+    beq @treasure_not_collected
+@done:
+    ; Update UI
+    jsr update_treasure_ui
+@treasure_not_collected:
+    rts
+
 .endif
