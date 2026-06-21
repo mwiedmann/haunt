@@ -500,7 +500,6 @@ score_treasure:
     bra @next_item
 @found_item:
     jsr mark_treasure_collected
-    jsr sound_treasure_play
     bne @done
     ; Set complete, add bonus score
     ldy #TreasureSet::_set_score
@@ -513,6 +512,7 @@ score_treasure:
 @done:
     ; Update UI
     jsr update_treasure_ui
+    jsr sound_treasure_play
     rts
 @no_treasure_found:
     ; Shouldn't happen, but just return if we didn't find the treasure for some reason

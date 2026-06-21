@@ -113,6 +113,8 @@ play_music:
 	jsr zsm_setmem
 	ldx #SOUND_PRIORITY_MUSIC
 	jsr zsm_play
+	ldx #SOUND_PRIORITY_MUSIC ; Priority
+	sec
 	jsr zsm_setloop
 @done:
     rts
