@@ -143,7 +143,9 @@ restart:
     bne @not_last_treasure
     jmp escaped
 @not_last_treasure:
+    jsr stop_music
     jsr load_level
+    jsr play_music
     jsr change_wall_color
     jsr remove_found_treasure
     jsr find_start

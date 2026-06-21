@@ -120,6 +120,8 @@ play_music:
     rts
 
 stop_music:
+	lda #ZSM_BANK
+	sta BANK
 	lda soundmuted
 	cmp #1
 	beq @done

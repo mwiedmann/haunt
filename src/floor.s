@@ -405,6 +405,8 @@ check_exit:
     sta exit_tile
     stz current_tile
     inc hit_exit
+    lda level
+    beq @level_zero
     inc level
     lda level
     cmp #MAX_LEVEL+1
@@ -412,6 +414,16 @@ check_exit:
     rts
 @back_to_level_1:
     lda #1
+    sta level
+    rts
+@level_zero:
+    ; pick a random level
+    jsr ENTROPY
+    and #%00000111 ; We just want the last few bits for a number 0-8
+    beq @level_zero ; 0
+    cmp #MAX_LEVEL+1
+    bcs @level_zero ; >MAX_LEVEL
+    ; We have a number between 1-MAX_LEVEL
     sta level
     rts
 

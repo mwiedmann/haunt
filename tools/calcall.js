@@ -238,7 +238,7 @@ const calcData = (level) => {
 
 for (let i=0; i<d.levels.length; i++) {
   const level = d.levels[i];
-  if (level.identifier.startsWith("Level_0")) {
+  if (level.identifier.startsWith("Level_")) {
     calcData(level);
   }
 }
