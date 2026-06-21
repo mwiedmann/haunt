@@ -64,6 +64,7 @@ zsmreserved: .res 256
 
 start:
     jsr sound_init
+    jsr load_soundfx
     jsr show_intro
     jsr irq_config
 restart:
@@ -80,6 +81,8 @@ restart:
     jsr set_xy_pos
     jsr guy_reset_health
     jsr guy_reset_score
+    jsr load_game_music
+    jsr play_music
     bra @draw_everything ; initial draw
 @main_loop:
     lda guy_dead
@@ -92,6 +95,7 @@ restart:
     bne @cant_move
     jsr check_controls
 @cant_move:
+    jsr check_damage_sound_timer
     stz guy_stunned
     jsr set_xy_pos
     jsr check_floor_val
@@ -179,7 +183,5 @@ show_intro:
     jsr play_music
     jsr watch_for_joystick_press
     jsr stop_music
-    jsr load_game_music
-    jsr play_music
     jsr reset_game
     rts

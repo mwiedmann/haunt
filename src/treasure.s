@@ -500,6 +500,7 @@ score_treasure:
     bra @next_item
 @found_item:
     jsr mark_treasure_collected
+    jsr sound_treasure_play
     bne @done
     ; Set complete, add bonus score
     ldy #TreasureSet::_set_score

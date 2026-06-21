@@ -4,7 +4,7 @@ GUY_S = 1
 GUY_MAX_HEALTH = $9999
 GUY_START_HEALTH = $1000
 GUY_FIRE_TICKS=60
-GUY_FIRE_DAMAGE = $01
+GUY_FIRE_DAMAGE = $05
 GUY_STILL_TICKS = 10
 
 guy_health:     .word GUY_START_HEALTH
@@ -68,6 +68,7 @@ guy_check_fire:
 ; Set guy_health_tmp_lo/hi to BCD amount before calling.
 ; Clamps to $0000 on underflow.
 guy_take_damage:
+    jsr sound_damage_play
     sed
     sec
     lda guy_health

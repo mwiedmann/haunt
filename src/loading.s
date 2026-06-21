@@ -24,7 +24,14 @@ fire_filename: .asciiz "fire.bin"
 
 titlemusic_filename: .asciiz "title.zsm"
 gamemusic_filename: .asciiz "game.zsm"
+damagesound_filename: .asciiz "damage.zsm"
+treasuresound_filename: .asciiz "treasure.zsm"
 
+load_soundfx:
+    jsr load_damage_sound
+    jsr load_treasure_sound
+    rts
+    
 load_level_files:
     ; Floor data
     lda #12
@@ -352,7 +359,7 @@ load_fire:
     rts
 
 load_title_music:
-    lda #SOUND_BANK
+    lda #MUSIC_BANK
     sta BANK
     lda #9
     ldx #<titlemusic_filename
@@ -370,7 +377,7 @@ load_title_music:
     rts
 
 load_game_music:
-    lda #SOUND_BANK
+    lda #MUSIC_BANK
     sta BANK
     lda #8
     ldx #<gamemusic_filename
@@ -384,6 +391,42 @@ load_game_music:
     lda #0
     ldx #<HIRAM
     ldy #>HIRAM
+    jsr LOAD
+    rts
+
+load_damage_sound:
+    lda #SOUND_BANK
+    sta BANK
+    lda #10
+    ldx #<damagesound_filename
+    ldy #>damagesound_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<DAMAGE_MEM
+    ldy #>DAMAGE_MEM
+    jsr LOAD
+    rts
+
+load_treasure_sound:
+    lda #SOUND_BANK
+    sta BANK
+    lda #12
+    ldx #<treasuresound_filename
+    ldy #>treasuresound_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<TREASURE_MEM
+    ldy #>TREASURE_MEM
     jsr LOAD
     rts
 
