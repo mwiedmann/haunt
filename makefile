@@ -2,12 +2,12 @@ CC=cl65
 EMU=../../x16emur46/x16emu
 
 make:
-	$(CC) --cpu 65C02 -Or -Cl -C cx16-zsm-bank.cfg -o ./build/HAUNT.PRG -t cx16 -l HAUNT.list -Ln HAUNT.sym \
+	$(CC) --cpu 65C02 -Or -Cl -C cx16-zsm-bank.cfg -o ./build/QUETZ.PRG -t cx16 -l QUETZ.list -Ln QUETZ.sym \
 	src/main.s
 
 run:
 	cd build && \
-	$(EMU) -prg HAUNT.PRG -run
+	$(EMU) -prg QUETZ.PRG -run
 
 emu:
 	cd build && \
@@ -15,7 +15,7 @@ emu:
 
 debug:
 	cd build && \
-	$(EMU) -prg HAUNT.PRG -run -debug
+	$(EMU) -prg QUETZ.PRG -run -debug
 
 pal:
 	node tools/gimp-pal-convert.js gfx/tiles.data.pal build/PAL.BIN
@@ -56,5 +56,5 @@ gas:
 	
 zip:
 	cd build && \
-	rm -f haunt.zip && \
-	zip haunt.zip *
+	rm -f QUETZ.zip && \
+	zip QUETZ.zip *

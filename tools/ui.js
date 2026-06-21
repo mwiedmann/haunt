@@ -1,6 +1,6 @@
 const fs = require("fs")
 
-const rawText = fs.readFileSync("haunt.ldtk")
+const rawText = fs.readFileSync("quetz.ldtk")
 const d = JSON.parse(rawText)
 
 const createUICode = (level) => {
