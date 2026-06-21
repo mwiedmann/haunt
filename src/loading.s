@@ -22,6 +22,9 @@ water_filename: .asciiz "water.bin"
 guyfire_filename: .asciiz "guyfire.bin"
 fire_filename: .asciiz "fire.bin"
 
+titlemusic_filename: .asciiz "title.zsm"
+gamemusic_filename: .asciiz "game.zsm"
+
 load_level_files:
     ; Floor data
     lda #12
@@ -69,7 +72,7 @@ load_level_files:
     rts
 
 load_precalc:
-    lda #1
+    lda #CALC_BANK
     sta BANK
     lda #11
     ldx #<precalc_filename
@@ -345,6 +348,42 @@ load_fire:
     lda #0
     ldx #<FIRE_MEM_ADDR
     ldy #>FIRE_MEM_ADDR
+    jsr LOAD
+    rts
+
+load_title_music:
+    lda #SOUND_BANK
+    sta BANK
+    lda #9
+    ldx #<titlemusic_filename
+    ldy #>titlemusic_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<HIRAM
+    ldy #>HIRAM
+    jsr LOAD
+    rts
+
+load_game_music:
+    lda #SOUND_BANK
+    sta BANK
+    lda #8
+    ldx #<gamemusic_filename
+    ldy #>gamemusic_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<HIRAM
+    ldy #>HIRAM
     jsr LOAD
     rts
 

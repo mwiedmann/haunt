@@ -34,11 +34,13 @@
 .include "config.inc"
 .include "tileanim.inc"
 .include "treasure.inc"
+.include "zsmkit.inc"
 
 .segment "CODE"
 
 default_irq: .word 0
 waitflag: .byte 0
+zsmreserved: .res 256
 
 .include "config.s"
 .include "guy.s"
@@ -58,10 +60,11 @@ waitflag: .byte 0
 .include "dead.s"
 .include "wait.s"
 .include "treasure.s"
+.include "sound.s"
 
 start:
-    jsr show_title
-    jsr reset_game
+    jsr sound_init
+    jsr show_intro
     jsr irq_config
 restart:
     ; hide layers until everything loaded
@@ -150,12 +153,12 @@ dead:
     jsr pick_ranking
     jsr watch_for_joystick_press
     jsr show_game_over
-    jsr reset_game
+    jsr show_intro
     jmp restart
 
 escaped:
     jsr show_escaped
-    jsr reset_game
+    jsr show_intro
     jmp restart
 
 reset_game:
@@ -168,4 +171,15 @@ reset_game:
     jsr load_animated_tiles
     jsr clear_extra_vram_row
     jsr create_guy
+    rts
+
+show_intro:
+    jsr show_title
+    jsr load_title_music
+    jsr play_music
+    jsr watch_for_joystick_press
+    jsr stop_music
+    jsr load_game_music
+    jsr play_music
+    jsr reset_game
     rts
