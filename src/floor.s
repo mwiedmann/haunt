@@ -39,9 +39,9 @@ init_sand:
 find_start:
     lda level
     bne @not_level_0
-    lda #15
+    lda #16
     sta xMid
-    lda #6
+    lda #22
     sta yMid
     bra @found_start
 @not_level_0:
