@@ -24,6 +24,7 @@ fire_filename: .asciiz "fire.bin"
 
 titlemusic_filename: .asciiz "title.zsm"
 gamemusic_filename: .asciiz "game.zsm"
+dangermusic_filename: .asciiz "danger.zsm"
 damagesound_filename: .asciiz "damage.zsm"
 treasuresound_filename: .asciiz "treasure.zsm"
 
@@ -382,6 +383,21 @@ load_game_music:
     lda #8
     ldx #<gamemusic_filename
     ldy #>gamemusic_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0
+    ldx #<HIRAM
+    ldy #>HIRAM
+    jsr LOAD
+    lda #DANGER_BANK
+    sta BANK
+    lda #10
+    ldx #<dangermusic_filename
+    ldy #>dangermusic_filename
     jsr SETNAM
     ; 0,8,2
     lda #0

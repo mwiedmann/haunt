@@ -43,6 +43,9 @@ check_gas:
     bne @done
     lda gas_counter+1
     bne @done
+    ; Gas just hit zero
+    jsr stop_music
+    jsr play_danger
 @trigger_gas:
     lda #1
     sta gas_spread

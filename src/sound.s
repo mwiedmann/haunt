@@ -3,6 +3,7 @@ SOUND_S = 1
 
 SOUND_PRIORITY_MAIN = 0
 SOUND_PRIORITY_MUSIC = 1
+SOUND_PRIORITY_DANGER = 2
 
 DAMAGE_TIMER = 30
 
@@ -52,7 +53,7 @@ sound_set_bank:
 	lda #MUSIC_BANK
 	jsr zsm_setbank
 	ldx #2
-	lda #SOUND_BANK
+	lda #DANGER_BANK
 	jsr zsm_setbank
 	ldx #3
 	lda #SOUND_BANK
@@ -114,6 +115,24 @@ play_music:
 	ldx #SOUND_PRIORITY_MUSIC
 	jsr zsm_play
 	ldx #SOUND_PRIORITY_MUSIC ; Priority
+	sec
+	jsr zsm_setloop
+@done:
+    rts
+
+play_danger:
+	lda #ZSM_BANK
+	sta BANK
+	lda soundmuted
+	cmp #1
+	beq @done
+	lda #<HIRAM
+	ldx #SOUND_PRIORITY_DANGER ; Priority
+	ldy #>HIRAM; address hi to Y
+	jsr zsm_setmem
+	ldx #SOUND_PRIORITY_DANGER
+	jsr zsm_play
+	ldx #SOUND_PRIORITY_DANGER ; Priority
 	sec
 	jsr zsm_setloop
 @done:
