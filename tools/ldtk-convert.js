@@ -13,7 +13,8 @@ const createLevelCode = (level) => {
   let floor = []
   let mapbase = []
   level.layerInstances[0].gridTiles.forEach(tile => {
-    floor.push(tile.t)
+    // Convert any floor tile to 73 so tiles are same
+    floor.push(tile.t >= 73 && tile.t <= 143 ? 73 : tile.t )
     if (tile.t >= 12 && tile.t <= 47) {
       if (levelNum !== 0) {
         if (treasureCheck[tile.t]) {

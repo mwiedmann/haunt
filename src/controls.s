@@ -20,6 +20,7 @@ joy1:
     rts
 
 moved: .byte 0
+pressing_button: .byte 0
 
 check_controls:
     lda guyX
@@ -27,7 +28,22 @@ check_controls:
     lda guyY
     sta guyLastY
     stz moved
+    stz pressing_button
     jsr joy1
+    ; See if pressing a button
+    lda joy_a
+    eor #$FF
+    and #%11000000 ; B/Y
+    cmp #0
+    bne @pressing_button
+    lda joy_x
+    eor #$FF
+    and #%11110000 ; Pressing A/X/L/R
+    cmp #0
+    beq @check_movement
+@pressing_button:
+    inc pressing_button
+@check_movement:
     lda joy_a
     bit #%1000
     bne @check_down

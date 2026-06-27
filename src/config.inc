@@ -176,5 +176,10 @@ GAS_DONE_MARKER=255
 BLOCKING_TILE_MAX=59 ; Tiles with IDs <= this are considered blocking for movement
 TRAP_TILE_MAX=73 ; Tiles with IDs < this are considered traps (blocking and cause damage)
 FLOOR_TILE=73
+SAND_TILE=142
+SAND_UI_TILE=143
 
+SAND_UI_SECTIONS=16
+SAND_PER_SECTION=4
+SAND_AMOUNT=SAND_UI_SECTIONS*SAND_PER_SECTION
 .endif

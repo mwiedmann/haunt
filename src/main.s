@@ -1,6 +1,7 @@
 .zeropage
     addr: .res 2
     addr2: .res 2
+    last_floor_addr: .res 2
     mapbase_addr: .res 2
     yOffset: .res 2
     xOffset: .res 2
@@ -101,6 +102,12 @@ restart:
     jsr check_floor_val
     lda hit_exit
     bne @next_level
+    ; See if dropping sand
+    lda pressing_button
+    beq @no_button
+    jsr drop_sand
+    bne @draw_everything
+@no_button:
     lda moved
     bne @draw_everything
     jsr guy_still
@@ -157,6 +164,7 @@ dead:
     jsr update_score
     jsr draw_all_treasure_ui
     jsr pick_ranking
+    jsr update_sand_ui
     jsr watch_for_joystick_press
     jsr show_game_over
     jsr show_intro
@@ -172,6 +180,8 @@ reset_game:
     stz guy_dead
     stz guy_on_fire
     stz treasure_total_collected
+    lda #SAND_AMOUNT
+    sta sand
     jsr load_level
     jsr init_treasure_sets
     jsr load_animated_tiles

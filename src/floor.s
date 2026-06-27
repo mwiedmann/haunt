@@ -3,9 +3,11 @@ FLOOR_S = 1
 
 floor: .res 4096
 current_tile: .byte 0
+hold_current_tile: .byte 0
 
 hit_exit: .byte 0
 exit_tile: .byte EXIT_TILE
+sand: .byte SAND_AMOUNT
 
 find_start:
     lda level
@@ -234,11 +236,14 @@ check_floor_val:
     lda addr
     adc xMid
     sta addr
+    sta last_floor_addr
     lda addr + 1
     adc #0
     sta addr + 1
+    sta last_floor_addr + 1
     lda (addr)
     sta current_tile
+    sta hold_current_tile
     cmp #BLOCKING_TILE_MAX
     bcc @blocked
     cmp #TRAP_TILE_MAX
@@ -493,6 +498,73 @@ check_treasure:
 
     lda #FLOOR_TILE; replace treasure with floor tile
     sta (addr)
+    rts
+
+drop_sand:
+    lda sand
+    beq @no_drop
+    lda hold_current_tile
+    cmp #FLOOR_TILE
+    bne @no_drop
+    ; Floor tile...drop sand
+    dec sand
+    lda #SAND_TILE
+    sta (last_floor_addr)
+    ; Update graphics
+    lda yMidAdj
+    sta yOffset
+    stz yOffset+1
+    ; Multiply by 256 to get start pos
+    stz mapbase_addr
+    stz mapbase_addr+1
+    ldy #8
+@pos_y_start:
+    cpy #0
+    beq @end_pos_y_start
+    dey
+    asl yOffset
+    rol yOffset+1
+    bra @pos_y_start
+@end_pos_y_start:
+    lda mapbase_addr
+    clc
+    adc yOffset
+    sta mapbase_addr
+    lda mapbase_addr+1
+    adc yOffset+1
+    sta mapbase_addr+1
+@check_x_offset:
+    ; Map is 32k, across 4 banks
+    ; Need to get the starting bank, then advance bank as address moves to next bank
+    lda #<HIRAM
+    clc
+    adc mapbase_addr
+    sta addr
+    lda #>HIRAM
+    adc mapbase_addr+1
+    sta addr + 1
+    lda #LEVEL_BANK
+    sta temp_bank
+    jsr check_bank_address
+    ; addr should be pointing to correct y location
+    ; adjust for x
+    stz xOffset+1
+    lda xMidAdj
+    asl
+    sta xOffset
+    lda addr
+    clc
+    adc xOffset
+    sta addr
+    lda addr+1
+    adc xOffset+1
+    sta addr+1
+
+    lda #SAND_TILE; replace floor tile with sand
+    sta (addr)
+    jsr update_sand_ui
+    rts
+@no_drop:
     rts
 
 ; y=14592
