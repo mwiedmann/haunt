@@ -25,6 +25,8 @@
     tileanimaddr: .res 2
     treasureaddr: .res 2
     gasaddr: .res 2
+    next_sand_addr: .res 2
+    sand_search_addr: .res 2
 
 .segment "STARTUP"
     jmp start
@@ -36,6 +38,7 @@
 .include "tileanim.inc"
 .include "treasure.inc"
 .include "zsmkit.inc"
+.include "sand.inc"
 
 .segment "CODE"
 
@@ -154,7 +157,7 @@ restart:
     jsr load_level
     jsr play_music
     jsr change_wall_color
-    jsr remove_found_treasure
+    jsr remove_found_treasure_and_place_sand
     jsr find_start
     jsr set_xy_pos
     bra @draw_everything ; initial draw
@@ -180,8 +183,7 @@ reset_game:
     stz guy_dead
     stz guy_on_fire
     stz treasure_total_collected
-    lda #SAND_AMOUNT
-    sta sand
+    jsr init_sand
     jsr load_level
     jsr init_treasure_sets
     jsr load_animated_tiles

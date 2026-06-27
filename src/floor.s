@@ -9,6 +9,33 @@ hit_exit: .byte 0
 exit_tile: .byte EXIT_TILE
 sand: .byte SAND_AMOUNT
 
+placed_sand: .res .sizeof(Sand) * SAND_AMOUNT+1
+
+init_sand:
+    lda #SAND_AMOUNT
+    sta sand
+    tax
+    lda #<placed_sand
+    sta addr
+    sta next_sand_addr
+    lda #>placed_sand
+    sta addr+1
+    sta next_sand_addr+1
+@next:
+    lda #255
+    ldy #Sand::_level
+    sta (addr), y
+    clc
+    lda addr
+    adc #<(.sizeof(Sand))
+    sta addr
+    lda addr+1
+    adc #>(.sizeof(Sand))
+    sta addr+1
+    dex
+    bne @next
+    rts
+
 find_start:
     lda level
     bne @not_level_0
@@ -62,7 +89,46 @@ find_start:
     jsr replace_tile_on_mapbase
     rts
 
-remove_found_treasure:
+found_sand: .byte 0
+
+search_sand:
+    stz found_sand
+    lda #<placed_sand
+    sta sand_search_addr
+    lda #>placed_sand
+    sta sand_search_addr+1
+    sta next_sand_addr+1
+@next:
+    ldy #Sand::_level
+    lda (sand_search_addr), y
+    cmp #255
+    beq @done
+    cmp level
+    bne @no
+    ldy #Sand::_x
+    lda (sand_search_addr), y
+    cmp xMid
+    bne @no
+    ldy #Sand::_y
+    lda (sand_search_addr), y
+    cmp yMid
+    bne @no
+    ; YES
+    inc found_sand
+    bra @done
+@no:
+    clc
+    lda sand_search_addr
+    adc #<(.sizeof(Sand))
+    sta sand_search_addr
+    lda sand_search_addr+1
+    adc #>(.sizeof(Sand))
+    sta sand_search_addr+1
+    bne @next
+@done:
+    rts
+
+remove_found_treasure_and_place_sand:
     lda #<floor
     sta addr2
     lda #>floor
@@ -77,6 +143,15 @@ remove_found_treasure:
     bcs @not_treasure
     jsr see_if_treasure_already_collected
 @not_treasure:
+    ; See if has sand
+    jsr search_sand
+    lda found_sand
+    beq @no_sand
+    lda #SAND_TILE ; replace treasure on floor with floor tile
+    sta (addr2)
+    sta replace_tileid
+    jsr replace_tile_on_mapbase
+@no_sand:
     lda addr2
     clc
     adc #1
@@ -502,7 +577,9 @@ check_treasure:
 
 drop_sand:
     lda sand
-    beq @no_drop
+    bne @check_tile
+    rts
+@check_tile:
     lda hold_current_tile
     cmp #FLOOR_TILE
     bne @no_drop
@@ -510,6 +587,23 @@ drop_sand:
     dec sand
     lda #SAND_TILE
     sta (last_floor_addr)
+    ; update our saved sand locations
+    lda level
+    ldy #Sand::_level
+    sta (next_sand_addr), y
+    lda xMid
+    ldy #Sand::_x
+    sta (next_sand_addr), y
+    lda yMid
+    ldy #Sand::_y
+    sta (next_sand_addr), y
+    clc
+    lda next_sand_addr
+    adc #<(.sizeof(Sand))
+    sta next_sand_addr
+    lda next_sand_addr+1
+    adc #>(.sizeof(Sand))
+    sta next_sand_addr+1
     ; Update graphics
     lda yMidAdj
     sta yOffset
