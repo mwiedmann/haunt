@@ -7,7 +7,7 @@ make:
 
 run:
 	cd build && \
-	$(EMU) -prg QUETZ.PRG -run
+	$(EMU) -prg QUETZ.PRG -run -gif quetz.gif,wait
 
 emu:
 	cd build && \
